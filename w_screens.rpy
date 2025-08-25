@@ -50,7 +50,8 @@ screen quick_menu():
                     action Screenshot()
         else:
             hbox:
-                style_prefix "quick"
+                # style_prefix "quick"
+                style_prefix "outlined_button"
                 style "quick_menu"
 
                 textbutton _("Hide") action HideInterface()
