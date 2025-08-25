@@ -124,7 +124,9 @@ screen main_menu():
     on "show" action Play("music", "music/ave_maria.opus", loop=True)
 
     ## Animated background
-    add Movie(play="movies/snow_sky.webm", loop=True)
+    # add Movie(play="movies/snow_sky.webm", loop=True)
+
+    add "deusches_reich.webp"
 
     ## Menu container
     frame:
