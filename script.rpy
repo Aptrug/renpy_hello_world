@@ -20,15 +20,15 @@
 
 label start:
 
-    $mc_name = renpy.input("Enter your name (max 16 characters):",
-                       length = 16).strip() or "Rance"
-
     play music "music/rancex.opus" volume 0.8
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
 
     show expression im.Blur("maison_1920x1080.webp", 1.5)
+
+    $mc_name = renpy.input("Enter your name (max 16 characters):",
+                       length = 16).strip() or "Rance"
 
     # This shows a character sprite. A placeholder is used, but you can
     # replace it by adding a file named "eileen happy.png" to the images
