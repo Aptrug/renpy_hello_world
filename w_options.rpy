@@ -97,12 +97,3 @@ init python:
     # config.automatic_images = ['_']
     # config.automatic_images_strip = ['_']
     # define config.automatic_images_strip = ['_', ' ', '/']
-
-    def quick_save():
-        renpy.save("0")  # slot 0
-
-    def quick_load():
-        renpy.load("0")  # slot 0
-
-    config.keymap['f5'] = [ quick_save ]
-    config.keymap['f9'] = [ quick_load ]
