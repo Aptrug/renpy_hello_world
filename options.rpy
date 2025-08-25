@@ -179,37 +179,20 @@ define config.window_icon = "gui/window_icon.png"
 # Ultra-minimal enhanced menu system for Ren'Py
 # Place this in options.rpy
 
-# Ultra-minimal enhanced menu system for Ren'Py
-# Place this in options.rpy
-
-# Ultra-minimal enhanced menu system for Ren'Py
-# Place this in options.rpy
-
 init python:
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """Enhanced menu with explanation syntax and multiline support"""
-        processed_items = []
-
-        for label, condition, value in items:
+        """Enhanced menu with explanation syntax"""
+        for i, (label, condition, value) in enumerate(items):
             if condition and " explanation " in condition:
-                # Support multiline by joining condition parts
-                parts = condition.split(" explanation ")
-                cond = parts[0].strip()
-                explanation = " explanation ".join(parts[1:]).strip().strip('"\'')
-
-                if renpy.python.py_eval(cond or "True"):
-                    # Condition true - show normally
-                    processed_items.append((label, cond, value))
+                cond, explanation = condition.split(" explanation ", 1)
+                if not renpy.python.py_eval(cond.strip() or "True"):
+                    # Replace with disabled caption
+                    items[i] = (label + explanation.strip().strip('"\''), "True", None)
                 else:
-                    # Condition false - show as disabled caption with explanation
-                    processed_items.append((label + explanation, "True", None))
-            else:
-                # No explanation - only add if condition is true or no condition
-                if not condition or renpy.python.py_eval(condition):
-                    processed_items.append((label, condition, value))
-                # If condition is false and no explanation, skip entirely
+                    # Use clean condition
+                    items[i] = (label, cond.strip(), value)
 
-        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
+        return renpy.store._original_menu(items, set_expr, args, kwargs, item_arguments)
 
     # Replace menu function
     renpy.store._original_menu = renpy.exports.menu
