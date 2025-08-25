@@ -263,13 +263,6 @@ init python:
 
 default persistent.quick_menu = True
 
-default persistent.iconic_quick_menu = False
-
-default persistent.text_outline_size = 3
-
-default persistent.dialogue_box_opacity = 0.0
-
-
 style quick_menu is hbox
 style quick_button is default
 style quick_button_text is button_text
