@@ -56,16 +56,36 @@ screen quick_menu():
                 # style_prefix "outlined_button"
                 style "quick_menu"
 
-                textbutton _("Hide") action HideInterface()
-                textbutton _("Back") action Rollback()
-                textbutton _("History") action ShowMenu('history')
-                textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-                textbutton _("Auto") action Preference("auto-forward", "toggle")
-                textbutton _("Save") action ShowMenu('save')
-                textbutton _("Q.Save") action QuickSave()
-                textbutton _("Q.Load") action QuickLoad()
-                textbutton _("Prefs") action ShowMenu('preferences')
-                textbutton _("Screenshot") action Screenshot()
+                textbutton _("Hide"):
+                    action HideInterface()
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Back"):
+                    action Rollback()
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("History"):
+                    action ShowMenu('history')
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Skip"):
+                    action Skip() alternate Skip(fast=True, confirm=True)
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Auto"):
+                    action Preference("auto-forward", "toggle")
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Save"):
+                    action ShowMenu('save')
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Q.Save"):
+                    action QuickSave()
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Q.Load"):
+                    action QuickLoad()
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Prefs"):
+                    action ShowMenu('preferences')
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+                textbutton _("Screenshot"):
+                    action Screenshot()
+                    text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
 ##############################################################################
 
