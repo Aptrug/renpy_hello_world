@@ -12,6 +12,7 @@ init python:
         for label, condition, value in items:
             if condition and " explanation " in condition:
                 cond, explanation = condition.split(" explanation ", 1)
+                explanation = explanation.strip('"\'')
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
                     processed_items.append((label, cond, value))
