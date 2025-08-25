@@ -810,13 +810,6 @@ screen preferences():
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
 
-style pref_nav_button is navigation_button:
-    xsize 200
-    ysize 50
-
-style pref_nav_button_text is navigation_button_text:
-    size 30
-
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
