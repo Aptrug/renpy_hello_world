@@ -131,6 +131,6 @@ label start:
             "(You can't be a coward, you're Rance dammit)":
             "New option."
         "Hello there, how are you doing? Great weather we're having eh. Have a Totally Joyful Day.":
-            jump first_choices
+            jump second_choices
 
     return
