@@ -351,61 +351,30 @@ style navigation_button_text:
 ## https://www.renpy.org/doc/html/screen_special.html#main-menu
 
 screen main_menu():
+
+    ## This ensures that any other menu screen is replaced.
     tag menu
 
-    # Music
-    on "show" action Play("music", "music/ave_maria.opus", loop=True)
+    add gui.main_menu_background
 
-    ## Animated background
-    add Movie(play="movies/snow_sky.webm", loop=True)
-
-    ## Menu container
+    ## This empty frame darkens the main menu.
     frame:
-        background None
-        xalign 0.05
-        yalign 0.4
+        style "main_menu_frame"
+
+    ## The use statement includes another screen inside this one. The actual
+    ## contents of the main menu are in the navigation screen.
+    use navigation
+
+    if gui.show_name:
 
         vbox:
-            spacing 25
-            xalign 0.5
-            yalign 0.5
+            style "main_menu_vbox"
 
-            textbutton _("Start"):
-                action Start()
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/bell.opus"
+            text "[config.name!t]":
+                style "main_menu_title"
 
-            textbutton _("Load"):
-                action ShowMenu("load")
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
-
-            textbutton _("Preferences"):
-                action ShowMenu("preferences")
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
-
-            textbutton _("Quit"):
-                action Quit(confirm=not main_menu)
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
-
-# Rebundant
-# style hl2_button:
-#     background None
-#     xalign 0.5
-#     hover_background None
-
-style hl2_button_text:
-    color "#ffffff"  # White text
-    hover_color "#ff9900"  # Orange on hover
-    outlines [(2, "#000000", 0, 0)]  # Black outline for contrast
-    hover_outlines [(2, "#000000", 0, 0)]  # Keep outline on hover
-    size 36
+            text "[config.version]":
+                style "main_menu_version"
 
 
 style main_menu_frame is empty
