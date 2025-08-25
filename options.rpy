@@ -173,6 +173,9 @@ define config.window_icon = "gui/window_icon.png"
 # Ultra-simple enhanced menu system for Ren'Py
 # Place this in options.rpy
 
+# Ultra-simple enhanced menu system for Ren'Py
+# Place this in options.rpy
+
 init python:
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
         """Enhanced menu with explanation syntax support"""
@@ -190,7 +193,10 @@ init python:
                     # Show as disabled with explanation
                     processed_items.append((label + explanation.strip().strip('"\''), "True", None))
             else:
-                processed_items.append((label, condition, value))
+                # Only add if condition is true or no condition
+                if not condition or renpy.python.py_eval(condition):
+                    processed_items.append((label, condition, value))
+                # If condition is false and no explanation, skip entirely (don't add to processed_items)
 
         # Call original menu
         return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
