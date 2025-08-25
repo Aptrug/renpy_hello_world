@@ -603,3 +603,8 @@ screen notify(message):
         text "[message!tq]"
 
     timer 1.25 action Hide('notify')
+
+##############################################################################
+
+screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
+    add "deutsches_reich.webp"
