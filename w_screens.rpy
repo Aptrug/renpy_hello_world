@@ -611,10 +611,10 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
     style_prefix "game_menu"
 
-    if main_menu:
-        add gui.main_menu_background
-    else:
-        add gui.game_menu_background
+    # if main_menu:
+    #     add gui.main_menu_background
+    # else:
+    #     add gui.game_menu_background
 
     # add "deutsches_reich.webp"
     add Solid("#000000") alpha 0.5
