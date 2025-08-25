@@ -167,67 +167,55 @@ define config.window_icon = "gui/window_icon.png"
 # Check script.rpy & menuexports.py
 
 # Better menu
+# Simplified enhanced menu system for Ren'Py
+# Place this in options.rpy
+
 init python:
-    # Store the original menu function
-    _original_renpy_menu = renpy.exports.menu
+    def parse_condition_with_explanation(condition_str):
+        """
+        Parse condition string that may contain explanation.
+        Returns: (actual_condition, explanation_text)
+        """
+        if not condition_str or " explanation " not in condition_str:
+            return condition_str, None
+
+        condition, explanation = condition_str.split(" explanation ", 1)
+        # Remove quotes from explanation
+        explanation = explanation.strip().strip('"\'')
+        return condition.strip(), explanation
 
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """
-        Enhanced menu function that supports the exact syntax you want:
-        "Text" if condition explanation "reason"
-        """
-        import re
-
+        """Enhanced menu with explanation syntax support"""
         if item_arguments is None:
             item_arguments = [((), {})] * len(items)
 
         processed_items = []
-        processed_item_arguments = []
+        processed_args = []
 
-        for (label, condition, value), (item_args, item_kwargs) in zip(items, item_arguments):
-
-            # Check if the condition string contains "explanation"
-            explanation = None
-            actual_condition = condition
-
-            if condition and " explanation " in condition:
-                # Split condition and explanation
-                parts = condition.split(" explanation ", 1)
-                actual_condition = parts[0].strip()
-                explanation_text = parts[1].strip()
-
-                # Remove quotes from explanation if present
-                if explanation_text.startswith('"') and explanation_text.endswith('"'):
-                    explanation = explanation_text[1:-1]
-                elif explanation_text.startswith("'") and explanation_text.endswith("'"):
-                    explanation = explanation_text[1:-1]
-                else:
-                    explanation = explanation_text
+        for (label, condition, value), item_args in zip(items, item_arguments):
+            actual_condition, explanation = parse_condition_with_explanation(condition)
 
             # Evaluate the actual condition
-            try:
-                condition_result = renpy.python.py_eval(actual_condition) if actual_condition else True
-            except:
-                condition_result = False
+            condition_result = renpy.python.py_eval(actual_condition) if actual_condition else True
 
             if condition_result:
-                # Active choice - show normally
+                # Active choice
                 processed_items.append((label, actual_condition, value))
-            elif explanation is not None:
-                # Disabled choice with explanation - show grayed out
-                disabled_label = label + explanation
-                processed_items.append((disabled_label, "True", None))
-            # If condition is false and no explanation, hide completely
+            elif explanation:
+                # Disabled choice with explanation - show as caption
+                processed_items.append((label + explanation, "True", None))
+            # Hidden if false condition and no explanation
 
-            processed_item_arguments.append((item_args, item_kwargs))
+            processed_args.append(item_args)
 
-        # Call the original menu function with processed items
-        return _original_renpy_menu(processed_items, set_expr, args, kwargs, processed_item_arguments)
+        # Use original menu function
+        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, processed_args)
 
-    # Replace the menu function everywhere it might be called
+    # Store original and replace
+    renpy.store._original_menu = renpy.exports.menu
     renpy.exports.menu = enhanced_menu
 
-    # Ensure disabled menu items are shown
+    # Ensure disabled items are shown
     config.menu_include_disabled = True
 
 init python:
