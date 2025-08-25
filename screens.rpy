@@ -689,6 +689,7 @@ screen file_slots(title):
                             action DownloadSync()
                             xalign 0.5
 
+
 style page_label is gui_label
 style page_label_text is gui_label_text
 style page_button is gui_button
