@@ -614,8 +614,8 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
     # else:
     #     add gui.game_menu_background
 
-    # if main_menu:
-    #     add "deutsches_reich.webp"
+    if main_menu:
+        add "deutsches_reich.webp"
     # else:
     #     add gui.game_menu_background
 
