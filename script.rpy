@@ -69,7 +69,7 @@ label start:
     # I want to override it
     # How can I do that?
     # I want instead of this
-    mymenu:
+    menu:
         "Tell me, are you an idiot?"
 
         "Yes.[(\" (Nah, you're cool)\" if mc_name == 'Rance' else '')]" if mc_name != "Rance":
