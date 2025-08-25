@@ -739,141 +739,76 @@ screen preferences():
         vbox:
 
             hbox:
-                spacing 100
-                vbox:
-                    button:
-                        action ShowMenu("_accessibility")
-                        hbox:
-                            spacing 20
-                            imagebutton:
-                                idle "images/accessibility.webp"
-                                yalign 0.5
-                            text _("Accessibility Menu"):
-                                yalign 0.5
-                                size 50
-                                idle_color gui.idle_small_color
-                                hover_color '#cccc00'
-                vbox:
-                    button:
-                        action Show("language_picker")
-                        hbox:
-                            spacing 20
-                            imagebutton:
-                                idle "images/language.webp"
-                                yalign 0.5
-                            text _("Language"):
-                                yalign 0.5
-                                size 50
-                                idle_color gui.idle_small_color
-                                hover_color '#cccc00'
-            hbox:
+                box_wrap True
+
                 if renpy.variant("pc") or renpy.variant("web"):
+
                     vbox:
                         style_prefix "radio"
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
-                else:
-                    vbox:
-                        style_prefix "radio"
-                        label _("Video HWA")
-                        textbutton _("Enable") action SetVariable("config.hw_video", True)
-                        textbutton _("Disable") action SetVariable("config.hw_video", False)
-                        textbutton _("Automatic") action SetVariable("config.hw_video", "auto")
+
                 vbox:
                     style_prefix "check"
                     label _("Skip")
                     textbutton _("Unseen Text") action Preference("skip", "toggle")
                     textbutton _("After Choices") action Preference("after choices", "toggle")
                     textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
-                vbox:
-                    style_prefix "check"
-                    label _("Quick Menu")
-                    textbutton _("Enable") action ToggleField(persistent, "quickmenu")
-                    textbutton _("Iconic") action ToggleField(persistent, "iconic_quickmenu")
-                vbox:
-                    style_prefix "radio"
-                    label _("Rollback Side")
-                    textbutton _("Disable") action Preference("rollback side", "disable")
-                    textbutton _("Left") action Preference("rollback side", "left")
-                    textbutton _("Right") action Preference("rollback side", "right")
-            hbox:
-                vbox:
-                    style_prefix "radio"
-                    label _("PowerSave")
-                    textbutton _("Enable") action Preference("gl powersave", True)
-                    textbutton _("Disable") action Preference("gl powersave", False)
-                    textbutton _("Automatic") action Preference("gl powersave", "auto")
+
+                ## Additional vboxes of type "radio_pref" or "check_pref" can
+                ## be added here, to add additional creator-defined preferences.
+
+            null height (4 * gui.pref_spacing)
+
             hbox:
                 style_prefix "slider"
+                box_wrap True
+
                 vbox:
-                    # label _("Text Speed ([int(preferences.text_cps)] cps)")
-                    label "[_('Text Speed ({})').format(_('instantaneous') if int(preferences.text_cps) == 0 else f'{int(preferences.text_cps)} cps')]"
+
+                    label _("Text Speed")
+
                     bar value Preference("text speed")
 
-                    label _("Music Volume ([int(preferences.get_volume('music') * 100)]%)")
-                    bar value Preference("music volume")
-                vbox:
-                    label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
+                    label _("Auto-Forward Time")
+
                     bar value Preference("auto-forward time")
-                    label _("Sound Volume [int(preferences.get_volume('sfx') * 100)]%)")
-                    bar value Preference("sound volume")
-            # a bit of spacing (check gui.pref_spacing)
-            # null height gui.pref_spacing
-            # hbox:
-            #     xalign 0.5
-            #     textbutton _("Mute All") action Preference("all mute", "toggle") style "mute_all_button"
-            hbox:
-                vbox:
-                    style_prefix "slider"
-                    box_wrap True
 
-                    label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
-                    hbox:
-                        bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
                 vbox:
-                    style_prefix "slider"
-                    label _("Text outline ([persistent.text_outline_size]/6)")
-                    bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
-    hbox:
-        align (0.90, 0.98)
-        textbutton _("Restore\nDefaults"):
-            action Show("confirm",
-                message=_("Are you sure you want to restore all settings to their default values?"),
-                yes_action=[
-                    Preference("rollback side", "disable"),
-                    Preference("main volume", 1.0),
-                    Preference("music volume", 1.0),
-                    Preference("sound volume", 1.0),
-                    Preference("voice volume", 1.0),
-                    Preference("all mute", "disable"),
-                    Preference("skip", "seen"),
-                    Preference("after choices", "stop"),
-                    Preference("transitions", "all"),
-                    Preference("text speed", 0),
-                    Preference("auto-forward time", 15),
-                    SetVariable("quickmenu", True),
-                    SetVariable("config.hw_video", False),
-                    Preference("gl powersave", True),
-                    SetVariable("persistent.text_outline_size", 3),
-                    SetVariable("persistent.dialogue_box_opacity", 0.0),
-                    SetVariable("persistent.iconic_quickmenu", False),
-                    Preference("font transform", None),
-                    Preference("high contrast text", "disable"),
-                    Preference("self voicing", "disable"),
-                    Preference("self voicing volume drop", 0.5),
-                    Preference("mono audio", "disable"),
-                    Preference("font size", 1.0),
-                    Preference("font line spacing", 1.0),
-                    Preference("font kerning", 0.0),
-                    Hide("confirm")
-                ],
-                no_action=Hide("confirm")
-            )
-            text_color gui.idle_color
-            text_hover_color gui.accent_color
-            text_size 30
+                    if config.has_music:
+                        label _("Music Volume")
+
+                        hbox:
+                            bar value Preference("music volume")
+
+                    if config.has_sound:
+
+                        label _("Sound Volume")
+
+                        hbox:
+                            bar value Preference("sound volume")
+
+                            if config.sample_sound:
+                                textbutton _("Test") action Play("sound", config.sample_sound)
+
+
+                    if config.has_voice:
+                        label _("Voice Volume")
+
+                        hbox:
+                            bar value Preference("voice volume")
+
+                            if config.sample_voice:
+                                textbutton _("Test") action Play("voice", config.sample_voice)
+
+                    if config.has_music or config.has_sound or config.has_voice:
+                        null height gui.pref_spacing
+
+                        textbutton _("Mute All"):
+                            action Preference("all mute", "toggle")
+                            style "mute_all_button"
 
 style pref_nav_button is navigation_button:
     xsize 200
