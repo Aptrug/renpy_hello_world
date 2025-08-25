@@ -598,20 +598,6 @@ screen load():
 
     use file_slots(_("Load"))
 
-define get_save_notify_action = lambda slot: Show(
-    "save_notify",
-    message=_("Stored the savefile as ") + renpy.config.savedir + "/" + str(persistent._file_page) + "-" + str(slot) + ".save"
-)
-
-define SaveWithNameNotification = lambda slot: [
-    FileSave(slot, confirm=False),
-    get_save_notify_action(slot),
-    Hide("screen_save_name")
-]
-
-define SaveWithNotification = lambda slot: [
-    FileSave(slot, action=get_save_notify_action(slot))
-]
 
 screen file_slots(title):
 
