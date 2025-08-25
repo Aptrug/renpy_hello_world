@@ -280,6 +280,7 @@ screen file_slots(title):
                                 style "slot_name_text"
                                 xalign 0.5
 
+
                             # if FileLoadable(slot):
                             #     imagebutton:
                             #         idle "images/delete.webp"
