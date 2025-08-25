@@ -575,4 +575,4 @@ screen notify(message):
     frame at notify_appear:
         text "[message!tq]"
 
-    timer 1.25 action Hide('save_notify')
+    timer 1.25 action Hide('notify')
