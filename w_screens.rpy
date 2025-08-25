@@ -10,7 +10,7 @@ default persistent.save_naming = False
 
 ##############################################################################
 style quick_button_text:
-    outlines [(3, "#000", 0, 0)]
+    outlines [(2, "#000", 0, 0)]
 
 screen quick_menu():
 
