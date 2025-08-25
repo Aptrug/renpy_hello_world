@@ -69,9 +69,8 @@ label start:
     # I have my own defined in options.rpy
     # But renpy doesn't recognize it and throws an error
     # why?
-    menu:
-        "Tell me, are you an idiot?"
-
+    mymenu:
+    "Tell me, are you an idiot?"
         # Actually, I want to define my own mymenu to add one simple functionality
         # I want the grayed out options to show the reason why they're grayed out between parentheses
         # So instead of next line, I want something simple like menu_statment, condition, reason
