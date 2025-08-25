@@ -97,3 +97,6 @@ init python:
     # config.automatic_images = ['_']
     # config.automatic_images_strip = ['_']
     # define config.automatic_images_strip = ['_', ' ', '/']
+
+    config.keymap["quick_save"] = ["K_F3"]
+    config.keymap["quick_load"] = ["K_F5"]
