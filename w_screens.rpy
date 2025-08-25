@@ -54,18 +54,18 @@ screen quick_menu():
             hbox:
                 # style_prefix "quick"
                 # style_prefix "outlined_button"
-                style "outlined_button"
+                # style "outlined_button"
 
-                textbutton _("Hide") action HideInterface()
-                textbutton _("Back") action Rollback()
-                textbutton _("History") action ShowMenu('history')
-                textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-                textbutton _("Auto") action Preference("auto-forward", "toggle")
-                textbutton _("Save") action ShowMenu('save')
-                textbutton _("Q.Save") action QuickSave()
-                textbutton _("Q.Load") action QuickLoad()
-                textbutton _("Prefs") action ShowMenu('preferences')
-                textbutton _("Screenshot") action Screenshot()
+                textbutton _("Hide") action HideInterface() style "outlined_button"
+                textbutton _("Back") action Rollback() style "outlined_button"
+                textbutton _("History") action ShowMenu('history') style "outlined_button"
+                textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True) style "outlined_button"
+                textbutton _("Auto") action Preference("auto-forward", "toggle") style "outlined_button"
+                textbutton _("Save") action ShowMenu('save') style "outlined_button"
+                textbutton _("Q.Save") action QuickSave() style "outlined_button"
+                textbutton _("Q.Load") action QuickLoad() style "outlined_button"
+                textbutton _("Prefs") action ShowMenu('preferences') style "outlined_button"
+                textbutton _("Screenshot") action Screenshot() style "outlined_button"
 
 ##############################################################################
 
