@@ -618,6 +618,8 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
     # add "deutsches_reich.webp"
 
+    add Solid("#000c")
+
     frame:
         style "game_menu_outer_frame"
 
