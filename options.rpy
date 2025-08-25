@@ -199,7 +199,7 @@ init python:
                     explanation = explanation_text[1:-1]
                 else:
                     explanation = explanation_text
-            else
+            else:
                 continue
 
             # Evaluate the actual condition
