@@ -43,13 +43,13 @@ init python:
     config.autosave_slots = 13
     config.quicksave_slots = 13
 
-    def save_notify():
-        savedir = renpy.config.savedir
-        latest_save = renpy.newest_slot("")
-        savefile = savedir + "/" + latest_save
-        renpy.notify(_("Stored the savefile as ") + savefile)
-
-    config.autosave_callback = save_notify
+    # I've decided that auto save notification is annoying
+    # def save_notify():
+    #     savedir = renpy.config.savedir
+    #     latest_save = renpy.newest_slot("")
+    #     savefile = savedir + "/" + latest_save
+    #     renpy.notify(_("Stored the savefile as ") + savefile)
+    # config.autosave_callback = save_notify
 
     config.hw_video = False
 
