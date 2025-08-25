@@ -15,7 +15,7 @@ screen quick_menu():
     zorder 100
 
     if persistent.quickmenu:
-        if persistent.iconic_quick_menu:
+        if persistent.iconic_quickmenu:
             hbox:
                 spacing 10
                 style_prefix "quick"
