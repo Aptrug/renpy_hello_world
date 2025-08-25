@@ -70,14 +70,24 @@ label start:
     # But renpy doesn't recognize it and throws an error
     # why?
     mymenu:
-    "Tell me, are you an idiot?"
+        "Tell me, are you an idiot?"
+
         # Actually, I want to define my own mymenu to add one simple functionality
         # I want the grayed out options to show the reason why they're grayed out between parentheses
         # So instead of next line, I want something simple like menu_statment, condition, reason
-        "Yes." if mc_name != "Rance" reason "Nah, you're cool":
+        "Yes.[(\" (Nah, you're cool)\" if mc_name == 'Rance' else '')]" if mc_name != "Rance":
             mc "I thought so."
         "No.":
             mc "Yes, you are!"
+    # like this
+    # mymenu:
+    #     "Tell me, are you an idiot?"
+    #
+    #     "Yes." if mc_name != "Rance" reason "Nah, you're cool":
+    #         mc "I thought so."
+    #
+    #     "No.":
+    #         mc "Yes, you are!"
 
     mc bored "Wait, I feel something..."
 
