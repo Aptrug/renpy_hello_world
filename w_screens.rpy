@@ -12,6 +12,9 @@ default persistent.save_naming = False
 style quick_button_text:
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
+style outlined_button_text is quick_button_text:
+    outlines [(persistent.text_outline_size, "#000", 0, 0)]
+
 screen quick_menu():
 
     ## Ensure this appears on top of other screens.
@@ -50,8 +53,8 @@ screen quick_menu():
                     action Screenshot()
         else:
             hbox:
-                style_prefix "quick"
-                # style_prefix "outlined_button"
+                # style_prefix "quick"
+                style_prefix "outlined_button"
                 style "quick_menu"
 
                 textbutton _("Hide") action HideInterface()
