@@ -170,52 +170,34 @@ define config.window_icon = "gui/window_icon.png"
 # Simplified enhanced menu system for Ren'Py
 # Place this in options.rpy
 
+# Ultra-simple enhanced menu system for Ren'Py
+# Place this in options.rpy
+
 init python:
-    def parse_condition_with_explanation(condition_str):
-        """
-        Parse condition string that may contain explanation.
-        Returns: (actual_condition, explanation_text)
-        """
-        if not condition_str or " explanation " not in condition_str:
-            return condition_str, None
-
-        condition, explanation = condition_str.split(" explanation ", 1)
-        # Remove quotes from explanation
-        explanation = explanation.strip().strip('"\'')
-        return condition.strip(), explanation
-
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
         """Enhanced menu with explanation syntax support"""
-        if item_arguments is None:
-            item_arguments = [((), {})] * len(items)
-
         processed_items = []
-        processed_args = []
 
-        for (label, condition, value), item_args in zip(items, item_arguments):
-            actual_condition, explanation = parse_condition_with_explanation(condition)
+        for label, condition, value in items:
+            if condition and " explanation " in condition:
+                # Split and evaluate condition
+                actual_condition, explanation = condition.split(" explanation ", 1)
+                condition_result = renpy.python.py_eval(actual_condition.strip()) if actual_condition.strip() else True
 
-            # Evaluate the actual condition
-            condition_result = renpy.python.py_eval(actual_condition) if actual_condition else True
+                if condition_result:
+                    processed_items.append((label, actual_condition.strip(), value))
+                else:
+                    # Show as disabled with explanation
+                    processed_items.append((label + explanation.strip().strip('"\''), "True", None))
+            else:
+                processed_items.append((label, condition, value))
 
-            if condition_result:
-                # Active choice
-                processed_items.append((label, actual_condition, value))
-            elif explanation:
-                # Disabled choice with explanation - show as caption
-                processed_items.append((label + explanation, "True", None))
-            # Hidden if false condition and no explanation
+        # Call original menu
+        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
 
-            processed_args.append(item_args)
-
-        # Use original menu function
-        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, processed_args)
-
-    # Store original and replace
+    # Replace menu function
     renpy.store._original_menu = renpy.exports.menu
     renpy.exports.menu = enhanced_menu
-
-    # Ensure disabled items are shown
     config.menu_include_disabled = True
 
 init python:
