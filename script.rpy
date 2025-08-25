@@ -69,14 +69,14 @@ label start:
     # I want to override it
     # How can I do that?
     # I want instead of this
-    # menu:
-    #     "Tell me, are you an idiot?"
-    #     "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
-    #         mc "I thought so."
-    #     "Maybe." if mc_name != "Vance":
-    #         mc "I thought so."
-    #     "No.":
-    #         mc "Yes, you are!"
+    menu:
+        "Tell me, are you an idiot?"
+        "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
+            mc "I thought so."
+        "Maybe." if mc_name != "Vance":
+            mc "I thought so."
+        "No.":
+            mc "Yes, you are!"
 
     mc bored "Wait, I feel something..."
 
