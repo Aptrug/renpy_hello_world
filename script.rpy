@@ -62,7 +62,7 @@ label start:
     menu:
         "Tell me, are you an idiot?"
         "Yes." if mc_name != "Rance"\
-               "{i}(Nah, you're cool){/i}":
+            "{i}(Nah, you're cool){/i}":
             mc "I thought so."
         "Maybe." if mc_name == "Vance":
             mc "I thought so."
