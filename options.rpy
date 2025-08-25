@@ -13,7 +13,6 @@
 
 define config.name = _("HelloWorld")
 
-
 # define config.menu_include_disabled = True
 
 
