@@ -235,23 +235,6 @@ style choice_button_text is default:
 ## The quick menu is displayed in-game to provide easy access to the out-of-
 ## game menus.
 
-# style save_delete_icon:
-#     font "MaterialIcons-Regular.ttf"
-#     size gui.title_text_size
-#     # hover_color gui.hover_color
-#     # selected_color gui.selected_color
-#     hover_color "#FF0000"  # Light red for hover state
-#     color gui.idle_small_color
-#
-# style ico_quick_menu:
-#     font "MaterialIcons-Regular.ttf"
-#     size gui.text_size
-#     hover_color gui.hover_color
-#     selected_color gui.selected_color
-#     color gui.idle_small_color
-#     # outlines [ (3, "#111", 0, 0) ]
-#     # insensitive_color gui.insensitive_color
-
 screen quick_menu():
 
     key "K_F5" action [
