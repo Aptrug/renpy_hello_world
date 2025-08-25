@@ -731,10 +731,13 @@ style slot_button_text:
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
 screen preferences():
+
     tag menu
 
     use game_menu(_("Preferences"), scroll="viewport"):
+
         vbox:
+
             hbox:
                 spacing 100
                 vbox:
