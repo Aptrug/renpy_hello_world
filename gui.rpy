@@ -180,11 +180,9 @@ define gui.button_text_xalign = 0.0
 ##
 ## These customizations are used by the default interface:
 
-## Aptrug                                 v
-define gui.radio_button_borders = Borders(38, -2, 0, 0)
+define gui.radio_button_borders = Borders(27, 6, 6, 6)
 
-## Aptrug                                 v
-define gui.check_button_borders = Borders(38, -2, 0, 0)
+define gui.check_button_borders = Borders(27, 6, 6, 6)
 
 define gui.confirm_button_text_xalign = 0.5
 
