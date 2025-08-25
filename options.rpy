@@ -13,8 +13,6 @@
 
 define config.name = _("HelloWorld")
 
-# define config.menu_include_disabled = True
-
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
@@ -110,8 +108,8 @@ define config.window = "auto"
 
 ## Transitions used to show and hide the dialogue window
 
-# define config.window_show_transition = Dissolve(.2)
-# define config.window_hide_transition = Dissolve(.2)
+define config.window_show_transition = Dissolve(.2)
+define config.window_hide_transition = Dissolve(.2)
 
 
 ## Preference defaults #########################################################
