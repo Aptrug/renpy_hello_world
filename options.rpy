@@ -164,6 +164,74 @@ define config.window_icon = "gui/window_icon.png"
 ## This section controls how Ren'Py turns your project into distribution files.
 
 init python:
+    # Store the original menu function
+    _original_renpy_menu = renpy.exports.menu
+
+    def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
+        """
+        Enhanced menu function that supports the exact syntax you want:
+        "Text" if condition explanation "reason"
+        """
+        import re
+
+        if item_arguments is None:
+            item_arguments = [((), {})] * len(items)
+
+        processed_items = []
+        processed_item_arguments = []
+
+        for (label, condition, value), (item_args, item_kwargs) in zip(items, item_arguments):
+
+            # Check if the condition string contains "explanation"
+            explanation = None
+            actual_condition = condition
+
+            if condition and " explanation " in condition:
+                # Split condition and explanation
+                parts = condition.split(" explanation ", 1)
+                actual_condition = parts[0].strip()
+                explanation_text = parts[1].strip()
+
+                # Remove quotes from explanation if present
+                if explanation_text.startswith('"') and explanation_text.endswith('"'):
+                    explanation = explanation_text[1:-1]
+                elif explanation_text.startswith("'") and explanation_text.endswith("'"):
+                    explanation = explanation_text[1:-1]
+                else:
+                    explanation = explanation_text
+
+            # Evaluate the actual condition
+            try:
+                condition_result = renpy.python.py_eval(actual_condition) if actual_condition else True
+            except:
+                condition_result = False
+
+            if condition_result:
+                # Active choice - show normally
+                processed_items.append((label, actual_condition, value))
+            elif explanation is not None:
+                # Disabled choice with explanation - show grayed out
+                disabled_label = label + " " + explanation
+                processed_items.append((disabled_label, "True", None))
+            # If condition is false and no explanation, hide completely
+
+            processed_item_arguments.append((item_args, item_kwargs))
+
+        # Call the original menu function with processed items
+        return _original_renpy_menu(processed_items, set_expr, args, kwargs, processed_item_arguments)
+
+    # Replace the menu function everywhere it might be called
+    renpy.exports.menu = enhanced_menu
+
+    # Import the menuexports module and replace there too
+    import renpy.exports.menuexports
+    renpy.exports.menuexports.menu = enhanced_menu
+
+    # Ensure disabled menu items are shown
+    config.menu_include_disabled = True
+
+
+init python:
     # import renpy.exports as renpy_exports
         # import time
         # for slot in renpy.list_slots():
