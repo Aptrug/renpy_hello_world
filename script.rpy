@@ -71,22 +71,14 @@ label start:
     # I want instead of this
     menu:
         "Tell me, are you an idiot?"
-
-        "Yes.[(\" (Nah, you're cool)\" if mc_name == 'Rance' else '')]" if mc_name != "Rance":
+    The next option should appear, but grayed out & unselectable
+        "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
+            mc "I thought so."
+    The next option should not appear at all, because no explanation is given
+        "Maybe." if mc_name != "Vance"
             mc "I thought so."
         "No.":
             mc "Yes, you are!"
-    # to be this
-    # mymenu:
-    #     "Tell me, are you an idiot?"
-    # The next option should appear, but grayed out & unselectable
-    #     "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
-    #         mc "I thought so."
-    # The next option should not appear at all, because no explanation is given
-    #     "Maybe." if mc_name != "Vance"
-    #         mc "I thought so."
-    #     "No.":
-    #         mc "Yes, you are!"
 
     mc bored "Wait, I feel something..."
 
