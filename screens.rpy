@@ -1273,7 +1273,6 @@ screen notify(message):
     frame at notify_appear:
         text "[message!tq]"
 
-    # Notification timer
     timer 3.25 action Hide('notify')
 
 
