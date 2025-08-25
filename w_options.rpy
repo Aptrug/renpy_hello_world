@@ -11,7 +11,7 @@ init python:
         processed_items = []
         for label, condition, value in items:
             if condition and ", " in condition:
-                cond, explanation = condition.split(" explanation ", 1)
+                cond, explanation = condition.split(", ", 1)
                 explanation = explanation.strip('"\'') # ~= /^["']|["']$/
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
