@@ -607,53 +607,28 @@ screen file_slots(title):
 
         fixed:
 
-            ## Aptrug's code Start (first section)
-            hbox:
-                style_prefix "check"
-                align (0.9, -0.15) #adjust this as required for positioning
-
-                hbox:
-                    if persistent.save_naming:
-                        textbutton _("Description Enabled") action ToggleField(persistent,"save_naming")
-                    else:
-                        textbutton _("Description Disabled") action ToggleField(persistent,"save_naming")
-            ## Aptrug's code End (first section)
-
             ## This ensures the input will get the enter event before any of
             ## the buttons do.
             order_reverse True
 
             ## The page name, which can be edited by clicking on a button.
-            # button:
-            #     style "page_label"
-            #
-            #     key_events True
-            #     xalign 0.5
-            #     action page_name_value.Toggle()
-            #
-            #     input:
-            #         style "page_label_text"
-            #         value page_name_value
-            hbox:
-                align (0.2, -0.15) #adjust this as required for positioning
-                if config.has_sync:
-                    if CurrentScreenName() == "save":
-                        textbutton _("Upload Sync"):
-                            action UploadSync()
-                            xalign 0.5
-                    else:
-                        textbutton _("Download Sync"):
-                            action DownloadSync()
-                            xalign 0.5
+            button:
+                style "page_label"
 
+                key_events True
+                xalign 0.5
+                action page_name_value.Toggle()
+
+                input:
+                    style "page_label_text"
+                    value page_name_value
 
             ## The grid of file slots.
             grid gui.file_slot_cols gui.file_slot_rows:
                 style_prefix "slot"
 
-                # xalign 0.5
-                # # change this to move file slots vertical location
-                # yalign 0.5
+                xalign 0.5
+                yalign 0.5
 
                 spacing gui.slot_spacing
 
@@ -662,72 +637,18 @@ screen file_slots(title):
                     $ slot = i + 1
 
                     button:
-                        ## Aptrug's code Start (second section)
-                        if renpy.current_screen().screen_name[0] == "load":
-                            action FileLoad(slot)
-                        else:
-                            # selected (str(persistent._file_page) + "-" + str(slot) == renpy.newest_slot("[0-9]"))
-                            # if persistent.save_naming:
-                            #     action SetVariable("save_name", FileSaveName(slot)), Show("screen_save_name", slot=slot)
-                            # else:
-                            #     action SetVariable("save_name", FileSaveName(slot)), FileAction(slot)
-                            if persistent.save_naming:
-                                action SetVariable("save_name", FileSaveName(slot)), Show("screen_save_name", slot=slot)
-                            else:
-                                action SaveWithNotification(slot)
+                        action FileAction(slot)
 
-                        # if persistent.save_naming:
-                        #    action [
-                        #      Function(SetSaveName, slot),
-                        #      If(renpy.get_screen("save"), true=Show("screen_save_name", accept=FileSave(slot)), false=FileLoad(slot))
-                        #    ]
-                        # else:
-                        #    action [
-                        #      Function(SetSaveName, slot),
-                        #      FileAction(slot)
-                        #     ]
+                        has vbox
 
-                        vbox:
-                            add FileScreenshot(slot) xalign 0.5
-                            text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
-                                style "slot_time_text"
+                        add FileScreenshot(slot) xalign 0.5
 
-                            text FileSaveName(slot) or "":
-                                style "slot_name_text"
-                                xalign 0.5
+                        text FileTime(slot, format=_("{#file_time}%A, %B %d %Y, %H:%M"), empty=_("empty slot")):
+                            style "slot_time_text"
 
+                        text FileSaveName(slot):
+                            style "slot_name_text"
 
-                            # if FileLoadable(slot):
-                            #     imagebutton:
-                            #         idle "images/delete.webp"
-                            #         action FileDelete(slot)
-                            #         # xalign 0.5
-                            #         # yoffset 10
-                            #         xalign 1.04
-                            #         yoffset -106
-
-
-                            if FileLoadable(slot):
-                                imagebutton:
-                                    auto "images/delete_%s.webp"
-                                    action FileDelete(slot)
-                                    xalign 1.045
-                                    yoffset -131
-
-                            # if FileLoadable(slot):
-                            #     textbutton _("{font=MaterialIcons-Regular.ttf}\ue92b{/font}"):
-                            #         action FileDelete(slot)
-                            #         text_style "save_delete_icon"
-                            #         style "empty_button"
-                            #         xalign 1.08
-                            #         yoffset -120
-                            #         # text_style "save_delete_icon"
-                                # imagebutton:
-                                #     auto "images/delete_%s.webp"
-                                #     action FileDelete(slot)
-                                #     xalign 1.0
-                                #     yoffset -84
-                        ## Aptrug's code End (second section)
                         key "save_delete" action FileDelete(slot)
 
             ## Buttons to access other pages.
@@ -743,6 +664,7 @@ screen file_slots(title):
                     spacing gui.page_spacing
 
                     textbutton _("<") action FilePagePrevious()
+                    key "save_page_prev" action FilePagePrevious()
 
                     if config.has_autosave:
                         textbutton _("{#auto_page}A") action FilePage("auto")
@@ -751,59 +673,21 @@ screen file_slots(title):
                         textbutton _("{#quick_page}Q") action FilePage("quick")
 
                     ## range(1, 10) gives the numbers from 1 to 9.
-                    for page in range(1, 20):
+                    for page in range(1, 10):
                         textbutton "[page]" action FilePage(page)
 
                     textbutton _(">") action FilePageNext()
+                    key "save_page_next" action FilePageNext()
 
-                    # No more wheel scrolling
-                    # key "save_page_prev" action FilePagePrevious()
-                    # key "save_page_next" action FilePageNext()
-
-
-## Aptrug's code Start (third section)
-screen screen_save_name(slot):
-    modal True
-    # zorder 200
-    style_prefix "confirm"
-    add Solid("#000000") alpha 0.8
-
-    # add "gui/overlay/confirm.png"
-
-    frame:
-        vbox:
-            spacing 25
-            xsize 650
-
-            label _("Enter a description for your save file: ") style "confirm_prompt"
-            # if FileLoadable(slot):
-            #     label _("Save name ({color=#f00}overwrite{/color}):") style "confirm_prompt"
-            # else:
-            #     label _("Save name ({color=#00ff00}new{/color}):") style "confirm_prompt"
-
-            input:
-                value VariableInputValue('save_name')
-                length 15
-                xalign 0.5
-                exclude "\\[{"
-
-            hbox:
-                xfill True
-                # textbutton _("Yes") action FileAction(slot, confirm=False), Hide("screen_save_name") xalign 0.5
-                textbutton _("Yes") action SaveWithNameNotification(slot) xalign 0.5
-                textbutton _("No") action Hide("screen_save_name") xalign 0.5
-
-    ## Right-click and escape answer "no".
-    key "game_menu" action Hide("screen_save_name")
-
-    ## Return of Enter answer "yes".
-    # key "K_RETURN" action FileAction(slot, confirm=False), Hide("screen_save_name")
-    # key "K_KP_ENTER" action FileAction(slot, confirm=False), Hide("screen_save_name")
-    key "K_RETURN" action SaveWithNameNotification(slot)
-    key "K_KP_ENTER" action SaveWithNameNotification(slot)
-
-default persistent.save_naming = False
-# DONE
+                if config.has_sync:
+                    if CurrentScreenName() == "save":
+                        textbutton _("Upload Sync"):
+                            action UploadSync()
+                            xalign 0.5
+                    else:
+                        textbutton _("Download Sync"):
+                            action DownloadSync()
+                            xalign 0.5
 
 style page_label is gui_label
 style page_label_text is gui_label_text
