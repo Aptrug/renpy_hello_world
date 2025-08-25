@@ -15,7 +15,6 @@ define config.name = _("HelloWorld")
 
 # define config.menu_include_disabled = True
 
-
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.
 
