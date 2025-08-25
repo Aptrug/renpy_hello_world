@@ -1,5 +1,3 @@
-# I have a problem here, changing persistent.text_outline_size from settings change dialogue outline, but not quick menu outline. Why?
-
 default persistent.quickmenu = True
 
 default persistent.iconic_quickmenu = False
