@@ -13,6 +13,7 @@ init python:
             if condition and "\\" in condition:
                 cond, explanation = condition.split("\\", 1)
                 explanation = explanation.strip('"\'') # ~= /^["']|["']$/
+                explanation = ' '.join(explanation.split())
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
                     processed_items.append((label, cond, value))
