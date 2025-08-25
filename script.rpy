@@ -69,7 +69,7 @@ label start:
     # I have my own defined in options.rpy
     # But renpy doesn't recognize it and throws an error
     # why?
-    mymenu:
+    menu:
         "Tell me, are you an idiot?"
 
         # Actually, I want to define my own mymenu to add one simple functionality
