@@ -9,7 +9,7 @@ default persistent.dialogue_box_opacity = 0.0
 default persistent.save_naming = False
 
 ##############################################################################
-style outlined_button:
+style outlined_button_text is quick_button_text:
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
 screen quick_menu():
