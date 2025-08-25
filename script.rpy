@@ -5,16 +5,9 @@
 
 # define e = Character("Eileen")
 
-default mc_name = ""
-
-# You know, you need a more desriptive name than menuset
-default menuset = set()
-
 # define mc = Character("[mc_name]", image="rance", color="#c6f53b", xpos=0)
 # define mc = Character("[mc_name]", image="rance", color="#c6f53b",
 #     show_transform=Transform(fit="contain", size=(1280, 720)))
-define mc = Character("[mc_name]", image="rance", color="#c6f53b")
-
 # default persistent.naming_toggle = True
 
 # image my_bg = im.Scale("bg.png", 1920, 1080)
