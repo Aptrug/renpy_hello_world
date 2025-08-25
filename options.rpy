@@ -165,6 +165,8 @@ define config.window_icon = "gui/window_icon.png"
 
 # Can the code in the next "init python" be simplified?
 # Check script.rpy & menuexports.py
+
+# Better menu
 init python:
     # Store the original menu function
     _original_renpy_menu = renpy.exports.menu
