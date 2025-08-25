@@ -75,7 +75,7 @@ label start:
         # Actually, I want to define my own mymenu to add one simple functionality
         # I want the grayed out options to show the reason why they're grayed out between parentheses
         # So instead of next line, I want something simple like menu_statment, condition, reason
-        "Yes.[(\" (Nah, you're cool)\" if mc_name == 'Rance' else '')]" if mc_name != "Rance":
+        "Yes." if mc_name != "Rance" reason "Nah, you're cool"::
             mc "I thought so."
         "No.":
             mc "Yes, you are!"
