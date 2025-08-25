@@ -65,7 +65,7 @@ label start:
 
     mc "Be faster!"
 
-    my_menu:
+    mymenu:
         "Tell me, are you an idiot?"
 
         # Is there a way to not check for condition mc_name twice? I don't like repetition

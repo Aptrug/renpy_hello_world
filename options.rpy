@@ -164,7 +164,7 @@ define config.window_icon = "gui/window_icon.png"
 ## This section controls how Ren'Py turns your project into distribution files.
 
 init python:
-    def my_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
+    def mymenu(items, set_expr, args=None, kwargs=None, item_arguments=None):
         """
         :undocumented:
 
