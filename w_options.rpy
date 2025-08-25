@@ -12,9 +12,8 @@ init python:
         for label, condition, value in items:
             if condition and "\\" in condition:
                 cond, explanation = condition.split("\\", 1)
-                # s/^["']|["']$//g
-                # s/\t\n/ /g
-                explanation = ' '.join(explanation.strip('"\'').split())
+                explanation = ' '.join(explanation.split()) # s/\t\n/ /g
+                explanation = explanation.strip('"\'') # s/^["']|["']$//g
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
                     processed_items.append((label, cond, value))
