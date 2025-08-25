@@ -730,7 +730,6 @@ style slot_button_text:
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
-
 screen preferences():
     tag menu
 
