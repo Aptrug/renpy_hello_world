@@ -126,7 +126,7 @@ screen main_menu():
     ## Animated background
     # add Movie(play="movies/snow_sky.webm", loop=True)
 
-    add "deusches_reich.webp"
+    add "deutsches_reich.webp"
 
     ## Menu container
     frame:
