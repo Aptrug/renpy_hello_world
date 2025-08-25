@@ -12,7 +12,7 @@ init python:
         for label, condition, value in items:
             if condition and "\\" in condition:
                 cond, explanation = condition.split("\\", 1)
-                explanation = explanation.strip('"\'') # ~= /^["']|["']$/
+                explanation = explanation.strip('"\'') # s/^["']|["']$//g
                 explanation = ' '.join(explanation.split()) # s/\t\n/ /g
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
