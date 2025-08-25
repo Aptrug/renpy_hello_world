@@ -57,8 +57,7 @@ screen quick_menu():
                 textbutton _("Auto") action Preference("auto-forward", "toggle")
                 textbutton _("Save") action ShowMenu('save')
                 textbutton _("Q.Save") action [
-                    QuickSave(),
-                    # Function(notify)
+                    QuickSave()
                 ]
                 textbutton _("Q.Load") action QuickLoad()
                 textbutton _("Prefs") action ShowMenu('preferences')
