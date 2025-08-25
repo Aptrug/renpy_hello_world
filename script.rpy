@@ -125,7 +125,7 @@ label start:
         "Two.":
             "Already went."
         "I'm a coward." if mc_name != "Rance" \
-                explanation " (You can't be a coward, you're Rance)":
+                explanation " (You can't be a coward, you're Rance dammit)":
             "New option."
         "Four.":
             jump first_choices
