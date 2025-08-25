@@ -731,33 +731,6 @@ style slot_button_text:
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
 
-screen language_picker():
-
-    modal True
-    frame:
-        style "menu_frame"
-        xalign 0.5
-        yalign 0.5
-        padding (20, 20)
-
-        vbox:
-            spacing 15
-            label _("Choose Language"):
-                style "menu_label"
-
-            grid 3 3 spacing 10:
-                textbutton _("English") action [Language(None), Hide("language_picker")]
-                textbutton _("Spanish") action [Language("spanish"), Hide("language_picker")]
-                textbutton _("French") action [Language("french"), Hide("language_picker")]
-                textbutton _("German") action [Language("german"), Hide("language_picker")]
-                textbutton _("Italian") action [Language("italian"), Hide("language_picker")]
-                textbutton _("Portuguese") action [Language("portuguese"), Hide("language_picker")]
-                textbutton _("Russian") action [Language("russian"), Hide("language_picker")]
-                textbutton _("Chinese") action [Language("chinese"), Hide("language_picker")]
-                textbutton _("Japanese") action [Language("japanese"), Hide("language_picker")]
-
-            textbutton _("Cancel") action Hide("language_picker") xalign 0.5
-
 screen preferences():
     tag menu
 
