@@ -182,7 +182,8 @@ style game_menu_outer_frame:
     # Change to reduce empty top space
     top_padding 125
     # background "gui/overlay/game_menu.png"
-    background Solid("#000")
+    # background Solid("#000")
+    add Solid("#000c")
 
 style game_menu_navigation_frame:
     # Change to make left side smaller
