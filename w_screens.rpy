@@ -14,7 +14,7 @@ screen quick_menu():
     ## Ensure this appears on top of other screens.
     zorder 100
 
-    if persistent.quick_menu:
+    if persistent.quickmenu:
         if persistent.iconic_quick_menu:
             hbox:
                 spacing 10
