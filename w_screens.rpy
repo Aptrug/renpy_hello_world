@@ -183,7 +183,7 @@ style game_menu_outer_frame:
     top_padding 125
     # background "gui/overlay/game_menu.png"
     # background Solid("#000")
-    background "#000000cc"
+    background (0, 0, 0, 128)
 
 style game_menu_navigation_frame:
     # Change to make left side smaller
