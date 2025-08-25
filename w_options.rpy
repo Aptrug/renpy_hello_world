@@ -10,8 +10,8 @@ init python:
         """Enhanced menu with explanation syntax"""
         processed_items = []
         for label, condition, value in items:
-            if condition and ", " in condition:
-                cond, explanation = condition.split(", ", 1)
+            if condition and "\\" in condition:
+                cond, explanation = condition.split("\\", 1)
                 explanation = explanation.strip('"\'') # ~= /^["']|["']$/
                 if renpy.python.py_eval(cond or "True"):
                     # Condition true - show normally
