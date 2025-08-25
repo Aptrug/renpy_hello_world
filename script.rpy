@@ -69,7 +69,7 @@ label start:
     # I want to override it
     # How can I do that?
     # I want instead of this
-    menu:
+    mymenu:
         "Tell me, are you an idiot?"
         "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
             mc "I thought so."
