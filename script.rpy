@@ -128,7 +128,7 @@ label start:
         "Two.":
             "Already went."
         "I'm a coward." if mc_name != "Rance"\
-           "(You can't be a coward, you're Rance dammit)":
+            "(You can't be a coward, you're Rance dammit)":
             "New option."
         "Hello there, how are you doing? Great weather we're having eh. Have a Totally Joyful Day.":
             jump first_choices
