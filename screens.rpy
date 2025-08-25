@@ -983,7 +983,7 @@ screen preferences():
                 vbox:
                     style_prefix "check"
                     label _("Quick Menu")
-                    textbutton _("Enable") action ToggleField(persistent, "quick_menu")
+                    textbutton _("Enable") action ToggleField(persistent, "quickmenu")
                     textbutton _("Iconic") action ToggleField(persistent, "iconic_quick_menu")
                 vbox:
                     style_prefix "radio"
