@@ -9,7 +9,7 @@ default persistent.dialogue_box_opacity = 0.0
 default persistent.save_naming = False
 
 ##############################################################################
-style outlined_button_text:
+style outlined_button:
     xalign 0.5
     yalign 1.0
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
