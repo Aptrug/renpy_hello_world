@@ -22,7 +22,7 @@ screen quick_menu():
     if persistent.quickmenu:
         if persistent.iconic_quickmenu:
             hbox:
-                spacing 10
+                spacing 15
                 style_prefix "quick"
                 style "quick_menu"
 
