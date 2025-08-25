@@ -68,7 +68,7 @@ label start:
     # Problem, Maybe
     menu:
         "Tell me, are you an idiot?"
-        "Yes." if mc_name != "Rance" explanation
+        "Yes." if mc_name != "Rance" ->\
             "Nah, you're cool":
             mc "I thought so."
         "Maybe." if mc_name == "Vance":
