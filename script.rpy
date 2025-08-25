@@ -65,11 +65,13 @@ label start:
 
     mc "Be faster!"
 
+    # I don't like renpy's default "menu"
+    # I have my own defined in options.rpy
+    # But renpy doesn't recognize it and throws an error
+    # why?
     mymenu:
         "Tell me, are you an idiot?"
 
-        # Is there a way to not check for condition mc_name twice? I don't like repetition
-        # btw config.menu_include_disabled=True, so the option shows as grayed out if condition is false
         "Yes[(\" (Nah, you're cool)\" if mc_name == 'Rance' else '')]" if mc_name != "Rance":
             mc "I thought so."
         "No.":
