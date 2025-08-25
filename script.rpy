@@ -82,10 +82,8 @@ label start:
     # like this
     # mymenu:
     #     "Tell me, are you an idiot?"
-    #
-    #     "Yes." if mc_name != "Rance" reason "Nah, you're cool":
+    #     "Yes." if mc_name != "Rance" explanation "Nah, you're cool":
     #         mc "I thought so."
-    #
     #     "No.":
     #         mc "Yes, you are!"
 
