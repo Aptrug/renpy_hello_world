@@ -61,22 +61,22 @@ init python:
     # config.screenshot_callback = lambda filename: renpy.notify("Saved at " + filename)
 
     config.mouse = {
-            "default": [ ("misc/volantes_cursors/default.webp", 0, 0) ],
-            "button": [ ("misc/volantes_cursors/pointer.webp", 0, 0) ],
-            "prompt": [ ("misc/volantes_cursors/text.webp", 0, 0) ],
+            "default": [ ("misc/cursors/default.webp", 0, 0) ],
+            "button": [ ("misc/cursors/pointer.webp", 0, 0) ],
+            "prompt": [ ("misc/cursors/text.webp", 0, 0) ],
             'pause': [
-                ("misc/volantes_cursors/progress-01.webp", 0, 0),
-                ("misc/volantes_cursors/progress-02.webp", 0, 0),
-                ("misc/volantes_cursors/progress-03.webp", 0, 0),
-                ("misc/volantes_cursors/progress-04.webp", 0, 0),
-                ("misc/volantes_cursors/progress-05.webp", 0, 0),
-                ("misc/volantes_cursors/progress-06.webp", 0, 0),
-                ("misc/volantes_cursors/progress-07.webp", 0, 0),
-                ("misc/volantes_cursors/progress-08.webp", 0, 0),
-                ("misc/volantes_cursors/progress-09.webp", 0, 0),
-                ("misc/volantes_cursors/progress-10.webp", 0, 0),
-                ("misc/volantes_cursors/progress-11.webp", 0, 0),
-                ("misc/volantes_cursors/progress-12.webp", 0, 0)
+                ("misc/cursors/progress-01.webp", 0, 0),
+                ("misc/cursors/progress-02.webp", 0, 0),
+                ("misc/cursors/progress-03.webp", 0, 0),
+                ("misc/cursors/progress-04.webp", 0, 0),
+                ("misc/cursors/progress-05.webp", 0, 0),
+                ("misc/cursors/progress-06.webp", 0, 0),
+                ("misc/cursors/progress-07.webp", 0, 0),
+                ("misc/cursors/progress-08.webp", 0, 0),
+                ("misc/cursors/progress-09.webp", 0, 0),
+                ("misc/cursors/progress-10.webp", 0, 0),
+                ("misc/cursors/progress-11.webp", 0, 0),
+                ("misc/cursors/progress-12.webp", 0, 0)
             ]
     }
 
