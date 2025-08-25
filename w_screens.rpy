@@ -10,6 +10,8 @@ default persistent.save_naming = False
 
 ##############################################################################
 style outlined_button_text:
+    xalign 0.5
+    yalign 1.0
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
 screen quick_menu():
