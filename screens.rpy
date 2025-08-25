@@ -237,12 +237,6 @@ style choice_button_text is default:
 
 screen quick_menu():
 
-    key "K_F5" action [
-            QuickSave(),
-            Function(save_notify)
-    ]
-    key "K_F9" action QuickLoad()
-
     ## Ensure this appears on top of other screens.
     zorder 100
 
