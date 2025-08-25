@@ -501,21 +501,16 @@ style return_button_text is navigation_button_text
 
 style game_menu_outer_frame:
     bottom_padding 45
-    # Change to reduce empty top space
-    top_padding 125
+    top_padding 180
 
-    # background "gui/overlay/game_menu.png"
-    background Solid("#000")
+    background "gui/overlay/game_menu.png"
 
 style game_menu_navigation_frame:
-    # Change to make left side smaller
-    # xsize 420
-    xsize 350
+    xsize 420
     yfill True
 
 style game_menu_content_frame:
-    # Was 60
-    left_margin 40
+    left_margin 60
     right_margin 30
     top_margin 15
 
