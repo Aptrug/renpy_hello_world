@@ -27,28 +27,28 @@ screen quick_menu():
                 style "quick_menu"
 
                 imagebutton:
-                    auto "images/hide_interface_%s.webp"
+                    auto "ui_elements/prefs/hide_interface_%s.webp"
                     action HideInterface()
 
                 imagebutton:
-                    auto "images/rollback_%s.webp"
+                    auto "ui_elements/prefs/rollback_%s.webp"
                     action Rollback()
 
                 imagebutton:
-                    auto "images/skip_%s.webp"
+                    auto "ui_elements/prefs/skip_%s.webp"
                     action Skip() alternate Skip(fast=True, confirm=True)
 
                 imagebutton:
-                    auto "images/auto_forward_%s.webp"
+                    auto "ui_elements/prefs/auto_forward_%s.webp"
                     action Preference("auto-forward", "toggle")
                     # selected Preference("auto-forward", "disable")
 
                 imagebutton:
-                    auto "images/save_%s.webp"
+                    auto "ui_elements/prefs/save_%s.webp"
                     action ShowMenu('save')
 
                 imagebutton:
-                    auto "images/screenshot_%s.webp"
+                    auto "ui_elements/prefs/screenshot_%s.webp"
                     action Screenshot()
         else:
             hbox:
@@ -311,7 +311,7 @@ screen file_slots(title):
 
                             # if FileLoadable(slot):
                             #     imagebutton:
-                            #         idle "images/delete.webp"
+                            #         idle "ui_elements/prefs/delete.webp"
                             #         action FileDelete(slot)
                             #         # xalign 0.5
                             #         # yoffset 10
@@ -321,7 +321,7 @@ screen file_slots(title):
 
                             if FileLoadable(slot):
                                 imagebutton:
-                                    auto "images/delete_%s.webp"
+                                    auto "ui_elements/prefs/delete_%s.webp"
                                     action FileDelete(slot)
                                     xalign 1.045
                                     yoffset -131
@@ -335,7 +335,7 @@ screen file_slots(title):
                             #         yoffset -120
                             #         # text_style "save_delete_icon"
                                 # imagebutton:
-                                #     auto "images/delete_%s.webp"
+                                #     auto "ui_elements/prefs/delete_%s.webp"
                                 #     action FileDelete(slot)
                                 #     xalign 1.0
                                 #     yoffset -84
@@ -456,7 +456,7 @@ screen preferences():
                         hbox:
                             spacing 20
                             imagebutton:
-                                idle "images/accessibility.webp"
+                                idle "ui_elements/prefs/accessibility.webp"
                                 yalign 0.5
                             text _("Accessibility Menu"):
                                 yalign 0.5
@@ -469,7 +469,7 @@ screen preferences():
                         hbox:
                             spacing 20
                             imagebutton:
-                                idle "images/language.webp"
+                                idle "ui_elements/prefs/language.webp"
                                 yalign 0.5
                             text _("Language"):
                                 yalign 0.5
