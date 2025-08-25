@@ -61,7 +61,7 @@ label start:
     # I don't like the syntax of my custom menu
     menu:
         "Tell me, are you an idiot?"
-        "Yes." if mc_name != "Rance" explanation {i} (Nah, you're cool){/i}:
+        "Yes." if mc_name != "Rance" explanation "{i} (Nah, you're cool){/i}":
             mc "I thought so."
         "Maybe." if mc_name == "Vance":
             mc "I thought so."
