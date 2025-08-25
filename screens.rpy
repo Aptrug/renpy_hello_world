@@ -598,6 +598,7 @@ screen load():
 
     use file_slots(_("Load"))
 
+
 screen file_slots(title):
 
     default page_name_value = FilePageNameInputValue(pattern=_("Page {}"), auto=_("Automatic saves"), quick=_("Quick saves"))
