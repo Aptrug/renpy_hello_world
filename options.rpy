@@ -176,30 +176,23 @@ define config.window_icon = "gui/window_icon.png"
 # Ultra-simple enhanced menu system for Ren'Py
 # Place this in options.rpy
 
+# Ultra-minimal enhanced menu system for Ren'Py
+# Place this in options.rpy
+
 init python:
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """Enhanced menu with explanation syntax support"""
-        processed_items = []
-
-        for label, condition, value in items:
+        """Enhanced menu with explanation syntax"""
+        for i, (label, condition, value) in enumerate(items):
             if condition and " explanation " in condition:
-                # Split and evaluate condition
-                actual_condition, explanation = condition.split(" explanation ", 1)
-                condition_result = renpy.python.py_eval(actual_condition.strip()) if actual_condition.strip() else True
-
-                if condition_result:
-                    processed_items.append((label, actual_condition.strip(), value))
+                cond, explanation = condition.split(" explanation ", 1)
+                if not renpy.python.py_eval(cond.strip() or "True"):
+                    # Replace with disabled caption
+                    items[i] = (label + explanation.strip().strip('"\''), "True", None)
                 else:
-                    # Show as disabled with explanation
-                    processed_items.append((label + explanation.strip().strip('"\''), "True", None))
-            else:
-                # Only add if condition is true or no condition
-                if not condition or renpy.python.py_eval(condition):
-                    processed_items.append((label, condition, value))
-                # If condition is false and no explanation, skip entirely (don't add to processed_items)
+                    # Use clean condition
+                    items[i] = (label, cond.strip(), value)
 
-        # Call original menu
-        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
+        return renpy.store._original_menu(items, set_expr, args, kwargs, item_arguments)
 
     # Replace menu function
     renpy.store._original_menu = renpy.exports.menu
