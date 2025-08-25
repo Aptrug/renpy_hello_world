@@ -240,55 +240,20 @@ screen quick_menu():
     ## Ensure this appears on top of other screens.
     zorder 100
 
-    if persistent.quick_menu:
-        if persistent.iconic_quick_menu:
-            hbox:
-                spacing 10
-                style_prefix "quick"
-                style "quick_menu"
+    if quick_menu:
 
-                imagebutton:
-                    auto "images/hide_interface_%s.webp"
-                    action HideInterface()
+        hbox:
+            style_prefix "quick"
+            style "quick_menu"
 
-                imagebutton:
-                    auto "images/rollback_%s.webp"
-                    action Rollback()
-
-                imagebutton:
-                    auto "images/skip_%s.webp"
-                    action Skip() alternate Skip(fast=True, confirm=True)
-
-                imagebutton:
-                    auto "images/auto_forward_%s.webp"
-                    action Preference("auto-forward", "toggle")
-                    # selected Preference("auto-forward", "disable")
-
-                imagebutton:
-                    auto "images/save_%s.webp"
-                    action ShowMenu('save')
-
-                imagebutton:
-                    auto "images/screenshot_%s.webp"
-                    action Screenshot()
-        else:
-            hbox:
-                style_prefix "quick"
-                style "quick_menu"
-
-                textbutton _("Hide") action HideInterface()
-                textbutton _("Back") action Rollback()
-                textbutton _("History") action ShowMenu('history')
-                textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
-                textbutton _("Auto") action Preference("auto-forward", "toggle")
-                textbutton _("Save") action ShowMenu('save')
-                textbutton _("Q.Save") action [
-                    QuickSave(),
-                    Function(save_notify)
-                ]
-                textbutton _("Q.Load") action QuickLoad()
-                textbutton _("Prefs") action ShowMenu('preferences')
-                textbutton _("Screenshot") action Screenshot()
+            textbutton _("Back") action Rollback()
+            textbutton _("History") action ShowMenu('history')
+            textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
+            textbutton _("Auto") action Preference("auto-forward", "toggle")
+            textbutton _("Save") action ShowMenu('save')
+            textbutton _("Q.Save") action QuickSave()
+            textbutton _("Q.Load") action QuickLoad()
+            textbutton _("Prefs") action ShowMenu('preferences')
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
