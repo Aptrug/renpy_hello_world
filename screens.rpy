@@ -424,15 +424,12 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
     else:
         add gui.game_menu_background
 
-    # add Movie(play="movies/snow_sky.webm", loop=True)
-
     frame:
         style "game_menu_outer_frame"
 
         hbox:
 
             ## Reserve space for the navigation section.
-            # if title != _("Preferences"):
             frame:
                 style "game_menu_navigation_frame"
 
@@ -476,7 +473,6 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
                     transclude
 
-    # if title != _("Preferences"):
     use navigation
 
     textbutton _("Return"):
