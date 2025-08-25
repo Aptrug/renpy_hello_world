@@ -1265,15 +1265,6 @@ style skip_triangle:
 ##
 ## https://www.renpy.org/doc/html/screen_special.html#notify-screen
 
-screen save_notify(message):
-    zorder 100
-    style_prefix "notify"
-
-    frame at notify_appear:
-        text "[message!tq]"
-
-    timer 1.25 action Hide('save_notify')
-
 screen notify(message):
 
     zorder 100
@@ -1283,7 +1274,7 @@ screen notify(message):
         text "[message!tq]"
 
     # Notification timer
-    timer 1.25 action Hide('notify')
+    timer 3.25 action Hide('notify')
 
 
 transform notify_appear:
