@@ -198,7 +198,7 @@ init python:
                     processed_items.append((label, condition, value))
                 # If condition is false and no explanation, skip entirely
 
-        return renpy.store._original_menu(items, set_expr, args, kwargs, item_arguments)
+        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
 
     # Replace menu function
     renpy.store._original_menu = renpy.exports.menu
