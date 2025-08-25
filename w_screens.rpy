@@ -9,10 +9,7 @@ default persistent.dialogue_box_opacity = 0.0
 default persistent.save_naming = False
 
 ##############################################################################
-style quick_button_text:
-    outlines [(persistent.text_outline_size, "#000", 0, 0)]
-
-style outlined_button_text is quick_button_text:
+style outlined_button_text:
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
 screen quick_menu():
@@ -54,8 +51,8 @@ screen quick_menu():
         else:
             hbox:
                 # style_prefix "quick"
-                style_prefix "outlined_button"
-                style "quick_menu"
+                # style_prefix "outlined_button"
+                style "outlined_button"
 
                 textbutton _("Hide") action HideInterface()
                 textbutton _("Back") action Rollback()
