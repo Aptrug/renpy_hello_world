@@ -1524,7 +1524,7 @@ screen quick_menu():
 
     zorder 100
 
-    if quickmenu:
+    if quick_menu:
 
         hbox:
             style "quick_menu"
