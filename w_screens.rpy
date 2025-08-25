@@ -520,7 +520,7 @@ screen preferences():
                 vbox:
                     style_prefix "slider"
                     label _("Text outline ([persistent.text_outline_size]/6)")
-                    bar value FieldValue(persistent, "text_outline_size", range=6, style="slider", action=renpy.restart_interaction)
+                    bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
     hbox:
         align (0.90, 0.98)
