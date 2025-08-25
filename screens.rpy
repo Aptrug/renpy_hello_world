@@ -262,7 +262,6 @@ init python:
     config.overlay_screens.append("quick_menu")
 
 default quick_menu = True
-default persistent.quickmenu = True
 
 style quick_menu is hbox
 style quick_button is default
