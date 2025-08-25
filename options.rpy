@@ -163,6 +163,7 @@ define config.window_icon = "gui/window_icon.png"
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
 
+# Can the code in the next "init python" be simplified?
 init python:
     # Store the original menu function
     _original_renpy_menu = renpy.exports.menu
