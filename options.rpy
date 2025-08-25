@@ -211,7 +211,7 @@ init python:
                 processed_items.append((label, actual_condition, value))
             elif explanation is not None:
                 # Disabled choice with explanation - show grayed out
-                disabled_label = label + " " + explanation
+                disabled_label = label + explanation
                 processed_items.append((disabled_label, "True", None))
             # If condition is false and no explanation, hide completely
 
