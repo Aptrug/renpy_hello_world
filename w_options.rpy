@@ -61,22 +61,22 @@ init python:
     # config.screenshot_callback = lambda filename: renpy.notify("Saved at " + filename)
 
     config.mouse = {
-            "default": [ ("misc/cursors/default.webp", 0, 0) ],
-            "button": [ ("misc/cursors/pointer.webp", 0, 0) ],
-            "prompt": [ ("misc/cursors/text.webp", 0, 0) ],
+            "default": [ ("ui_elements/cursors/default.webp", 0, 0) ],
+            "button": [ ("ui_elements/cursors/pointer.webp", 0, 0) ],
+            "prompt": [ ("ui_elements/cursors/text.webp", 0, 0) ],
             'pause': [
-                ("misc/cursors/progress-01.webp", 0, 0),
-                ("misc/cursors/progress-02.webp", 0, 0),
-                ("misc/cursors/progress-03.webp", 0, 0),
-                ("misc/cursors/progress-04.webp", 0, 0),
-                ("misc/cursors/progress-05.webp", 0, 0),
-                ("misc/cursors/progress-06.webp", 0, 0),
-                ("misc/cursors/progress-07.webp", 0, 0),
-                ("misc/cursors/progress-08.webp", 0, 0),
-                ("misc/cursors/progress-09.webp", 0, 0),
-                ("misc/cursors/progress-10.webp", 0, 0),
-                ("misc/cursors/progress-11.webp", 0, 0),
-                ("misc/cursors/progress-12.webp", 0, 0)
+                ("ui_elements/cursors/progress-01.webp", 0, 0),
+                ("ui_elements/cursors/progress-02.webp", 0, 0),
+                ("ui_elements/cursors/progress-03.webp", 0, 0),
+                ("ui_elements/cursors/progress-04.webp", 0, 0),
+                ("ui_elements/cursors/progress-05.webp", 0, 0),
+                ("ui_elements/cursors/progress-06.webp", 0, 0),
+                ("ui_elements/cursors/progress-07.webp", 0, 0),
+                ("ui_elements/cursors/progress-08.webp", 0, 0),
+                ("ui_elements/cursors/progress-09.webp", 0, 0),
+                ("ui_elements/cursors/progress-10.webp", 0, 0),
+                ("ui_elements/cursors/progress-11.webp", 0, 0),
+                ("ui_elements/cursors/progress-12.webp", 0, 0)
             ]
     }
 
