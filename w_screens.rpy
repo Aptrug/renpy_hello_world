@@ -621,8 +621,8 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
     else:
         add gui.game_menu_background
 
-    # add Solid("#000000") alpha 0.5
-    add "#00000080"
+    add Solid("#000000") alpha 0.5
+    # add "#00000080"
 
     frame:
         style "game_menu_outer_frame"
