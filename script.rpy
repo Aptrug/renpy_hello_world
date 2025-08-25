@@ -5,7 +5,7 @@
 
 # define e = Character("Eileen")
 
-# ha ho xaxa
+# ha ho xaxa, what
 default mc_name = ""
 
 # You know, you need a more desriptive name than menuset
