@@ -223,10 +223,6 @@ init python:
     # Replace the menu function everywhere it might be called
     renpy.exports.menu = enhanced_menu
 
-    # Import the menuexports module and replace there too
-    import renpy.exports.menuexports
-    renpy.exports.menuexports.menu = enhanced_menu
-
     # Ensure disabled menu items are shown
     config.menu_include_disabled = True
 
