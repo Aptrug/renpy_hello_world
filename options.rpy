@@ -182,6 +182,7 @@ define config.window_icon = "gui/window_icon.png"
 init python:
     def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
         """Enhanced menu with explanation syntax"""
+        processed_items = []
         for label, condition, value in items:
             if condition and " explanation " in condition:
                 cond, explanation = condition.split(" explanation ", 1)
