@@ -163,46 +163,6 @@ define config.window_icon = "gui/window_icon.png"
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
 
-
-python early:
-    # Store original menu function
-    _original_menu = renpy.exports.menu
-
-    def menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """Override menu to support explanation syntax"""
-
-        if item_arguments is None:
-            item_arguments = [((), {})] * len(items)
-
-        processed_items = []
-        processed_item_arguments = []
-
-        for (label, condition, value), (item_args, item_kwargs) in zip(items, item_arguments):
-            # Check for explanation syntax: "Text" explanation "Reason"
-            if ' explanation ' in label:
-                actual_label, explanation = label.split(' explanation ', 1)
-                actual_label = actual_label.strip().strip('"')
-                explanation = explanation.strip().strip('"')
-
-                # If condition fails, show disabled option
-                if not renpy.python.py_eval(condition):
-                    processed_items.append((actual_label + " " + explanation, "False", None))
-                else:
-                    processed_items.append((actual_label, condition, value))
-            else:
-                processed_items.append((label, condition, value))
-
-            processed_item_arguments.append((item_args, item_kwargs))
-
-        return _original_menu(processed_items, set_expr, args, kwargs, processed_item_arguments)
-
-    # Replace the menu function
-    renpy.exports.menu = menu
-
-    # Enable showing disabled menu items
-    config.menu_include_disabled = True
-
-
 init python:
     # import renpy.exports as renpy_exports
         # import time
