@@ -163,115 +163,8 @@ define config.window_icon = "gui/window_icon.png"
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
 
-init python:
-    def mymenu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """
-        :undocumented:
 
-        Displays a menu, and returns to the user the value of the selected
-        choice. Also handles conditions and the menuset.
-        """
-
-        args = args or ()
-        kwargs = kwargs or {}
-
-        nvl = kwargs.pop("nvl", False)
-
-        if renpy.config.menu_arguments_callback is not None:
-            args, kwargs = renpy.config.menu_arguments_callback(*args, **kwargs)
-
-        if renpy.config.old_substitutions:
-
-            def substitute(s):
-                return s % renpy.exports.tag_quoting_dict
-
-        else:
-
-            def substitute(s):
-                return s
-
-        if item_arguments is None:
-            item_arguments = [((), {})] * len(items)
-
-        # Filter the list of items on the set_expr:
-        if set_expr:
-            set = renpy.python.py_eval(set_expr)  # @ReservedAssignment
-
-            new_items = []
-            new_item_arguments = []
-
-            for i, ia in zip(items, item_arguments):
-                if i[0] not in set:
-                    new_items.append(i)
-                    new_item_arguments.append(ia)
-
-            items = new_items
-            item_arguments = new_item_arguments
-        else:
-            set = None  # @ReservedAssignment
-
-        # Filter the list of items to only include ones for which the
-        # condition is true.
-
-        if renpy.config.menu_actions:
-            location = renpy.game.context().current
-
-            new_items = []
-
-            for (label, condition, value), (item_args, item_kwargs) in zip(items, item_arguments):
-                label = substitute(label)
-                condition = renpy.python.py_eval(condition)
-
-                if (not renpy.config.menu_include_disabled) and (not condition):
-                    continue
-
-                if value is not None:
-                    new_items.append((
-                        label,
-                        renpy.ui.ChoiceReturn(
-                            label, value, location, sensitive=condition, args=item_args, kwargs=item_kwargs
-                        ),
-                    ))
-                else:
-                    new_items.append((label, None))
-
-        else:
-            new_items = [(substitute(label), value) for label, condition, value in items if renpy.python.py_eval(condition)]
-
-        # Check to see if there's at least one choice in set of items:
-        choices = [value for label, value in new_items if value is not None]
-
-        # If not, bail out.
-        if not choices:
-            return None
-
-        old_menu_args = renpy.exports.menu_args
-        old_menu_kwargs = renpy.exports.menu_kwargs
-
-        # Show the menu.
-        try:
-            renpy.exports.menu_args = args
-            renpy.exports.menu_kwargs = kwargs
-
-            if nvl:
-                rv = renpy.store.nvl_menu(new_items)  # type: ignore
-            else:
-                rv = renpy.store.menu(new_items)
-
-        finally:
-            renpy.exports.menu_args = old_menu_args
-            renpy.exports.menu_kwargs = old_menu_kwargs
-
-        # If we have a set, fill it in with the label of the chosen item.
-        if set is not None and rv is not None:
-            for label, condition, value in items:
-                if value == rv:
-                    try:
-                        set.append(label)
-                    except AttributeError:
-                        set.add(label)
-
-        return rv
+python early:
     def parse_mymenu(lex):
         """Parse mymenu statement with reason support"""
         # Get prompt if present
@@ -337,7 +230,7 @@ init python:
     # Register the mymenu statement
     renpy.register_statement("mymenu", parse_mymenu, execute_mymenu)
 
-
+init python:
     # import renpy.exports as renpy_exports
         # import time
         # for slot in renpy.list_slots():
