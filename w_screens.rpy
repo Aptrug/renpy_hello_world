@@ -56,6 +56,8 @@ screen quick_menu():
                 # style_prefix "outlined_button"
                 style "quick_menu"
 
+                # adding text_outlines to every entry is tedious, but it works
+                # persistent.text_outline_size won't update if done from styles
                 textbutton _("Hide"):
                     action HideInterface()
                     text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
