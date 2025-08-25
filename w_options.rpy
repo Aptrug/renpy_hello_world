@@ -98,11 +98,12 @@ init python:
     # config.automatic_images_strip = ['_']
     # define config.automatic_images_strip = ['_', ' ', '/']
 
-    def quick_save():
-        renpy.save("0")  # slot 0
+    config.keymap["quick_save"] = ["K_F3"]
+    config.keymap["quick_load"] = ["K_F5"]
 
-    def quick_load():
-        renpy.load("0")  # slot 0
+    custom_keymap = renpy.Keymap(
+        quick_save = QuickSave(),
+        quick_load = QuickLoad()
+    )
 
-    config.keymap[quick_save] = [ 'K_F5' ]
-    config.keymap[quick_load] = [ 'K_F9' ]
+    config.underlay.append(custom_keymap)
