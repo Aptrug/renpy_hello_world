@@ -169,7 +169,7 @@ python early:
     _original_menu = renpy.exports.menu
 
     def menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """Override menu to support explanation syntax"""
+        """Override menu to support disabled options with explanations"""
 
         if item_arguments is None:
             item_arguments = [((), {})] * len(items)
@@ -178,18 +178,20 @@ python early:
         processed_item_arguments = []
 
         for (label, condition, value), (item_args, item_kwargs) in zip(items, item_arguments):
-            # Check for explanation syntax: "Text" explanation "Reason"
-            if ' explanation ' in label:
-                actual_label, explanation = label.split(' explanation ', 1)
-                actual_label = actual_label.strip().strip('"')
-                explanation = explanation.strip().strip('"')
+            # Check if condition is false and we have an explanation in the label
+            try:
+                condition_result = renpy.python.py_eval(condition) if condition else True
+            except:
+                condition_result = False
 
-                # If condition fails, show disabled option
-                if not renpy.python.py_eval(condition):
-                    processed_items.append((actual_label + " " + explanation, "False", None))
-                else:
-                    processed_items.append((actual_label, condition, value))
+            if not condition_result and "(" in label and label.endswith(")"):
+                # Show as disabled with explanation
+                processed_items.append((label, "True", None))  # Force show but return None
+            elif not condition_result:
+                # Hide completely (original behavior)
+                continue
             else:
+                # Normal active choice
                 processed_items.append((label, condition, value))
 
             processed_item_arguments.append((item_args, item_kwargs))
