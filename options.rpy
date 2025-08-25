@@ -119,10 +119,6 @@ define config.window_hide_transition = Dissolve(.2)
 
 default preferences.text_cps = 0
 
-default preferences.fullscreen = True
-
-# default preferences.text_cps = 60
-
 
 ## The default auto-forward delay. Larger numbers lead to longer waits, with 0
 ## to 30 being the valid range.
@@ -157,48 +153,6 @@ define config.window_icon = "gui/window_icon.png"
 ## Build configuration #########################################################
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
-
-# Can the code in the next "init python" be simplified?
-# Check script.rpy & menuexports.py
-
-# Better menu
-# Simplified enhanced menu system for Ren'Py
-# Place this in options.rpy
-
-# Ultra-simple enhanced menu system for Ren'Py
-# Place this in options.rpy
-
-# Ultra-simple enhanced menu system for Ren'Py
-# Place this in options.rpy
-
-# Ultra-minimal enhanced menu system for Ren'Py
-# Place this in options.rpy
-
-init python:
-    def enhanced_menu(items, set_expr, args=None, kwargs=None, item_arguments=None):
-        """Enhanced menu with explanation syntax"""
-        processed_items = []
-        for label, condition, value in items:
-            if condition and " explanation " in condition:
-                cond, explanation = condition.split(" explanation ", 1)
-                if renpy.python.py_eval(cond or "True"):
-                    # Condition true - show normally
-                    processed_items.append((label, cond, value))
-                else:
-                    # Condition false - show as disabled caption with explanation
-                    processed_items.append((label + explanation, "True", None))
-            else:
-                # No explanation - only add if condition is true or no condition
-                if not condition or renpy.python.py_eval(condition):
-                    processed_items.append((label, condition, value))
-                # If condition is false and no explanation, skip entirely
-
-        return renpy.store._original_menu(processed_items, set_expr, args, kwargs, item_arguments)
-
-    # Replace menu function
-    renpy.store._original_menu = renpy.exports.menu
-    renpy.exports.menu = enhanced_menu
-    config.menu_include_disabled = True
 
 init python:
     # import renpy.exports as renpy_exports
