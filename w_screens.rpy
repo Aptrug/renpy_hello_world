@@ -52,7 +52,7 @@ screen quick_menu():
             hbox:
                 # style_prefix "quick"
                 style_prefix "outlined_button"
-                # style "quick_menu"
+                style "quick_menu"
 
                 textbutton _("Hide") action HideInterface()
                 textbutton _("Back") action Rollback()
