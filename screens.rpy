@@ -262,7 +262,7 @@ init python:
     config.overlay_screens.append("quick_menu")
 
 default quick_menu = True
-default persistent.quick_menu = True
+default persistent.quickmenu = True
 
 style quick_menu is hbox
 style quick_button is default
@@ -984,7 +984,7 @@ screen preferences():
                     style_prefix "check"
                     label _("Quick Menu")
                     textbutton _("Enable") action ToggleField(persistent, "quickmenu")
-                    textbutton _("Iconic") action ToggleField(persistent, "iconic_quick_menu")
+                    textbutton _("Iconic") action ToggleField(persistent, "iconic_quickmenu")
                 vbox:
                     style_prefix "radio"
                     label _("Rollback Side")
@@ -1047,12 +1047,12 @@ screen preferences():
                     Preference("transitions", "all"),
                     Preference("text speed", 0),
                     Preference("auto-forward time", 15),
-                    SetVariable("quick_menu", True),
+                    SetVariable("quickmenu", True),
                     SetVariable("config.hw_video", False),
                     Preference("gl powersave", True),
                     SetVariable("persistent.text_outline_size", 3),
                     SetVariable("persistent.dialogue_box_opacity", 0.0),
-                    SetVariable("persistent.iconic_quick_menu", False),
+                    SetVariable("persistent.iconic_quickmenu", False),
                     Preference("font transform", None),
                     Preference("high contrast text", "disable"),
                     Preference("self voicing", "disable"),
@@ -1800,7 +1800,7 @@ screen quick_menu():
 
     zorder 100
 
-    if quick_menu:
+    if quickmenu:
 
         hbox:
             style "quick_menu"
