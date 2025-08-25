@@ -10,7 +10,7 @@ default persistent.save_naming = False
 
 ##############################################################################
 style quick_button_text:
-    outlines lambda: [(persistent.text_outline_size, "#000", 0, 0)]
+    outlines [(persistent.text_outline_size, "#000", 0, 0)]
 
 screen quick_menu():
 
