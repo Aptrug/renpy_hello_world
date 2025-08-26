@@ -328,9 +328,9 @@ transform flash_alpha:
     ease 0.15 alpha 0.0
 
 # Audio definitions (add these files to your audio folder)
-define audio.mirror_crack = "audio/glass_crack.ogg"
-define audio.mirror_shatter = "audio/glass_shatter.ogg"
-define audio.boss_music = "audio/boss_theme.ogg"
+define audio.mirror_crack = "Crash_Glass_04.opus"
+define audio.mirror_shatter = "Crash_Glass_04.opus"
+define audio.boss_music = "Crash_Glass_04.opus"
 
 # USAGE EXAMPLES - COPY AND PASTE THESE:
 
