@@ -566,8 +566,7 @@ screen preferences():
                         label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
                         bar value FieldValue(persistent,
                                              "game_menu_opacity",
-                                             style="slider",
-                                             min=0.1, max=1.0)
+                                             style="slider", range=1.0)
 
     # Navigation buttons at bottom center
     hbox:
