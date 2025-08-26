@@ -7,7 +7,7 @@ init -2 python:
     from renpy.display import im
 
     def make_mirror_shatter(
-        mask="fx/mirror_shatter_mask.png",
+        mask="mirror_shatter_mask.png",
         seconds=0.65,
         ramplen=32,
         hit=True,
