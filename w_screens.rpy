@@ -133,40 +133,34 @@ screen main_menu():
 
     add "deutsches_reich.webp"
 
-    ## Menu container
-    frame:
-        background None
-        # xalign 0.05
-        # yalign 0.4
+    vbox:
+        xpos gui.navigation_xpos
+        yalign 0.5
+        spacing gui.navigation_spacing
 
-        vbox:
-            xpos gui.navigation_xpos
-            yalign 0.5
-            spacing gui.navigation_spacing
+        textbutton _("Start"):
+            action Start()
+            style "hl2_button"
+            hover_sound "sounds/hover.opus"
+            activate_sound "sounds/bell.opus"
 
-            textbutton _("Start"):
-                action Start()
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/bell.opus"
+        textbutton _("Load"):
+            action ShowMenu("load")
+            style "hl2_button"
+            hover_sound "sounds/hover.opus"
+            activate_sound "sounds/click.opus"
 
-            textbutton _("Load"):
-                action ShowMenu("load")
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
+        textbutton _("Preferences"):
+            action ShowMenu("preferences")
+            style "hl2_button"
+            hover_sound "sounds/hover.opus"
+            activate_sound "sounds/click.opus"
 
-            textbutton _("Preferences"):
-                action ShowMenu("preferences")
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
-
-            textbutton _("Quit"):
-                action Quit(confirm=not main_menu)
-                style "hl2_button"
-                hover_sound "sounds/hover.opus"
-                activate_sound "sounds/click.opus"
+        textbutton _("Quit"):
+            action Quit(confirm=not main_menu)
+            style "hl2_button"
+            hover_sound "sounds/hover.opus"
+            activate_sound "sounds/click.opus"
 
 # Rebundant
 # style hl2_button:
