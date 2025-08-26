@@ -563,8 +563,8 @@ screen preferences():
                         label _("Auto-Forward Time (%d/30 cps)") % preferences.afm_time
                         bar value Preference("auto-forward time")
 
-                        label _("Text Outline (%d/6)") % persistent.text_outline_size
-                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider") changed gui.rebuild
+                        label _("Text Outline (%d/6)") % gui.text_outlines
+                        bar value FieldValue(gui, "text_outlines", range=6, style="slider") changed gui.rebuild
 
                         label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
                         bar value FieldValue(persistent,
