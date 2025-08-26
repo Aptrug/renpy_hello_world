@@ -554,10 +554,6 @@ screen preferences():
                         label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
                         bar value Preference("auto-forward time")
 
-                # Visual customization sliders
-                hbox:
-                    spacing 50
-                    style_prefix "slider"
                     vbox:
                         label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
                         bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
