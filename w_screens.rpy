@@ -332,7 +332,7 @@ screen file_slots(title):
                                     auto "ui_elements/prefs/delete_%s.webp"
                                     action FileDelete(slot)
                                     xalign 1.040
-                                    yoffset -148
+                                    yoffset -144
 
                             # if FileLoadable(slot):
                             #     textbutton _("{font=MaterialIcons-Regular.ttf}\ue92b{/font}"):
