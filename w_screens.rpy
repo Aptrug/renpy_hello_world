@@ -381,7 +381,7 @@ screen screen_save_name(slot):
     modal True
     # zorder 200
     style_prefix "confirm"
-    add Solid("#000000") alpha 0.8
+    add Solid("#000000", alpha=0.8)
 
     # add "gui/overlay/confirm.png"
 
