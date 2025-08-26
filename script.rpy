@@ -52,7 +52,7 @@ label start:
 
     play sound "sounds/punch.opus"
 
-    # call start_battle
+    show screen battle_ui
 
     mc angry "Unacceptable!" with vpunch
 
