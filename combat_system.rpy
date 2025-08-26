@@ -79,33 +79,6 @@ transform battle_swipe_in:
 define battle_swipe_transition = Transition(battle_swipe_out)
 
 # USAGE EXAMPLES
-label start:
-    scene bg forest
-    "A wild enemy appears!"
-
-    scene bg battle with ff_spiral_transition
-    "FF-style spiral!"
-
-    show shatter_overlay at glass_shatter_out
-    with None
-    "Glass shatter!"
-    hide shatter_overlay at glass_shatter_in
-
-    scene bg battle with radial_wipe_transition
-    "Radial wipe!"
-
-    show lightning_flash with None
-    with lightning_shake
-    hide lightning_flash
-    "Lightning flash!"
-
-    scene bg battle with pixel_dissolve_transition
-    "Pixel dissolve!"
-
-    scene bg battle with battle_swipe_transition
-    "Classic swipe!"
-
-    return
 
 screen battle_ui():
     # Boss image (centered top)
