@@ -9,6 +9,8 @@ transform ff_spiral_out:
 transform ff_spiral_in:
     linear 1.5 rotate -720 zoom 1.0 alpha 1.0
 
+define ff_spiral_transition = Transition(ff_spiral_out)
+
 # 2. GLASS SHATTER TRANSITION
 image shatter_overlay:
     "gui/overlay.png"  # Transparent PNG with cracks
@@ -23,6 +25,8 @@ transform glass_shatter_in:
     alpha 0.0
     linear 0.5 alpha 1.0 xoffset 0 yoffset 0 rotate 0
 
+define glass_shatter_transition = Transition(glass_shatter_out)
+
 # 3. RADIAL WIPE TRANSITION (Iris effect)
 transform radial_out:
     zoom 1.0 alpha 1.0
@@ -31,6 +35,8 @@ transform radial_out:
 transform radial_in:
     zoom 0.0 alpha 0.0
     linear 1.0 zoom 1.0 alpha 1.0
+
+define radial_wipe_transition = Transition(radial_out)
 
 # 4. LIGHTNING FLASH TRANSITION
 image lightning_flash:
@@ -48,6 +54,8 @@ transform lightning_shake:
     linear 0.02 xoffset -2 yoffset 3
     linear 0.02 xoffset 0 yoffset 0
 
+define lightning_flash_transition = Transition(lightning_flash)
+
 # 5. PIXEL DISSOLVE TRANSITION
 transform pixel_dissolve_out:
     alpha 1.0
@@ -57,6 +65,8 @@ transform pixel_dissolve_in:
     alpha 0.0
     linear 0.5 alpha 1.0
 
+define pixel_dissolve_transition = Transition(pixel_dissolve_out)
+
 # BONUS: CLASSIC BATTLE SWIPE (Horizontal)
 transform battle_swipe_out:
     xalign 0.0
@@ -65,6 +75,37 @@ transform battle_swipe_out:
 transform battle_swipe_in:
     xalign 1.0
     linear 0.8 xalign 0.0
+
+define battle_swipe_transition = Transition(battle_swipe_out)
+
+# USAGE EXAMPLES
+label start:
+    scene bg forest
+    "A wild enemy appears!"
+
+    scene bg battle with ff_spiral_transition
+    "FF-style spiral!"
+
+    show shatter_overlay at glass_shatter_out
+    with None
+    "Glass shatter!"
+    hide shatter_overlay at glass_shatter_in
+
+    scene bg battle with radial_wipe_transition
+    "Radial wipe!"
+
+    show lightning_flash with None
+    with lightning_shake
+    hide lightning_flash
+    "Lightning flash!"
+
+    scene bg battle with pixel_dissolve_transition
+    "Pixel dissolve!"
+
+    scene bg battle with battle_swipe_transition
+    "Classic swipe!"
+
+    return
 
 screen battle_ui():
     # Boss image (centered top)
