@@ -539,7 +539,7 @@ screen preferences():
         elif pref_page == "sliders":
             vbox:
                 hbox:
-                    spacing 30
+                    spacing 40
                     style_prefix "slider"
                     vbox:
                         label _("Music Volume ([int(preferences.get_volume('music') * 100)]%)")
