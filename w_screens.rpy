@@ -551,7 +551,7 @@ screen preferences():
                         label _("Main Volume ([int(preferences.get_volume('main') * 100)]%)")
                         bar value Preference("main volume")
 
-                        label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
+                        label _("Dialogue Box Opacity ([int(persistent.dialogue_box_opacity*100)]%)")
                         bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
                     vbox:
                         label "[_('Text Speed ({})').format(_('instantaneous') if int(preferences.text_cps) == 0 else f'{int(preferences.text_cps)} cps')]"
@@ -560,7 +560,10 @@ screen preferences():
                         label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
                         bar value Preference("auto-forward time")
 
-                        label _("Text outline ([persistent.text_outline_size]/6)")
+                        label _("Text Outline ([persistent.text_outline_size]/6)")
+                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
+
+                        label _("Game Menu Opacity ([persistent.text_outline_size]/6)")
                         bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
     # Navigation buttons at bottom center
