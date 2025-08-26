@@ -80,7 +80,7 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with with ff_spiral
+    scene swamp with ff_spiral
 
     show rance startled with move
 
