@@ -80,19 +80,16 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with ff_spiral_out
-    scene swamp with ff_spiral_in
-    show shatter_overlay at glass_shatter_out with None
+    scene swamp with ff_spiral_transition
+    show shatter_overlay at glass_shatter_out
+    with None
     hide shatter_overlay at glass_shatter_in
-    scene bg battle with radial_out
-    scene bg battle with radial_in
+    scene swamp with radial_wipe_transition
     show lightning_flash with None
     with lightning_shake
     hide lightning_flash
-    scene swamp with pixel_dissolve_out
-    scene swamp with pixel_dissolve_in
-    scene swamp with battle_swipe_out
-    scene swamp with battle_swipe_in
+    scene swamp with pixel_dissolve_transition
+    scene swamp with battle_swipe_transition
 
     show rance startled with move
 
