@@ -205,7 +205,7 @@ style game_menu_content_frame:
 #### #########################################################################
 
 define get_save_notify_action = lambda slot: Show(
-    "save_notify",
+    "notify",
     message=_("Stored the savefile as ") + renpy.config.savedir + "/" + str(persistent._file_page) + "-" + str(slot) + ".save"
 )
 
