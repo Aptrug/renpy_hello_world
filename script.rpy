@@ -52,8 +52,6 @@ label start:
 
     play sound "sounds/punch.opus"
 
-    show transition_glass with dissolve
-
     mc angry "Unacceptable!" with vpunch
 
     mc angry "What do you mean you need \"more time\"!" with vpunch
@@ -82,7 +80,7 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with Fade(0.25, 0.0, 0.25)
+    scene swamp with with ff_spiral
 
     show rance startled with move
 
