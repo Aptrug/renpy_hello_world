@@ -563,7 +563,7 @@ screen preferences():
                         label _("Text Outline (%d/6)") % persistent.text_outline_size
                         bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
-                        label _("Game Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
+                        label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
                         bar value FieldValue(persistent,
                                              "game_menu_opacity",
                                              style="slider",
