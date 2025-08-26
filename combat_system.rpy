@@ -7,10 +7,10 @@
 
 # Define the basic shatter transition using your mask image
 # Place your "broken glass screen with black background" image in the images folder
-define shatter_basic = ImageDissolve("mrror_shatter_mask.png", 2.0, ramplen=128)
+define shatter_basic = ImageDissolve("mirror_shatter_mask.png", 2.0, ramplen=128)
 
 # Reverse shatter (for reassembling effect)
-define shatter_reverse = ImageDissolve("mrror_shatter_mask.png", 2.0, ramplen=128, reverse=True)
+define shatter_reverse = ImageDissolve("mirror_shatter_mask.png", 2.0, ramplen=128, reverse=True)
 
 # =============================================================================
 # ADVANCED MULTI-STAGE SHATTER EFFECT
