@@ -192,31 +192,6 @@ define battle_swipe = ComposeTransition(
 # USAGE EXAMPLES IN YOUR SCRIPT:
 
 # Example usage in your game script:
-label start:
-    scene bg forest
-    "A wild enemy appears!"
-
-    # Use any of these transitions before battle scenes:
-    scene bg battle with ff_spiral
-    "Battle begins with FF-style spiral!"
-
-    scene bg forest with glass_shatter
-    "The screen shatters dramatically!"
-
-    scene bg battle with radial_wipe
-    "Radial transition to battle!"
-
-    scene bg battle with lightning_flash_transition
-    "Lightning strikes!"
-
-    scene bg battle with pixel_dissolve
-    "Retro pixel dissolve effect!"
-
-    scene bg battle with battle_swipe
-    "Classic battle swipe!"
-
-    return
-
 # ADDITIONAL NOTES:
 # 1. For glass_shatter, create a "gui/overlay.png" with crack lines
 # 2. These work best at 1920x1080 resolution as specified
