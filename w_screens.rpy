@@ -137,7 +137,7 @@ screen main_menu():
         xpos gui.navigation_xpos
         yalign 0.43
         spacing gui.navigation_spacing
-        style "hl2_button"
+        style_prefix "hl2_button"
 
         textbutton _("Start"):
             action Start()
@@ -158,12 +158,6 @@ screen main_menu():
             action Quit(confirm=not main_menu)
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
-
-# Rebundant
-# style hl2_button:
-#     background None
-#     xalign 0.5
-#     hover_background None
 
 style hl2_button_text:
     color "#ffffff"  # White text
