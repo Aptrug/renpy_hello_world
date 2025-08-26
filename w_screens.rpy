@@ -557,7 +557,7 @@ screen preferences():
                         label _("Text Speed (%s)") % (_("instantaneous") if int(preferences.text_cps) == 0 else "%d cps" % int(preferences.text_cps))
                         bar value Preference("text speed")
 
-                        label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
+                        label _("Auto-Forward Time %d cps)") % preferences.afm_time
                         bar value Preference("auto-forward time")
 
                         label _("Text Outline ([persistent.text_outline_size]/6)")
