@@ -547,6 +547,8 @@ screen preferences():
                         label _("Sound Volume ([int(preferences.get_volume('sfx') * 100)]%)")
                         bar value Preference("sound volume")
 
+                        label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
+                        bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
                     vbox:
                         label "[_('Text Speed ({})').format(_('instantaneous') if int(preferences.text_cps) == 0 else f'{int(preferences.text_cps)} cps')]"
                         bar value Preference("text speed")
@@ -554,11 +556,6 @@ screen preferences():
                         label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
                         bar value Preference("auto-forward time")
 
-                    vbox:
-                        label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
-                        bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
-
-                    vbox:
                         label _("Text outline ([persistent.text_outline_size]/6)")
                         bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
