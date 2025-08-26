@@ -554,7 +554,7 @@ screen preferences():
                         label _("Dialogue Box Opacity (%d%%)") % (persistent.dialogue_box_opacity * 100)
                         bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
                     vbox:
-                        label _("Text Speed: %s") % (_("instantaneous") if int(preferences.text_cps) == 0 else "%d cps" % int(preferences.text_cps))
+                        label _("Text Speed (%s)") % (_("instantaneous") if int(preferences.text_cps) == 0 else "%d cps" % int(preferences.text_cps))
                         bar value Preference("text speed")
 
                         label _("Auto-Forward Time ([int(preferences.afm_time)] cps)")
