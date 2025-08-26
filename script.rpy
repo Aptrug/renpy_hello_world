@@ -52,6 +52,8 @@ label start:
 
     play sound "sounds/punch.opus"
 
+    call start_battle
+
     mc angry "Unacceptable!" with vpunch
 
     mc angry "What do you mean you need \"more time\"!" with vpunch
