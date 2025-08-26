@@ -136,8 +136,8 @@ screen main_menu():
     ## Menu container
     frame:
         background None
-        xalign 0.05
-        yalign 0.4
+        # xalign 0.05
+        # yalign 0.4
 
         vbox:
             xpos gui.navigation_xpos
