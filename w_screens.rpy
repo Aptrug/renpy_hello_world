@@ -137,6 +137,8 @@ screen main_menu():
         xpos gui.navigation_xpos
         yalign 0.43
         spacing gui.navigation_spacing
+        style "hl2_button"
+        text_size gui.interface_text_size
 
         textbutton _("Start"):
             action Start()
@@ -173,7 +175,6 @@ style hl2_button_text:
     hover_color "#ff9900"  # Orange on hover
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
     hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
-    size 36
 
 ##############################################################################
 style game_menu_outer_frame:
