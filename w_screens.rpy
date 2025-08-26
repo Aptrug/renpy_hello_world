@@ -567,7 +567,7 @@ screen preferences():
                         bar value FieldValue(persistent,
                                              "game_menu_opacity",
                                              style="slider",
-                                             min=0.5, max=1.0, step=0.1)
+                                             min=0.5, max=1.0, offset=0.1)
 
     # Navigation buttons at bottom center
     hbox:
