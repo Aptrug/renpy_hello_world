@@ -137,25 +137,28 @@ screen main_menu():
         xpos gui.navigation_xpos
         yalign 0.43
         spacing gui.navigation_spacing
-        style_prefix "hl2_button_text"
 
         textbutton _("Start"):
             action Start()
+            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/bell.opus"
 
         textbutton _("Load"):
             action ShowMenu("load")
+            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
         textbutton _("Preferences"):
             action ShowMenu("preferences")
+            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
         textbutton _("Quit"):
             action Quit(confirm=not main_menu)
+            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
