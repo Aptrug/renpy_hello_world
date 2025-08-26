@@ -632,6 +632,7 @@ screen preferences():
                     Preference("font size", 1.0),
                     Preference("font line spacing", 1.0),
                     Preference("font kerning", 0.0),
+                    Function(gui.rebuild),
                     Hide("confirm")
                 ],
                 no_action=Hide("confirm")
