@@ -52,8 +52,8 @@ label start:
 
     play sound "sounds/punch.opus"
 
-    play sound "Crash_Glass_04.opus"
-    show screen battle_ui with mirror_shatter
+    # play sound "Crash_Glass_04.opus"
+    # show screen battle_ui with mirror_shatter
 
     mc angry "Unacceptable!" with vpunch
 
@@ -83,7 +83,7 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with Fade(0.25, 0.0, 0.25)
+    # scene swamp with Fade(0.25, 0.0, 0.25)
 
     show rance startled with move
 
