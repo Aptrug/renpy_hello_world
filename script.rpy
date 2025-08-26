@@ -53,6 +53,7 @@ label start:
     play sound "sounds/punch.opus"
 
     show screen battle_ui
+    with mirror_shatter
 
     mc angry "Unacceptable!" with vpunch
 
