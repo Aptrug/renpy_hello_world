@@ -83,7 +83,7 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    # scene swamp with Fade(0.25, 0.0, 0.25)
+    scene swamp with shatter_transition(3.0)
 
     show rance startled with move
 
