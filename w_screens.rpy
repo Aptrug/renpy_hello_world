@@ -564,7 +564,7 @@ screen preferences():
                         bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
 
                         label _("Game Menu Opacity ([persistent.game_menu_opacity]/5)")
-                        bar value FieldValue(persistent, "game_menu_opacity", style="slider", range=(0.5, 1.0, 0.1))
+                        bar value FieldValue(persistent, "game_menu_opacity", style="slider", max=1.0, min=0.5)
 
     # Navigation buttons at bottom center
     hbox:
