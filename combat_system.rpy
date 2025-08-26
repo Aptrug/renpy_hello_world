@@ -78,7 +78,7 @@ transform battle_swipe_in:
 
 define battle_swipe_transition = ComposeTransition(battle_swipe_out, Pause(0.05), battle_swipe_in)
 
-
+# USAGE EXAMPLES
 screen battle_ui():
     # Boss image (centered top)
     add "images/combat_system/boss.webp" xpos 0.5 ypos 0.1 anchor (0.5, 0.0)
