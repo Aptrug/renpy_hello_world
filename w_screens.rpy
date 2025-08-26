@@ -546,8 +546,8 @@ screen preferences():
                         label _("Sound Volume ([int(preferences.get_volume('sfx') * 100)]%)")
                         bar value Preference("sound volume")
 
-                        label _("Sound Volume ([int(preferences.get_volume('sfx') * 100)]%)")
-                        bar value Preference("sound volume")
+                        label _("Main Volume ([int(preferences.get_volume('main') * 100)]%)")
+                        bar value Preference("main volume")
 
                         label _("Dialogue box opacity ([int(persistent.dialogue_box_opacity*100)]%)")
                         bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
