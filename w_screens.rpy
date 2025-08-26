@@ -565,7 +565,8 @@ screen preferences():
                         bar value Preference("auto-forward time")
 
                         label _("Text Outline (%d/6)") % persistent.text_outline_size
-                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider") changed renpy.restart_interaction
+                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider") changed Function(gui.rebuild)
+
 
                         label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
                         bar value FieldValue(persistent,
