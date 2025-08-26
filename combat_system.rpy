@@ -7,19 +7,19 @@
 
 # Define the basic shatter transition using your mask image
 # Place your "broken glass screen with black background" image in the images folder
-define shatter_basic = ImageDissolve("shatter_mask.png", 2.0, ramplen=128)
+define shatter_basic = ImageDissolve("mirror_shatter_mask.png", 2.0, ramplen=128)
 
 # Reverse shatter (for reassembling effect)
-define shatter_reverse = ImageDissolve("shatter_mask.png", 2.0, ramplen=128, reverse=True)
+define shatter_reverse = ImageDissolve("mirror_shatter_mask.png", 2.0, ramplen=128, reverse=True)
 
 # =============================================================================
 # ADVANCED MULTI-STAGE SHATTER EFFECT
 # =============================================================================
 
 # For a more epic effect, create multiple stages
-define shatter_crack = ImageDissolve("shatter_mask.png", 0.8, ramplen=64)
-define shatter_break = ImageDissolve("shatter_mask.png", 1.5, ramplen=128, alpha=True)
-define shatter_fall = ImageDissolve("shatter_mask.png", 2.5, ramplen=256, reverse=False)
+define shatter_crack = ImageDissolve("mirror_shatter_mask.png", 0.8, ramplen=64)
+define shatter_break = ImageDissolve("mirror_shatter_mask.png", 1.5, ramplen=128, alpha=True)
+define shatter_fall = ImageDissolve("mirror_shatter_mask.png", 2.5, ramplen=256, reverse=False)
 
 # =============================================================================
 # SCREEN SHAKE TRANSFORM (for impact effect)
@@ -85,7 +85,7 @@ init python:
 
         # Create the composite effect
         shatter_effect = ComposeTransition(
-            ImageDissolve("shatter_mask.png", duration * 0.8, ramplen=128),
+            ImageDissolve("mirror_shatter_mask.png", duration * 0.8, ramplen=128),
             before=Fade(0.1, 0.0, 0.1),
             after=Fade(0.2, 0.0, 0.2)
         )
@@ -104,7 +104,7 @@ define ultimate_shatter = create_epic_shatter(4.0, "extreme")
 # Multi-part transition for dramatic boss fight moment
 define boss_shatter_sequence = [
     Fade(0.1, 0.0, 0.0),  # Quick flash
-    ImageDissolve("shatter_mask.png", 2.5, ramplen=128),
+    ImageDissolve("mirror_shatter_mask.png", 2.5, ramplen=128),
     Fade(0.0, 0.2, 0.3)   # Dramatic fade in
 ]
 
