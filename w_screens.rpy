@@ -8,7 +8,7 @@ default persistent.dialogue_box_opacity = 0.0
 
 default persistent.save_naming = False
 
-default persistent.game_menu_opacity = 0.7
+default persistent.game_menu_opacity = 0.75
 
 ##############################################################################
 # style quick_button_text:
@@ -617,7 +617,7 @@ screen preferences():
                     SetVariable("config.hw_video", False),
                     Preference("gl powersave", True),
                     SetVariable("persistent.text_outline_size", 3),
-                    SetVariable("persistent.game_menu_opacity", 0.7),
+                    SetVariable("persistent.game_menu_opacity", 0.75),
                     SetVariable("persistent.dialogue_box_opacity", 0.0),
                     SetVariable("persistent.iconic_quickmenu", False),
                     Preference("font transform", None),
