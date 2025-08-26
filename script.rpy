@@ -52,6 +52,7 @@ label start:
 
     play sound "sounds/punch.opus"
 
+    play sound "glass_shatter.ogg"
     show screen battle_ui with mirror_shatter
 
     mc angry "Unacceptable!" with vpunch
