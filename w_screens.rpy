@@ -138,29 +138,24 @@ screen main_menu():
         yalign 0.43
         spacing gui.navigation_spacing
         style "hl2_button"
-        size 36
 
         textbutton _("Start"):
             action Start()
-            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/bell.opus"
 
         textbutton _("Load"):
             action ShowMenu("load")
-            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
         textbutton _("Preferences"):
             action ShowMenu("preferences")
-            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
         textbutton _("Quit"):
             action Quit(confirm=not main_menu)
-            style "hl2_button"
             hover_sound "sounds/hover.opus"
             activate_sound "sounds/click.opus"
 
@@ -175,6 +170,7 @@ style hl2_button_text:
     hover_color "#ff9900"  # Orange on hover
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
     hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+    size 36
 
 ##############################################################################
 style game_menu_outer_frame:
