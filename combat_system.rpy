@@ -1,6 +1,6 @@
 init:
     # Define the glass shatter transition
-    image transition_glass = "transitions/glass_shatter.png"
+    image transition_glass = "mirror_shatter_mask.png"
 
 label start_battle:
     show transition_glass with dissolve
