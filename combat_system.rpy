@@ -16,5 +16,3 @@ screen battle_ui():
     add "images/combat_system/reset.webp"
     add "images/combat_system/sachiko.webp"
     add "images/combat_system/suzume.webp"
-
-        find .
