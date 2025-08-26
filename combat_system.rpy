@@ -36,17 +36,17 @@ init -2 python:
         if hit:
             # Sequence: impact punch → tiny pause → shatter dissolve.
             return MultipleTransition([
-                False, vpunch, False,          # punch the *old* scene quickly
-                False, Pause(0.05), False,     # tiny beat helps the SFX land
-                False, base, True,             # dissolve from old → new using the shatter mask
+                False, vpunch, False,                # punch the *old* scene quickly
+                False, Pause(0.05, hard=True), False,  # tiny beat helps the SFX land (fixed)
+                False, base, True,                   # dissolve from old → new using the shatter mask
             ])
         else:
             return base
 
-# Ready-made variants you can call with "with ..."
-define mirror_shatter       = make_mirror_shatter()
-define mirror_shatter_fast  = make_mirror_shatter(seconds=0.45, ramplen=16)
-define mirror_shatter_big   = make_mirror_shatter(seconds=0.90, ramplen=64)
+    # Ready-made variants you can call with "with ..."
+    mirror_shatter       = make_mirror_shatter()
+    mirror_shatter_fast  = make_mirror_shatter(seconds=0.45, ramplen=16)
+    mirror_shatter_big   = make_mirror_shatter(seconds=0.90, ramplen=64)
 
 screen battle_ui():
     # Boss image (centered top)
