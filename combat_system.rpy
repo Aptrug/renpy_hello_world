@@ -9,10 +9,10 @@ screen battle_ui():
         anchor (0.5, 1.0)
         spacing 20
 
-    add "images/combat_system/kanami.webp"
-    add "images/combat_system/kenshin.webp"
-    add "images/combat_system/magic.webp"
-    add "images/combat_system/rance.webp"
-    add "images/combat_system/reset.webp"
-    add "images/combat_system/sachiko.webp"
-    add "images/combat_system/suzume.webp"
+        add "images/combat_system/kanami.webp"
+        add "images/combat_system/kenshin.webp"
+        add "images/combat_system/magic.webp"
+        add "images/combat_system/rance.webp"
+        add "images/combat_system/reset.webp"
+        add "images/combat_system/sachiko.webp"
+        add "images/combat_system/suzume.webp"
