@@ -80,27 +80,26 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with ff_spiral_transition
-    "FF-style spiral!"
+    scene swamp with ff_spiral
+    "Battle begins with FF-style spiral!"
 
-    show shatter_overlay at glass_shatter_out
-    with None
-    "Glass shatter!"
-    hide shatter_overlay at glass_shatter_in
+    scene bg forest with glass_shatter
+    "The screen shatters dramatically!"
 
-    scene swamp with radial_wipe_transition
-    "Radial wipe!"
+    scene swamp with radial_wipe
+    "Radial transition to battle!"
 
-    show lightning_flash with None
-    with lightning_shake
-    hide lightning_flash
-    "Lightning flash!"
+    scene swamp with lightning_flash_transition
+    "Lightning strikes!"
 
-    scene swamp with pixel_dissolve_transition
-    "Pixel dissolve!"
+    scene swamp with pixel_dissolve
+    "Retro pixel dissolve effect!"
 
-    scene swamp with battle_swipe_transition
-    "Classic swipe!"
+    scene swamp with battle_swipe
+    "Classic battle swipe!"
+
+    scene swamp with zoom_burst
+    "Zoom burst transition!"
 
     show rance startled with move
 
