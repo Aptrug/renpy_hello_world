@@ -83,7 +83,7 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene swamp with shatter_epic
+    scene swamp with epic_shatter
 
     show rance startled with move
 
