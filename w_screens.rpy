@@ -1,4 +1,4 @@
-# I want persistent.text_outline_size to affect all text in the game (including menu text etc)
+# I want persistent.text_outline_size to affect all text in the game (including menu text etc) and not apply only to game dialogue text
 
 default persistent.quickmenu = True
 
