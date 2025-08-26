@@ -381,7 +381,7 @@ screen screen_save_name(slot):
     modal True
     # zorder 200
     style_prefix "confirm"
-    add Solid("#000000") alpha persistent.game_menu_opacity
+    add Solid("#000000") alpha 1.0
 
     # add "gui/overlay/confirm.png"
 
