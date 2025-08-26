@@ -135,7 +135,7 @@ screen main_menu():
 
     vbox:
         xpos gui.navigation_xpos
-        yalign 0.42
+        yalign 0.43
         spacing gui.navigation_spacing
 
         textbutton _("Start"):
