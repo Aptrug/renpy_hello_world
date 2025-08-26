@@ -138,7 +138,7 @@ screen main_menu():
         yalign 0.43
         spacing gui.navigation_spacing
         style "hl2_button"
-        text_size 36
+        size 36
 
         textbutton _("Start"):
             action Start()
