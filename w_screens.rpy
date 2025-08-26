@@ -8,6 +8,8 @@ default persistent.dialogue_box_opacity = 0.0
 
 default persistent.save_naming = False
 
+default persistent.game_menu_opacity = 0.8
+
 ##############################################################################
 # style quick_button_text:
 #     outlines [(persistent.text_outline_size, "#000", 0, 0)]
