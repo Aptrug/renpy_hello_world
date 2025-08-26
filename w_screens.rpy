@@ -381,7 +381,7 @@ screen screen_save_name(slot):
     modal True
     # zorder 200
     style_prefix "confirm"
-    add Solid("#000000") alpha persistent.game_menu_opacity
+    add Solid("#000000") alpha 0.8
 
     # add "gui/overlay/confirm.png"
 
@@ -666,7 +666,7 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
     if main_menu:
         add "deutsches_reich.webp"
 
-    add Solid("#000000", alpha=0.7)
+    add Solid("#000000", alpha=persistent.game_menu_opacity)
     # add "#00000080"
 
     frame:
