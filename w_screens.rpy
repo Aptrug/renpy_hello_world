@@ -1,4 +1,4 @@
-# I want persistent.text_outline_size to affect all text in the game (including menu text etc) and not apply only to game dialogue text
+# Remember pref_page when switching out of the preferences (but not when quitting game entirely)
 
 default persistent.quickmenu = True
 
@@ -585,6 +585,7 @@ screen preferences():
         textbutton _("Options"):
             action SetScreenVariable("pref_page", 1)
             text_size 35
+            pref_page = 1
             if pref_page == 1:
                 text_color gui.accent_color
             else:
@@ -594,6 +595,7 @@ screen preferences():
         textbutton _("Sliders"):
             action SetScreenVariable("pref_page", 2)
             text_size 35
+            pref_page = 2
             if pref_page == 2:
                 text_color gui.accent_color
             else:
