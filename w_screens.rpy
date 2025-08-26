@@ -1,4 +1,6 @@
-# I want persistent.text_outline_size to affect all text in the game (including menu text etc) and not apply only to game dialogue text
+# Got a problem, main_menu screen text doesn't change outline when changing persistent.text_outline_size from settings, requires restart for changes to take effect instead of being instantaneous
+
+I want persistent.text_outline_size to affect all text in the game (including menu text etc) and not apply only to game dialogue text
 
 default persistent.quickmenu = True
 
