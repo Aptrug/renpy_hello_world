@@ -261,9 +261,9 @@ transform dramatic_zoom_out:
     ease 2.0 zoom 0.0 alpha 0.0
 
 # Audio cue definitions
-define audio.glass_crack = "audio/glass_crack.ogg"  # You'll need this sound file
-define audio.glass_shatter = "audio/glass_shatter.ogg"  # You'll need this sound file
-define audio.boss_theme = "audio/boss_battle.ogg"  # Your boss battle music
+define audio.glass_crack = "Crash_Glass_04.opus"  # You'll need this sound file
+define audio.glass_shatter = "Crash_Glass_04.opus"  # You'll need this sound file
+define audio.boss_theme = "Crash_Glass_04.opus"  # Your boss battle music
 
 # Screen overlay for additional effects
 screen shatter_overlay():
