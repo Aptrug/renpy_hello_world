@@ -583,9 +583,8 @@ screen preferences():
         spacing 100
 
         textbutton _("Options"):
-            action SetScreenVariable("pref_page", 1)
+            action SetVariable("pref_page", 1)
             text_size 35
-            pref_page = 1
             if pref_page == 1:
                 text_color gui.accent_color
             else:
@@ -593,9 +592,8 @@ screen preferences():
                 text_hover_color gui.accent_color
 
         textbutton _("Sliders"):
-            action SetScreenVariable("pref_page", 2)
+            action SetVariable("pref_page", 2)
             text_size 35
-            pref_page = 2
             if pref_page == 2:
                 text_color gui.accent_color
             else:
