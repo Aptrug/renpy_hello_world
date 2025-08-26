@@ -331,7 +331,7 @@ screen file_slots(title):
                                 imagebutton:
                                     auto "ui_elements/prefs/delete_%s.webp"
                                     action FileDelete(slot)
-                                    xalign 1.049
+                                    xalign 1.052
                                     yoffset -143
 
                             # if FileLoadable(slot):
