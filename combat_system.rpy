@@ -5,35 +5,6 @@ init python:
     import math
     import random
 
-    # Helper function for creating dynamic transforms
-    def spiral_transform(t):
-        """Creates a spiral transformation for FF-style transitions"""
-        angle = t * 720  # Two full rotations
-        scale_factor = 1.0 - (t * 0.8)
-        return Transform(
-            rotate=angle,
-            zoom=scale_factor,
-            alpha=1.0 - (t * t)  # Quadratic fade
-        )
-
-    def shatter_piece_transform(piece_id, t):
-        """Individual glass shard transformation"""
-        # Each piece flies in a different direction
-        random.seed(piece_id)  # Consistent randomization
-        angle = random.uniform(0, 360)
-        distance = t * random.uniform(200, 800)
-        rotation = t * random.uniform(-180, 180)
-
-        x_offset = math.cos(math.radians(angle)) * distance
-        y_offset = math.sin(math.radians(angle)) * distance
-
-        return Transform(
-            xoffset=x_offset,
-            yoffset=y_offset,
-            rotate=rotation,
-            alpha=1.0 - (t * 1.5)
-        )
-
 # 1. FINAL FANTASY STYLE SPIRAL TRANSITION
 transform ff_spiral_out:
     # Start normal, then spiral and shrink
@@ -47,14 +18,13 @@ transform ff_spiral_in:
 
 # Create the transition
 define ff_spiral = ComposeTransition(
-    ff_spiral_out, Pause(0.1), ff_spiral_in,
-    time_warp=None
+    ff_spiral_out, Pause(0.1), ff_spiral_in
 )
 
 # 2. GLASS SHATTER TRANSITION
 image shatter_overlay:
     # Create a cracked glass overlay effect
-    "cracked_screen.png"  # You'll need a transparent PNG with crack lines
+    "gui/overlay.png"  # You'll need a transparent PNG with crack lines
     alpha 0.0
     linear 0.3 alpha 1.0
     linear 0.2 alpha 0.0
@@ -83,8 +53,7 @@ transform glass_shatter_in:
     linear 0.5 alpha 1.0
 
 define glass_shatter = ComposeTransition(
-    glass_shatter_out, Pause(0.1), glass_shatter_in,
-    time_warp=None
+    glass_shatter_out, Pause(0.1), glass_shatter_in
 )
 
 # 3. RADIAL WIPE TRANSITION (Iris effect)
@@ -100,8 +69,7 @@ transform radial_in:
     linear 1.0 crop (0, 0, 1920, 1080)
 
 define radial_wipe = ComposeTransition(
-    radial_out, Pause(0.05), radial_in,
-    time_warp=None
+    radial_out, Pause(0.05), radial_in
 )
 
 # 4. LIGHTNING FLASH TRANSITION
@@ -171,8 +139,7 @@ transform pixel_dissolve_in:
         linear 0.5 alpha 1.0
 
 define pixel_dissolve = ComposeTransition(
-    pixel_dissolve_out, Pause(0.1), pixel_dissolve_in,
-    time_warp=None
+    pixel_dissolve_out, Pause(0.1), pixel_dissolve_in
 )
 
 # BONUS: CLASSIC BATTLE SWIPE (Horizontal)
@@ -185,8 +152,7 @@ transform battle_swipe_in:
     linear 0.8 crop (0, 0, 1920, 1080)
 
 define battle_swipe = ComposeTransition(
-    battle_swipe_out, Pause(0.05), battle_swipe_in,
-    time_warp=None
+    battle_swipe_out, Pause(0.05), battle_swipe_in
 )
 
 # USAGE EXAMPLES IN YOUR SCRIPT:
