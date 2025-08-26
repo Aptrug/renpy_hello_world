@@ -542,16 +542,16 @@ screen preferences():
                     spacing 50
                     style_prefix "slider"
                     vbox:
-                        label "Music Volume (%d%%)" % (preferences.get_volume('music') * 100)
+                        label _("Music Volume (%d%%)") % (preferences.get_volume('music') * 100)
                         bar value Preference("music volume")
 
-                        label "Sound Volume (%d%%)" % (preferences.get_volume('sfx') * 100)
+                        label _("Sound Volume (%d%%)") % (preferences.get_volume('sfx') * 100)
                         bar value Preference("sound volume")
 
-                        label "Main Volume (%d%%)" % (preferences.get_volume('main') * 100)
+                        label _("Main Volume (%d%%)") % (preferences.get_volume('main') * 100)
                         bar value Preference("main volume")
 
-                        label _("Dialogue Box Opacity ([int(persistent.dialogue_box_opacity*100)]%)")
+                        label _("Dialogue Box Opacity (%d%%)") % (persistent.dialogue_box_opacity * 100)
                         bar value FieldValue(persistent, "dialogue_box_opacity", range=1.0, style="slider")
                     vbox:
                         label _("Text Speed: %s") % (_("instantaneous") if int(preferences.text_cps) == 0 else "%d cps" % int(preferences.text_cps))
