@@ -5,6 +5,7 @@ default persistent.quickmenu = True
 default persistent.iconic_quickmenu = False
 
 default persistent.text_outline_size = 3
+define gui.text_outlines = [(persistent.text_outline_size, "#000", 0, 0)]
 
 default persistent.dialogue_box_opacity = 0.0
 
