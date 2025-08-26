@@ -140,9 +140,9 @@ screen main_menu():
         yalign 0.4
 
         vbox:
-            spacing 25
-            xalign 0.5
+            xpos gui.navigation_xpos
             yalign 0.5
+            spacing gui.navigation_spacing
 
             textbutton _("Start"):
                 action Start()
