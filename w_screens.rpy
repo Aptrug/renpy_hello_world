@@ -183,7 +183,7 @@ style hl2_button_text:
 
 ##############################################################################
 style game_menu_outer_frame:
-    bottom_padding 15
+    bottom_padding 0
     # Change to reduce empty top space
     # top_padding 125
     # background "gui/overlay/game_menu.png"
