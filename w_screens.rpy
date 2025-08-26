@@ -13,6 +13,8 @@ default persistent.save_naming = False
 
 default persistent.game_menu_opacity = 0.75
 
+default pref_page = 1
+
 ##############################################################################
 # style quick_button_text:
 #     outlines [(persistent.text_outline_size, "#000", 0, 0)]
@@ -451,11 +453,10 @@ screen language_picker():
 
 screen preferences():
     tag menu
-    default pref_page = "options"
 
     use game_menu(_("Preferences"), scroll="viewport"):
 
-        if pref_page == "options":
+        if pref_page == 1:
             vbox:
                 # Top row - Special menu buttons
                 hbox:
@@ -539,7 +540,7 @@ screen preferences():
                         textbutton _("Disable") action Preference("gl powersave", False)
                         textbutton _("Automatic") action Preference("gl powersave", "auto")
 
-        elif pref_page == "sliders":
+        elif pref_page == 2:
             vbox:
                 hbox:
                     # Don't need this I think
@@ -582,18 +583,18 @@ screen preferences():
         spacing 100
 
         textbutton _("Options"):
-            action SetScreenVariable("pref_page", "options")
+            action SetScreenVariable("pref_page", 1)
             text_size 35
-            if pref_page == "options":
+            if pref_page == 1:
                 text_color gui.accent_color
             else:
                 text_color gui.idle_color
                 text_hover_color gui.accent_color
 
         textbutton _("Sliders"):
-            action SetScreenVariable("pref_page", "sliders")
+            action SetScreenVariable("pref_page", 2)
             text_size 35
-            if pref_page == "sliders":
+            if pref_page == 2:
                 text_color gui.accent_color
             else:
                 text_color gui.idle_color
