@@ -170,7 +170,7 @@ style hl2_button_text:
     hover_color "#ff9900"  # Orange on hover
     outlines [(persistent.text_outline_size, "#000", 0, 0)]
     hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
-    size 36
+    size gui.label_text_size
 
 ##############################################################################
 style game_menu_outer_frame:
