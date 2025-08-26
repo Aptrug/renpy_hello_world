@@ -27,7 +27,7 @@ screen quick_menu():
                 style "quick_menu"
 
                 imagebutton:
-                    auto "ui_elements/prefs/hide_interface_%s.webp"
+                    auto "ui_elements/prefs/hide_quickmenu_%s.webp"
                     action HideInterface()
 
                 imagebutton:
