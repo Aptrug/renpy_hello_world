@@ -542,6 +542,7 @@ screen preferences():
         elif pref_page == "sliders":
             vbox:
                 hbox:
+                    # Don't need this I think
                     # spacing 50
                     style_prefix "slider"
                     vbox:
