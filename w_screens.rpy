@@ -134,8 +134,9 @@ screen main_menu():
     add "deutsches_reich.webp"
 
     vbox:
+        style_prefix "navigation"
         xpos gui.navigation_xpos
-        yalign 0.43
+        yalign 0.5
         spacing gui.navigation_spacing
 
         textbutton _("Start"):
