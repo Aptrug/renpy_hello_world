@@ -3,7 +3,15 @@
 
 init -2 python:
     from renpy.display import im
-    from renpy.display.transition import Pause   # <-- import the transition version
+    from renpy.display.transition import Transition
+
+    class PauseTransition(Transition):
+        """
+        A do-nothing transition that just waits for `delay` seconds.
+        Can be used inside MultipleTransition.
+        """
+        def __init__(self, delay):
+            super().__init__(delay)
 
     def make_mirror_shatter(
         mask="mirror_shatter_mask.png",
@@ -13,9 +21,6 @@ init -2 python:
         reverse=False,
         ease=_warper.easein,
     ):
-        """
-        Returns a transition that looks like the screen shattering like a mirror.
-        """
         # Use the mask if available; otherwise fall back to a plain dissolve.
         if renpy.loadable(mask):
             ctrl = im.Scale(mask, config.screen_width, config.screen_height)
@@ -27,9 +32,9 @@ init -2 python:
 
         if hit:
             return MultipleTransition([
-                False, vpunch, False,                 # punch
-                False, Pause(0.05), False,            # tiny beat (transition pause, now correct)
-                False, base, True,                    # dissolve with mask
+                False, vpunch, False,                  # impact punch
+                False, PauseTransition(0.05), False,   # tiny beat (real transition pause)
+                False, base, True,                     # dissolve with mask
             ])
         else:
             return base
