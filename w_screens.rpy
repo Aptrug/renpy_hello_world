@@ -177,8 +177,8 @@ screen main_menu():
 style hl2_button_text:
     color "#ffffff"  # White text
     hover_color "#ff9900"  # Orange on hover
-    outlines [(persistent.text_outline_size, "#000", 0, 0)]
-    hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+    # outlines [(persistent.text_outline_size, "#000", 0, 0)]
+    # hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
     size 36
 
 ##############################################################################
