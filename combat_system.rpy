@@ -1,54 +1,41 @@
-# Epic Battle Transitions for Ren'Py (1920x1080)
-# Place this code in your script.rpy file or create a separate transitions.rpy file
-
-init python:
-    import math
-    import random
+# Epic Battle Transitions for Ren'Py - Fixed and Simplified
+# Place this in your script.rpy file or create a separate transitions.rpy file
 
 # 1. FINAL FANTASY STYLE SPIRAL TRANSITION
 transform ff_spiral_out:
-    # Start normal, then spiral and shrink
-    linear 0.0 rotate 0 zoom 1.0 alpha 1.0
+    rotate 0 zoom 1.0 alpha 1.0
     linear 1.5 rotate 720 zoom 0.2 alpha 0.0
 
 transform ff_spiral_in:
-    # Start spiraled and small, expand to normal
-    linear 0.0 rotate -720 zoom 0.2 alpha 0.0
+    rotate -720 zoom 0.2 alpha 0.0
     linear 1.5 rotate 0 zoom 1.0 alpha 1.0
 
-# Create the transition
 define ff_spiral = ComposeTransition(
     ff_spiral_out, Pause(0.1), ff_spiral_in
 )
 
 # 2. GLASS SHATTER TRANSITION
+# Note: You'll need to create a cracked glass overlay image
 image shatter_overlay:
-    # Create a cracked glass overlay effect
-    "gui/overlay.png"  # You'll need a transparent PNG with crack lines
+    "images/crack_overlay.png"  # Create this image with crack lines
     alpha 0.0
     linear 0.3 alpha 1.0
     linear 0.2 alpha 0.0
 
 transform glass_shatter_out:
-    # Screen cracks then shatters
-    linear 0.0 alpha 1.0
-    linear 0.3 alpha 1.0  # Brief pause as cracks appear
+    alpha 1.0
     parallel:
+        linear 0.3 alpha 1.0
         linear 0.5 alpha 0.0
     parallel:
-        # Multiple shatter pieces effect
-        block:
-            choice:
-                linear 0.5 xoffset 200 yoffset -150 rotate 45
-            choice:
-                linear 0.5 xoffset -180 yoffset 200 rotate -60
-            choice:
-                linear 0.5 xoffset 150 yoffset 180 rotate 30
-            choice:
-                linear 0.5 xoffset -200 yoffset -100 rotate -45
+        choice:
+            linear 0.5 xoffset 200 yoffset -150 rotate 45
+        choice:
+            linear 0.5 xoffset -180 yoffset 200 rotate -60
+        choice:
+            linear 0.5 xoffset 150 yoffset 180 rotate 30
 
 transform glass_shatter_in:
-    # Pieces reassemble
     alpha 0.0 rotate 0 xoffset 0 yoffset 0
     linear 0.5 alpha 1.0
 
@@ -57,16 +44,14 @@ define glass_shatter = ComposeTransition(
 )
 
 # 3. RADIAL WIPE TRANSITION (Iris effect)
+# Using ImageDissolve with a radial mask would be better, but here's a simple version
 transform radial_out:
-    # Create circular mask effect shrinking to center
-    size (1920, 1080)
-    crop (0, 0, 1920, 1080)
-    linear 1.0 crop (960, 540, 0, 0)  # Shrink to center point
+    zoom 1.0 alpha 1.0
+    linear 1.0 zoom 0.0 alpha 0.0
 
 transform radial_in:
-    # Expand from center
-    crop (960, 540, 0, 0)
-    linear 1.0 crop (0, 0, 1920, 1080)
+    zoom 0.0 alpha 0.0
+    linear 1.0 zoom 1.0 alpha 1.0
 
 define radial_wipe = ComposeTransition(
     radial_out, Pause(0.05), radial_in
@@ -74,7 +59,6 @@ define radial_wipe = ComposeTransition(
 
 # 4. LIGHTNING FLASH TRANSITION
 image lightning_flash:
-    # White flash overlay
     Solid("#ffffff")
     alpha 0.0
     linear 0.05 alpha 1.0
@@ -83,14 +67,13 @@ image lightning_flash:
     linear 0.1 alpha 0.0
 
 transform lightning_shake:
-    # Screen shake effect
-    linear 0.0 xoffset 0 yoffset 0
+    xoffset 0 yoffset 0
     linear 0.02 xoffset 5 yoffset -3
     linear 0.02 xoffset -4 yoffset 2
     linear 0.02 xoffset 3 yoffset -4
     linear 0.02 xoffset -2 yoffset 3
     linear 0.02 xoffset 0 yoffset 0
-    linear 0.3 xoffset 0 yoffset 0  # Settle
+    linear 0.3 xoffset 0 yoffset 0
 
 transform lightning_out:
     alpha 1.0
@@ -106,30 +89,23 @@ transform lightning_in:
     parallel:
         linear 0.3 alpha 1.0
 
-define lightning_flash_transition = MultipleTransition([
-    False, Pause(0.1),
-    "lightning_flash", Pause(0.3),
-    False, Pause(0.1),
-    True, lightning_in
-])
+define lightning_flash_transition = ComposeTransition(
+    lightning_out, Pause(0.1), lightning_in
+)
 
 # 5. PIXEL DISSOLVE TRANSITION
+# Note: Real pixelation requires custom shaders. This simulates with blur.
 transform pixel_dissolve_out:
-    # Pixelated breakdown effect
-    alpha 1.0
+    alpha 1.0 blur 0
     parallel:
-        # Gradual pixelation (simulated with blur and scaling)
-        linear 0.5 blur 0
-        linear 0.5 blur 10
+        linear 1.0 blur 10
     parallel:
-        # Random alpha flicker
-        block:
-            linear 0.1 alpha 1.0
-            linear 0.1 alpha 0.7
-            linear 0.1 alpha 1.0
-            linear 0.1 alpha 0.5
-            linear 0.1 alpha 0.8
-            linear 0.5 alpha 0.0
+        linear 0.1 alpha 1.0
+        linear 0.1 alpha 0.7
+        linear 0.1 alpha 1.0
+        linear 0.1 alpha 0.5
+        linear 0.1 alpha 0.8
+        linear 0.5 alpha 0.0
 
 transform pixel_dissolve_in:
     alpha 0.0 blur 10
@@ -142,65 +118,62 @@ define pixel_dissolve = ComposeTransition(
     pixel_dissolve_out, Pause(0.1), pixel_dissolve_in
 )
 
-# BONUS: CLASSIC BATTLE SWIPE (Horizontal)
+# 6. CLASSIC BATTLE SWIPE (using proper crop)
+# Create a mask image for better results
+image battle_swipe_mask:
+    "images/swipe_mask.png"  # Black to white gradient from left to right
+
+# Alternative simple version using movement
 transform battle_swipe_out:
-    crop (0, 0, 1920, 1080)
-    linear 0.8 crop (1920, 0, 0, 1080)  # Wipe left to right
+    xoffset 0
+    linear 0.8 xoffset -1920
 
 transform battle_swipe_in:
-    crop (0, 0, 0, 1080)
-    linear 0.8 crop (0, 0, 1920, 1080)
+    xoffset 1920
+    linear 0.8 xoffset 0
 
 define battle_swipe = ComposeTransition(
     battle_swipe_out, Pause(0.05), battle_swipe_in
 )
 
-# USAGE EXAMPLES IN YOUR SCRIPT:
+# 7. ZOOM BURST TRANSITION
+transform zoom_burst_out:
+    zoom 1.0 alpha 1.0
+    linear 0.5 zoom 3.0 alpha 0.0
 
-# Example usage in your game script:
-label start:
-    scene bg forest
-    "A wild enemy appears!"
+transform zoom_burst_in:
+    zoom 0.1 alpha 0.0
+    linear 0.5 zoom 1.0 alpha 1.0
 
-    # Use any of these transitions before battle scenes:
-    scene bg battle with ff_spiral
-    "Battle begins with FF-style spiral!"
+define zoom_burst = ComposeTransition(
+    zoom_burst_out, Pause(0.05), zoom_burst_in
+)
 
-    scene bg forest with glass_shatter
-    "The screen shatters dramatically!"
-
-    scene bg battle with radial_wipe
-    "Radial transition to battle!"
-
-    scene bg battle with lightning_flash_transition
-    "Lightning strikes!"
-
-    scene bg battle with pixel_dissolve
-    "Retro pixel dissolve effect!"
-
-    scene bg battle with battle_swipe
-    "Classic battle swipe!"
-
-    return
-
-# ADDITIONAL NOTES:
-# 1. For glass_shatter, create a "gui/overlay.png" with crack lines
-# 2. These work best at 1920x1080 resolution as specified
-# 3. You can adjust timing by changing the linear duration values
-# 4. Add sound effects with renpy.sound.play() for maximum impact
-# 5. Some effects may need additional images in your images folder
-
-# ADVANCED CUSTOMIZATION:
-# You can modify the duration, rotation angles, and movement distances
-# Example: Change linear 1.5 to linear 2.0 for slower transitions
-# Or modify rotate 720 to rotate 1080 for more spirals
-
-# For even more epic effects, combine with screen shake:
+# 8. SCREEN SHAKE HELPER
 transform epic_shake:
+    xoffset 0
+    linear 0.05 xoffset 10
+    linear 0.05 xoffset -10
+    linear 0.05 xoffset 8
+    linear 0.05 xoffset -8
     linear 0.05 xoffset 5
     linear 0.05 xoffset -5
     linear 0.05 xoffset 0
-    repeat 3
+
+# NOTES:
+# 1. Some transitions need custom images:
+#    - "images/crack_overlay.png" for glass shatter
+#    - "images/swipe_mask.png" for better swipe effect
+# 2. Test all transitions at your target resolution
+# 3. Add sound effects with "play sound" for better impact
+# 4. Adjust timing by changing linear duration values
+# 5. For true pixel effects, you'd need custom shaders
+
+# ADVANCED TIPS:
+# - Combine transitions with camera movement for more drama
+# - Use with statement variations: "with Dissolve(1.0)"
+# - Add particle effects using displayables
+# - Consider performance on slower devices
 
 screen battle_ui():
     # Boss image (centered top)
