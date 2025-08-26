@@ -137,7 +137,7 @@ screen main_menu():
         xpos gui.navigation_xpos
         yalign 0.43
         spacing gui.navigation_spacing
-        style_prefix "hl2_button"
+        style_prefix "hl2_button_text"
 
         textbutton _("Start"):
             action Start()
