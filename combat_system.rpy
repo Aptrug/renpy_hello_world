@@ -9,8 +9,6 @@ transform ff_spiral_out:
 transform ff_spiral_in:
     linear 1.5 rotate -720 zoom 1.0 alpha 1.0
 
-define ff_spiral_transition = ComposeTransition(ff_spiral_out, Pause(0.1), ff_spiral_in)
-
 # 2. GLASS SHATTER TRANSITION
 image shatter_overlay:
     "gui/overlay.png"  # Transparent PNG with cracks
@@ -25,8 +23,6 @@ transform glass_shatter_in:
     alpha 0.0
     linear 0.5 alpha 1.0 xoffset 0 yoffset 0 rotate 0
 
-define glass_shatter_transition = ComposeTransition(glass_shatter_out, Pause(0.1), glass_shatter_in)
-
 # 3. RADIAL WIPE TRANSITION (Iris effect)
 transform radial_out:
     zoom 1.0 alpha 1.0
@@ -35,8 +31,6 @@ transform radial_out:
 transform radial_in:
     zoom 0.0 alpha 0.0
     linear 1.0 zoom 1.0 alpha 1.0
-
-define radial_wipe_transition = ComposeTransition(radial_out, Pause(0.05), radial_in)
 
 # 4. LIGHTNING FLASH TRANSITION
 image lightning_flash:
@@ -54,8 +48,6 @@ transform lightning_shake:
     linear 0.02 xoffset -2 yoffset 3
     linear 0.02 xoffset 0 yoffset 0
 
-define lightning_flash_transition = ComposeTransition(lightning_flash, Pause(0.1), lightning_shake)
-
 # 5. PIXEL DISSOLVE TRANSITION
 transform pixel_dissolve_out:
     alpha 1.0
@@ -64,8 +56,6 @@ transform pixel_dissolve_out:
 transform pixel_dissolve_in:
     alpha 0.0
     linear 0.5 alpha 1.0
-
-define pixel_dissolve_transition = ComposeTransition(pixel_dissolve_out, Pause(0.1), pixel_dissolve_in)
 
 # BONUS: CLASSIC BATTLE SWIPE (Horizontal)
 transform battle_swipe_out:
@@ -76,9 +66,6 @@ transform battle_swipe_in:
     xalign 1.0
     linear 0.8 xalign 0.0
 
-define battle_swipe_transition = ComposeTransition(battle_swipe_out, Pause(0.05), battle_swipe_in)
-
-# USAGE EXAMPLES
 screen battle_ui():
     # Boss image (centered top)
     add "images/combat_system/boss.webp" xpos 0.5 ypos 0.1 anchor (0.5, 0.0)
