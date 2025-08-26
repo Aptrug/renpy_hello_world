@@ -8,7 +8,7 @@ default persistent.dialogue_box_opacity = 0.0
 
 default persistent.save_naming = False
 
-default persistent.game_menu_opacity = 0.8
+default persistent.game_menu_opacity = 0.7
 
 ##############################################################################
 # style quick_button_text:
