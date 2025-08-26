@@ -1,4 +1,4 @@
-# Got a problem, main_menu screen text doesn't change outline when changing persistent.text_outline_size from settings, requires restart for changes to take effect instead of being instantaneous
+# I want persistent.text_outline_size to affect all text in the game (including menu text etc) and not apply only to game dialogue text
 
 default persistent.quickmenu = True
 
@@ -145,28 +145,24 @@ screen main_menu():
             textbutton _("Start"):
                 action Start()
                 style "hl2_button"
-                text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
                 hover_sound "sounds/hover.opus"
                 activate_sound "sounds/bell.opus"
 
             textbutton _("Load"):
                 action ShowMenu("load")
                 style "hl2_button"
-                text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
                 hover_sound "sounds/hover.opus"
                 activate_sound "sounds/click.opus"
 
             textbutton _("Preferences"):
                 action ShowMenu("preferences")
                 style "hl2_button"
-                text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
                 hover_sound "sounds/hover.opus"
                 activate_sound "sounds/click.opus"
 
             textbutton _("Quit"):
                 action Quit(confirm=not main_menu)
                 style "hl2_button"
-                text_outlines [(persistent.text_outline_size, "#000", 0, 0)]
                 hover_sound "sounds/hover.opus"
                 activate_sound "sounds/click.opus"
 
@@ -179,8 +175,8 @@ screen main_menu():
 style hl2_button_text:
     color "#ffffff"  # White text
     hover_color "#ff9900"  # Orange on hover
-    # outlines [(persistent.text_outline_size, "#000", 0, 0)]
-    # hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
+    outlines [(persistent.text_outline_size, "#000", 0, 0)]
+    hover_outlines [(persistent.text_outline_size, "#000", 0, 0)]
     size 36
 
 ##############################################################################
@@ -569,7 +565,7 @@ screen preferences():
                         bar value Preference("auto-forward time")
 
                         label _("Text Outline (%d/6)") % persistent.text_outline_size
-                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider")
+                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider", action=Function(renpy.restart_interaction))
 
 
                         label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
