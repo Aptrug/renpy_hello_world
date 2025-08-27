@@ -163,9 +163,9 @@ screen battle_ui():
                         unhover_transform ally_idle
 
                         action [
-                                SetVariable("selected_ally", i),
-                                # Add your battle action here
-                                ]
+                            SetVariable("selected_ally", i),
+                            # Add your battle action here
+                        ]
 
                         # Touch/click feedback
                         hover_sound "audio/ui_hover.ogg" # Optional
