@@ -18,7 +18,7 @@ image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
 screen battle_ui():
-    $persistent.quickmenu = False
+    $quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
 
