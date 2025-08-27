@@ -55,79 +55,79 @@ transform zoom_out:
 transform spin_away:
     linear 1.0 rotate 360 alpha 0.0
 
-# ===== USAGE EXAMPLES =====
-label optimized_battle_demo:
-    scene bg forest
-    "Optimized battle transitions - choose your style!"
-
-    # Core transitions
-    scene bg battle with battle_dissolve
-    "Classic dissolve"
-
-    scene bg forest with battle_fast
-    "Quick battle start"
-
-    scene bg battle with battle_iris
-    "Iris zoom effect"
-
-    scene bg forest with battle_pixel
-    "Retro pixel style"
-
-    # Directional effects
-    scene bg battle with battle_right
-    "Side entrance"
-
-    scene bg forest with battle_push
-    "Push transition"
-
-    # Flash effects
-    scene bg battle with flash_red
-    "Fire battle!"
-
-    scene bg forest with flash_blue
-    "Ice magic!"
-
-    scene bg battle with flash_yellow
-    "Lightning strike!"
-
-    # Famous game styles
-    scene bg forest with pokemon_style
-    "Pokemon encounter!"
-
-    scene bg battle with mario_style
-    "Mario RPG spin!"
-
-    scene bg forest with retro_style
-    "Classic JRPG pixel!"
-
-    return
-
-# ===== ADVANCED USAGE =====
-# Combining effects for maximum impact
-
-label advanced_battle_effects:
-    # Sound + transition combo
-    play sound "battle_start.ogg"
-    scene bg battle with flash_white
-    "Epic battle begins!"
-
-    # Character movement with transition
-    scene bg forest with battle_left
-    show hero at center with moveinright
-    "Hero charges in!"
-
-    # Screen shake during dialogue
-    show bg battle at shake
-    "The ground trembles!"
-    show bg battle  # Reset position
-
-    # Quick sequence
-    scene bg forest with battle_fast
-    scene bg battle with flash_red
-    scene bg forest with battle_dissolve
-    "Combo attack sequence!"
-
-    return
+# # ===== USAGE EXAMPLES =====
+# label optimized_battle_demo:
+#     scene bg forest
+#     "Optimized battle transitions - choose your style!"
+#
+#     # Core transitions
+#     scene bg battle with battle_dissolve
+#     "Classic dissolve"
+#
+#     scene bg forest with battle_fast
+#     "Quick battle start"
+#
+#     scene bg battle with battle_iris
+#     "Iris zoom effect"
+#
+#     scene bg forest with battle_pixel
+#     "Retro pixel style"
+#
+#     # Directional effects
+#     scene bg battle with battle_right
+#     "Side entrance"
+#
+#     scene bg forest with battle_push
+#     "Push transition"
+#
+#     # Flash effects
+#     scene bg battle with flash_red
+#     "Fire battle!"
+#
+#     scene bg forest with flash_blue
+#     "Ice magic!"
+#
+#     scene bg battle with flash_yellow
+#     "Lightning strike!"
+#
+#     # Famous game styles
+#     scene bg forest with pokemon_style
+#     "Pokemon encounter!"
+#
+#     scene bg battle with mario_style
+#     "Mario RPG spin!"
+#
+#     scene bg forest with retro_style
+#     "Classic JRPG pixel!"
+#
+#     return
+#
+# # ===== ADVANCED USAGE =====
+# # Combining effects for maximum impact
+#
+# label advanced_battle_effects:
+#     # Sound + transition combo
+#     play sound "battle_start.ogg"
+#     scene bg battle with flash_white
+#     "Epic battle begins!"
+#
+#     # Character movement with transition
+#     scene bg forest with battle_left
+#     show hero at center with moveinright
+#     "Hero charges in!"
+#
+#     # Screen shake during dialogue
+#     show bg battle at shake
+#     "The ground trembles!"
+#     show bg battle  # Reset position
+#
+#     # Quick sequence
+#     scene bg forest with battle_fast
+#     scene bg battle with flash_red
+#     scene bg forest with battle_dissolve
+#     "Combo attack sequence!"
+#
+#     return
 
 # ===== PERFORMANCE NOTES =====
 # 1. All transitions use Ren'Py built-ins (fastest performance)
