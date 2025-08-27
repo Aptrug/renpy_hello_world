@@ -2,7 +2,7 @@
 # I've just started working on it, so it's pretty unimpressive right now
 # Portability & efficiency is priority (I want to target mobile users too)
 
-# I want to make the images feel... more alive, like they're real
+# I want to make the images feel... more alive, like they're real or 3D
 # Any ways to do that?
 # PS. research what effects card games use to make cards more alive
 
@@ -33,7 +33,7 @@ screen battle_ui():
         yalign 0.95
         spacing 20
 
-        add "kanami" at idle_float
+        add "kanami" at pulse_glow
         add "kenshin"
         add "magic"
         add "rance" at slow_pulse
@@ -45,6 +45,12 @@ transform idle_float:
     yoffset 0
     linear 2.0 yoffset -5
     linear 2.0 yoffset 0
+    repeat
+
+transform pulse_glow:
+    alpha 0.5
+    linear 1.0 alpha 0.8
+    linear 1.0 alpha 0.5
     repeat
 
 transform slow_pulse:
