@@ -116,6 +116,8 @@ label start_battle:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
 
+    hide screen battle_ui
+
     scene forest with fade
 
     # Jump back to main story/dialogue
