@@ -87,18 +87,10 @@ label start:
     "Two"
     scene forest with battle_slow
     "Three"
-    scene swamp with battle_iris
-    "Four"
-    scene forest with battle_pixel
-    "Five"
-    scene swamp with battle_zoom
-    "Six"
-    scene forest with battle_spin
-    "Seven"
-    scene swamp with battle_push
-    "Eight"
     scene forest with flash_white
     "Nine"
+    scene forest with flash_black
+    "Ten"
 
     show rance startled with move
 
