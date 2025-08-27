@@ -1,3 +1,9 @@
+# Remember that execution speed is top priority, especially for low end devices & mobile
+
+init python:
+    renpy.image("boss", "images/combat_system/boss.webp")
+    renpy.image("allies_row", "images/combat_system/allies_row.webp")
+
 screen battle_ui():
     # Full feldgrau background
     add Solid("#4D5D53")
