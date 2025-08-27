@@ -23,13 +23,10 @@ default persistent.quickmenu_bak = 0
 
 screen battle_ui():
     $persistent.quickmenu = False
-    $quickmenu = False
     if persistent.quickmenu:
-        # $persistent.quickmenu = False
         $quickmenu_bak = 2
     else:
         $quickmenu_bak = 1
-    # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
 
