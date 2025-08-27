@@ -36,7 +36,7 @@ screen battle_ui():
         add "kanami" at pulse_glow
         add "kenshin" at ally_hover
         add "magic" at gentle_float
-        add "rance" at selected_glow
+        add "rance" at ally_selected_effect
         add "reset" at ally_idle
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
