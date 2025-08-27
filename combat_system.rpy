@@ -33,11 +33,11 @@ define flash_black = Fade(0.2, 0.3, 0.2, color="#000")      # Dark/mystery
 # ===== FAMOUS GAME STYLES =====
 # Simplified versions of iconic game transitions
 
-define pokemon_style = flash_white             # Pokemon encounter
-define ff_style = flash_white                  # Final Fantasy
-define zelda_style = battle_right              # Zelda room change
-define mario_style = battle_spin               # Mario RPG
-define retro_style = battle_pixel              # Classic JRPG
+# define pokemon_style = flash_white             # Pokemon encounter
+# define ff_style = flash_white                  # Final Fantasy
+# define zelda_style = battle_right              # Zelda room change
+# define mario_style = battle_spin               # Mario RPG
+# define retro_style = battle_pixel              # Classic JRPG
 
 # ===== SCREEN EFFECTS =====
 # Simple transforms for show/hide animations
