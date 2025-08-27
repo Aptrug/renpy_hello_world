@@ -51,6 +51,9 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
+        if qm == 1:
+            persistent.quickmenu = False
+
 # Bunch of effects, some used, some not
 transform idle_float:
     yoffset 0
