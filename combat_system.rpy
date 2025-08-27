@@ -53,6 +53,7 @@ screen battle_ui():
 
         if qm == 1:
             persistent.quickmenu = False
+            qm = 0
 
 # Bunch of effects, some used, some not
 transform idle_float:
