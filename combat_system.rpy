@@ -1,6 +1,6 @@
 screen battle_ui():
-    # Full black background
-    add Solid("#000")
+    # Full feldgrau background
+    add Solid("#4D5D53")
 
     # Boss image (top 70% of screen with top margin)
     add "images/combat_system/boss.webp" at boss_resize
