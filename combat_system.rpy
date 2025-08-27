@@ -3,7 +3,11 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     # Boss image (top 70% of screen with top margin)
-    add "images/combat_system/boss.webp" at boss_resize
+    add "images/combat_system/boss.webp":
+        xalign 0.5
+        yalign 0.0
+        yoffset 30
+        zoom 0.7
 
     # Allies row (bottom center)
     hbox:
@@ -18,10 +22,3 @@ screen battle_ui():
         add "images/combat_system/reset.webp"
         add "images/combat_system/sachiko.webp"
         add "images/combat_system/suzume.webp"
-
-# Simplified transform for boss
-transform boss_resize:
-    xalign 0.5
-    yalign 0.0
-    yoffset 30   # top margin
-    zoom 0.7     # 70% height
