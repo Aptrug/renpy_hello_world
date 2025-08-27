@@ -1,4 +1,4 @@
-# Remember that execution speed is top priority, especially for low end devices & mobile
+# Portability & efficiency is priority (I want to target mobile users too)
 
 init python:
     renpy.image("boss", "images/combat_system/boss.webp")
