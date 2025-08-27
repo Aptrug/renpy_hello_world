@@ -21,26 +21,6 @@ image suzume = "images/combat_system/suzume.webp"
 # 1 in battle
 default persistent.qmenu_bak = 0
 
-label start_battle:
-    if persistent.quickmenu:
-        $persistent.qmenu_bak = 2
-    else:
-        $persistent.qmenu_bak = 1
-    $persistent.quickmenu = False
-
-    show screen battle_ui
-
-    "A wild boss appears!"
-    "Kanami attacks!"
-    "Boss retaliates!"
-
-    if persistent.qmenu_bak == 2:
-        $persistent.quickmenu = True
-    $persistent.qmenu_bak = 0
-
-    # Jump back to main story/dialogue
-    jump after_battle
-
 screen battle_ui():
     # Feldgrau background
     add Solid("#4D5D53")
@@ -117,3 +97,32 @@ transform gentle_float:
 
 transform ally_idle:
     linear 0.25 zoom 1.0
+
+
+label start_battle:
+    if persistent.quickmenu:
+        $persistent.qmenu_bak = 2
+    else:
+        $persistent.qmenu_bak = 1
+    $persistent.quickmenu = False
+
+    show screen battle_ui
+
+    "A wild boss appears!"
+    "Kanami attacks!"
+    "Boss retaliates!"
+
+    if persistent.qmenu_bak == 2:
+        $persistent.quickmenu = True
+    $persistent.qmenu_bak = 0
+
+    # Jump back to main story/dialogue
+    jump after_battle
+
+label after_battle:
+    "The battle is over, and the heroes catch their breath."
+    "Kanami: That was intense!"
+    "Rance: Let's keep moving."
+
+    # Continue with normal story
+    return
