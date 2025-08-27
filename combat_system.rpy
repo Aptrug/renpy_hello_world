@@ -32,6 +32,7 @@ image white_flash:
 define lightning_flash = MultipleTransition([
     False, Pause(0.1),
     "white_flash", Pause(0.25),
+    "white_flash", Pause(0.1),
     True
 ])
 
@@ -199,7 +200,8 @@ image pokemon_swirl:
 define pokemon_battle = MultipleTransition([
     False, Fade(0.1, 0.0, 0.0, color="#fff"),
     "pokemon_swirl", Pause(0.4),
-    True, Fade(0.0, 0.0, 0.1)
+    "pokemon_swirl", Fade(0.0, 0.0, 0.1),
+    True
 ])
 
 # 2. FINAL FANTASY VIII SWOOSH
@@ -228,6 +230,7 @@ image codec_static:
 define mgs_codec = MultipleTransition([
     False, Pause(0.1),
     "codec_static", Pause(0.2),
+    "codec_static", Pause(0.1),
     True
 ])
 
@@ -248,7 +251,8 @@ image earthbound_swirl:
 define earthbound_battle = MultipleTransition([
     False, Pause(0.05),
     "earthbound_swirl", Pause(0.4),
-    True, fast_dissolve
+    "earthbound_swirl", fast_dissolve,
+    True
 ])
 
 # 7. RESIDENT EVIL DOOR TRANSITION
