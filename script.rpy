@@ -81,11 +81,11 @@ label start:
     mc bored "Wait, I feel something..."
 
     # scene swamp with ff_spiral
-    scene forest with spiralleft
+    scene forest with pixelslide
     "One"
-    scene swamp with spiralup
+    scene swamp with spinslide
     "Two"
-    scene forest with spiraldown
+    scene forest with zoomfade
     "Three"
     scene swamp with quickwipe
     "Four"
