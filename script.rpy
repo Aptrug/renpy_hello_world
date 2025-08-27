@@ -82,14 +82,23 @@ label start:
 
     # scene swamp with ff_spiral
     scene forest with battle_dissolve
+    "One"
     scene swamp with battle_fast
+    "Two"
     scene forest with battle_slow
+    "Three"
     scene swamp with battle_iris
+    "Four"
     scene forest with battle_pixel
+    "Five"
     scene swamp with battle_zoom
+    "Six"
     scene forest with battle_spin
+    "Seven"
     scene swamp with battle_push
+    "Eight"
     scene forest with flash_white
+    "Nine"
 
     show rance startled with move
 
