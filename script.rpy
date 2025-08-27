@@ -89,6 +89,7 @@ label start:
     scene swamp with battle_zoom
     scene forest with battle_spin
     scene swamp with battle_push
+    scene forest with flash_white
 
     show rance startled with move
 
