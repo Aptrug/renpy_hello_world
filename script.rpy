@@ -87,13 +87,13 @@ label start:
     "Two"
     scene forest with zoomfade
     "Three"
-    scene swamp with quickwipe
+    scene swamp with flash_gray
     "Four"
-    scene forest with slowwipe
+    scene forest with flash_white
     "Five"
-    scene swamp with battle_zoom
+    scene swamp with flash_black
     "Six"
-    scene forest with battle_spin
+    scene forest with colorshift
     "Seven"
     scene swamp with battle_push
     "Eight"
