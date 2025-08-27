@@ -25,12 +25,12 @@ screen battle_ui():
         xalign 0.5
         yalign 0.0
         yoffset 30
-        zoom 0.6
+        zoom 0.7
 
     # Allies row, bottom center
     hbox:
         xalign 0.5
-        yalign 0.0
+        yalign 1.0
         spacing 20
 
         add "kanami" at idle_float
