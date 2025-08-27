@@ -81,15 +81,15 @@ label start:
     mc bored "Wait, I feel something..."
 
     # scene swamp with ff_spiral
-    scene forest with gearwipe
+    scene forest with crosswipe
     "One"
-    scene swamp with shutterwipe
+    scene swamp with cornerpeel
     "Two"
-    scene forest with circuitwipe
+    scene forest with mosaicwipe
     "Three"
-    scene swamp with conveyorwipe
+    scene swamp with radialwipe
     "Four"
-    scene forest with angleblinds
+    scene forest with ringswipe
     "Five"
     scene swamp with battle_zoom
     "Six"
