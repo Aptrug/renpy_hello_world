@@ -81,12 +81,22 @@ label start:
     mc bored "Wait, I feel something..."
 
     # scene swamp with ff_spiral
-    scene forest with battle_dissolve
+    scene forest with ripplewipe
     "One"
-    scene swamp with glitchwipe
+    scene swamp with flamewipe
     "Two"
-    scene forest with battle_slow
+    scene forest with lightningwipe
     "Three"
+    scene swamp with inkblotwipe
+    "Four"
+    scene forest with leafwipe
+    "Five"
+    scene swamp with battle_zoom
+    "Six"
+    scene forest with battle_spin
+    "Seven"
+    scene swamp with battle_push
+    "Eight"
     scene forest with flash_white
     "Nine"
     scene forest with flash_black
