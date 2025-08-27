@@ -24,13 +24,13 @@ screen battle_ui():
     add "boss" at idle_float:
         xalign 0.5
         yalign 0.0
-        yoffset 30
+        # yoffset 30
         zoom 0.65
 
     # Allies row, bottom center
     hbox:
         xalign 0.5
-        yalign 0.9
+        yalign 0.95
         spacing 20
 
         add "kanami" at idle_float
