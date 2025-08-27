@@ -50,7 +50,7 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
-        if $qmenu_bak == 2:
+        if qmenu_bak == 2:
             $persistent.quickmenu = True
         $qmenu_bak = 0
 
