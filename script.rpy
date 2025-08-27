@@ -23,6 +23,8 @@ label start:
 
     show screen battle_ui
 
+    "URAAAAAAA!"
+
     return
 
     play music "music/rancex.opus" volume 0.8
