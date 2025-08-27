@@ -41,6 +41,7 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
+# Bunch of effects, some used, some not
 transform idle_float:
     yoffset 0
     linear 2.0 yoffset -5
@@ -59,13 +60,11 @@ transform slow_pulse:
     linear 1.5 alpha 0.9
     repeat
 
-# Play it when they attack
 transform hit_shake:
     linear 0.1 xoffset 10
     linear 0.1 xoffset -10
     linear 0.1 xoffset 0
 
-#####
 transform ally_selected_effect:
     matrixcolor BrightnessMatrix(0.3)
     linear 0.8 matrixcolor BrightnessMatrix(0.1)
