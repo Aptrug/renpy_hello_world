@@ -81,80 +81,47 @@ label start:
     mc bored "Wait, I feel something..."
 
     scene forest
-    "Testing working battle transitions..."
+    "Experience iconic video game transitions!"
 
-    # === DISSOLVE FAMILY ===
-    scene swamp with dissolve
-    "Standard dissolve"
+    # Pokemon style
+    scene swamp with pokemon_battle
+    "A wild Pokémon appears! (Pokemon-style swirl)"
 
-    scene forest with slow_dissolve
-    "Slow dramatic dissolve"
+    # Final Fantasy VIII
+    scene forest with ff8_swoosh
+    "Final Fantasy VIII swoosh effect!"
 
-    scene swamp with fast_dissolve
-    "Quick dissolve"
+    # 2D Zelda
+    scene swamp with zelda_slide_right
+    "Link walks to the next screen (Zelda-style slide)"
 
-    # === FADE FAMILY ===
-    scene forest with fade_to_black
-    "Fade to black and back"
+    # Metal Gear Solid
+    scene forest with mgs_codec
+    "Codec call incoming! (MGS static effect)"
 
-    scene swamp with camera_flash
-    "Camera flash effect"
+    # Chrono Trigger
+    scene swamp with chrono_battle
+    "Chrono Trigger battle flash!"
 
-    scene forest with red_flash
-    "Red flash (damage indicator)"
+    # Earthbound
+    scene forest with earthbound_battle
+    "You cannot grasp the true form of this transition! (Earthbound)"
 
-    # === SLIDE FAMILY ===
-    scene swamp with battle_swipe
-    "Slide right transition"
+    # Resident Evil
+    scene swamp with re_door
+    "Opening door... (Resident Evil style)"
 
-    scene forest with battle_swipe_left
-    "Slide left transition"
+    # Street Fighter
+    scene forest with sf_versus_flash
+    "VERSUS! (Street Fighter flash)"
 
-    scene swamp with battle_swipe_up
-    "Slide up transition"
+    # Super Mario RPG
+    scene swamp with mario_rpg_spin
+    "Mario RPG battle spin!"
 
-    # === PUSH FAMILY ===
-    scene swamp with battle_push_right
-    "Push right transition"
-
-    scene forest with battle_push_left
-    "Push left transition"
-
-    # === IRIS/WIPE FAMILY ===
-    scene swamp with radial_wipe
-    "Iris in transition"
-
-    scene forest with battle_iris_out
-    "Iris out transition"
-
-    scene swamp with battle_wipe_right
-    "Wipe right transition"
-
-    # === SPECIAL EFFECTS ===
-    scene forest with pixel_dissolve
-    "Pixel dissolve (retro style)"
-
-    scene swamp with zoom_burst
-    "Zoom in/out burst"
-
-    scene forest with battle_swing
-    "3D swing transition"
-
-    scene swamp with lightning_flash
-    "Lightning flash"
-
-    # === MOVE TRANSITIONS (Work with character movements) ===
-    scene forest with spin_move
-    "Spin move transition"
-
-    scene swamp with zoom_move
-    "Zoom move transition"
-
-    scene forest
-    show forest at screen_shake
-    show forest  # Return to normal position
-    scene forest with red_flash
-    scene swamp with camera_flash
+    # Dragon Quest
+    scene forest with dq_battle
+    "An enemy draws near! (Dragon Quest)"
 
     show rance startled with move
 

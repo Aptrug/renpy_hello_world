@@ -83,6 +83,189 @@ define battle_wipe_right = CropMove(1.0, "wiperight")
 define battle_wipe_left = CropMove(1.0, "wipeleft")
 
 # ===== USAGE EXAMPLES =====
+label battle_transitions_demo:
+    scene forest
+    "Testing working battle transitions..."
+
+    # === DISSOLVE FAMILY ===
+    scene swamp with dissolve
+    "Standard dissolve"
+
+    scene forest with slow_dissolve
+    "Slow dramatic dissolve"
+
+    scene swamp with fast_dissolve
+    "Quick dissolve"
+
+    # === FADE FAMILY ===
+    scene forest with fade_to_black
+    "Fade to black and back"
+
+    scene swamp with camera_flash
+    "Camera flash effect"
+
+    scene forest with red_flash
+    "Red flash (damage indicator)"
+
+    # === SLIDE FAMILY ===
+    scene swamp with battle_swipe
+    "Slide right transition"
+
+    scene forest with battle_swipe_left
+    "Slide left transition"
+
+    scene swamp with battle_swipe_up
+    "Slide up transition"
+
+    # === PUSH FAMILY ===
+    scene swamp with battle_push_right
+    "Push right transition"
+
+    scene forest with battle_push_left
+    "Push left transition"
+
+    # === IRIS/WIPE FAMILY ===
+    scene swamp with radial_wipe
+    "Iris in transition"
+
+    scene forest with battle_iris_out
+    "Iris out transition"
+
+    scene swamp with battle_wipe_right
+    "Wipe right transition"
+
+    # === SPECIAL EFFECTS ===
+    scene forest with pixel_dissolve
+    "Pixel dissolve (retro style)"
+
+    scene swamp with zoom_burst
+    "Zoom in/out burst"
+
+    scene forest with battle_swing
+    "3D swing transition"
+
+    scene swamp with lightning_flash
+    "Lightning flash"
+
+    # === MOVE TRANSITIONS (Work with character movements) ===
+    scene forest with spin_move
+    "Spin move transition"
+
+    scene swamp with zoom_move
+    "Zoom move transition"
+
+    return
+
+# ===== ADVANCED USAGE EXAMPLES =====
+
+# Combining transitions with character animations
+label character_battle_entrance:
+    scene swamp with camera_flash
+    show hero at center with moveinleft
+    "Hero bursts into battle!"
+
+    hide hero with spin_out
+    "Hero spins away!"
+    return
+
+# Screen shake during dialogue (doesn't interfere with scene transitions)
+label earthquake_scene:
+    scene forest
+    show forest at screen_shake
+    "The ground trembles!"
+    show forest  # Return to normal position
+    return
+
+# Multiple flash sequence
+label dramatic_reveal:
+    scene forest with red_flash
+    pause 0.5
+    scene swamp with camera_flash
+    "A dramatic reveal!"
+    return
+
+# ===== FAMOUS VIDEO GAME TRANSITIONS =====
+
+# 1. POKEMON BATTLE TRANSITION (Classic swirl/whoosh)
+# The iconic encounter transition from Pokemon games
+image pokemon_swirl:
+    Solid("#000000")
+    alpha 0.0
+    linear 0.1 alpha 1.0
+    linear 0.2 alpha 0.8
+    linear 0.1 alpha 1.0
+    linear 0.2 alpha 0.0
+
+define pokemon_battle = MultipleTransition([
+    False, Fade(0.1, 0.0, 0.0, color="#fff"),
+    "pokemon_swirl", Pause(0.4),
+    True, Fade(0.0, 0.0, 0.1)
+])
+
+# 2. FINAL FANTASY VIII SWOOSH
+# The famous "swoosh" battle transition effect
+define ff8_swoosh = Fade(0.05, 0.0, 0.3, color="#fff")
+
+# 3. ZELDA SCREEN SLIDE
+# Classic 2D Zelda room-to-room transition
+define zelda_slide_right = CropMove(0.8, "slideright")
+define zelda_slide_left = CropMove(0.8, "slideleft")
+define zelda_slide_up = CropMove(0.8, "slideup")
+define zelda_slide_down = CropMove(0.8, "slidedown")
+
+# 4. METAL GEAR SOLID CODEC SCREEN
+# The distortion effect when entering codec calls
+image codec_static:
+    Solid("#ffffff")
+    alpha 0.0
+    block:
+        linear 0.02 alpha 0.3
+        linear 0.02 alpha 0.1
+        linear 0.02 alpha 0.4
+        linear 0.02 alpha 0.0
+        repeat 3
+
+define mgs_codec = MultipleTransition([
+    False, Pause(0.1),
+    "codec_static", Pause(0.2),
+    True
+])
+
+# 5. CHRONO TRIGGER BATTLE FLASH
+# The bright flash followed by battle screen
+define chrono_battle = Fade(0.05, 0.1, 0.4, color="#ffffff")
+
+# 6. EARTHBOUND PSYCHEDELIC SWIRL
+# The trippy battle transition effect
+image earthbound_swirl:
+    Solid("#ff00ff")
+    alpha 0.0
+    linear 0.1 alpha 0.8
+    linear 0.2 alpha 0.4
+    linear 0.1 alpha 0.9
+    linear 0.2 alpha 0.0
+
+define earthbound_battle = MultipleTransition([
+    False, Pause(0.05),
+    "earthbound_swirl", Pause(0.4),
+    True, fast_dissolve
+])
+
+# 7. RESIDENT EVIL DOOR TRANSITION
+# The famous door opening black fade
+define re_door = Fade(0.3, 0.5, 0.3, color="#000000")
+
+# 8. STREET FIGHTER VERSUS SCREEN FLASH
+# The dramatic flash before character select/battle
+define sf_versus_flash = Fade(0.02, 0.02, 0.3, color="#ffff00")
+
+# 9. MARIO RPG BATTLE SPIN
+# The spinning transition from Super Mario RPG
+define mario_rpg_spin = Swing(0.8, vertical=False)
+
+# 10. DRAGON QUEST BATTLE WHOOSH
+# Classic JRPG encounter transition
+define dq_battle = Fade(0.1, 0.05, 0.4, color="#000080")
 
 # ===== PERFORMANCE & COMPATIBILITY NOTES =====
 # 1. All these transitions are tested and work in Ren'Py 8.x
@@ -91,8 +274,10 @@ define battle_wipe_left = CropMove(1.0, "wipeleft")
 # 4. Avoid ComposeTransition unless you really know what you're doing
 # 5. MultipleTransition is perfect for flash effects
 # 6. ImageDissolve requires custom mask images but creates unique effects
-# 7. Always test on your target platform/device
-# 8. Keep transition times reasonable (0.3-2.0 seconds) for good UX
+# 7. Famous game transitions use simple but effective techniques
+# 8. Always test on your target platform/device
+# 9. Keep transition times reasonable (0.3-2.0 seconds) for good UX
+# 10. Add sound effects to make transitions more authentic!
 
 screen battle_ui():
     # Boss image (centered top)
