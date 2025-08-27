@@ -23,9 +23,9 @@ default persistent.qmenu_bak = 0
 
 screen battle_ui():
     if persistent.quickmenu:
-        $qmenu_bak = 2
+        $persistent.qmenu_bak = 2
     else:
-        $qmenu_bak = 1
+        $persistent.qmenu_bak = 1
     $persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
@@ -50,9 +50,9 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
-        if qmenu_bak == 2:
+        if persistent.qmenu_bak == 2:
             $persistent.quickmenu = True
-        $qmenu_bak = 0
+        $persistent.qmenu_bak = 0
 
 # Bunch of effects, some used, some not
 transform idle_float:
