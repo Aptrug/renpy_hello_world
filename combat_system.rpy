@@ -19,16 +19,16 @@ image suzume = "images/combat_system/suzume.webp"
 
 # 0 out of battle
 # 1 in battle
-default persistent.qm = 0
+default persistent.quickmenu_bak = 0
 
 screen battle_ui():
     $persistent.quickmenu = False
     $quickmenu = False
     if persistent.quickmenu:
         # $persistent.quickmenu = False
-        $qm = 2
+        $quickmenu_bak = 2
     else:
-        $qm = 1
+        $quickmenu_bak = 1
     # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
@@ -53,9 +53,9 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
-        if qm == 2:
+        if quickmenu_bak == 2:
             $persistent.quickmenu = True
-        $qm = 0
+        $quickmenu_bak = 0
 
 # Bunch of effects, some used, some not
 transform idle_float:
