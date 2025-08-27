@@ -30,13 +30,16 @@ label start_battle:
 
     show screen battle_ui
 
-    ""
+    "A wild boss appears!"
+    "Kanami attacks!"
+    "Boss retaliates!"
 
     if persistent.qmenu_bak == 2:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
 
-    return
+    # Jump back to main story/dialogue
+    jump after_battle
 
 screen battle_ui():
     # Feldgrau background
