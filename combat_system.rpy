@@ -22,11 +22,11 @@ image suzume = "images/combat_system/suzume.webp"
 default persistent.qmenu_bak = 0
 
 screen battle_ui():
-    $persistent.quickmenu = False
     if persistent.quickmenu:
         $qmenu_bak = 2
     else:
         $qmenu_bak = 1
+    $persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
 
