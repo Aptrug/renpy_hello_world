@@ -19,6 +19,11 @@
 # define left = Position(xpos=0.1, xanchor=0.0)
 
 label start:
+    scene maison_1920x1080 with fade
+
+    call start_battle
+
+    return
 
     play music "music/rancex.opus" volume 0.8
     # Show a background. This uses a placeholder by default, but you can
