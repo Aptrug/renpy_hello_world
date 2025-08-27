@@ -17,6 +17,10 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
+# 0 out of battle
+# 1 in battle
+default persistent.battle_state = 0
+
 screen battle_ui():
     persistent.quickmenu = False
     # Feldgrau background
