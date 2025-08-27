@@ -1,5 +1,5 @@
-# Unified Combat System for RenPy - Proper Syntax
-# Uses correct RenPy alpha/transparency methods
+# Unified Combat System for RenPy - Actually Correct Syntax
+# Using only verified RenPy imagebutton properties
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
@@ -11,48 +11,43 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
-# Unified transforms
+# Create hover versions using transforms for each ally
+transform ally_hover_effect:
+    zoom 1.08
+    matrixcolor BrightnessMatrix(0.2)
+
+transform ally_selected_effect:
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
+    repeat
+
+# Boss breathing animation
 transform boss_breathe:
     yoffset 30 zoom 0.7
     linear 3.0 yoffset 25 zoom 0.72
     linear 3.0 yoffset 30 zoom 0.7
     repeat
 
-transform ally_hover:
-    zoom 1.0
-    linear 0.25 zoom 1.08
-
-transform ally_idle:
-    linear 0.25 zoom 1.0
-
-transform selected_glow:
-    matrixcolor BrightnessMatrix(0.3)
-    linear 0.8 matrixcolor BrightnessMatrix(0.1)
-    linear 0.8 matrixcolor BrightnessMatrix(0.3)
-    repeat
-
+# Gentle floating for allies
 transform gentle_float:
     yoffset 0
     linear 4.0 yoffset -8
     linear 4.0 yoffset 0
     repeat
 
-transform damage_flash:
-    matrixcolor TintMatrix("#FF4444")
-    linear 0.15 matrixcolor TintMatrix("#FFFFFF")
-    linear 0.15 matrixcolor TintMatrix("#FF4444")
-    linear 0.15 matrixcolor IdentityMatrix()
-
 # Game state variables
 default selected_ally = None
 default boss_health = 100
 
+# Define ally names for display
+define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
+
 # Main unified battle screen
 screen battle_ui():
-    # Background layers for depth
+    # Background layers
     add Solid("#4D5D53")
 
-    # Semi-transparent overlays using alpha in add statements
     add Solid("#000000"):
         alpha 0.15
         ysize 120
@@ -69,9 +64,9 @@ screen battle_ui():
         yalign 0.05
         spacing 15
 
-        # Health bar frame - using hexadecimal alpha
+        # Health bar
         frame:
-            background Solid("#00000099")  # 60% opacity black
+            background Solid("#00000099")
             padding (15, 8)
             xalign 0.5
 
@@ -117,14 +112,14 @@ screen battle_ui():
     # Selected ally info
     if selected_ally is not None:
         frame:
-            background Solid("#000000B3")  # 70% opacity black
+            background Solid("#000000B3")
             padding (15, 8)
             xalign 0.5
             yalign 0.75
 
             text "Selected: [selected_ally_names[selected_ally]]" size 16 color "#FFFFFF" xalign 0.5
 
-    # Allies section
+    # Allies section using imagebuttons with proper syntax
     hbox:
         xalign 0.5
         yalign 0.82
@@ -140,18 +135,15 @@ screen battle_ui():
                     xalign 0.5
                     size (60, 12)
 
-                imagebutton:
-                    idle ally_name
-                    hover ally_name
-                    at gentle_float
-
-                    if selected_ally == i:
-                        at selected_glow
-
-                    hover_transform ally_hover
-                    unhover_transform ally_idle
-
-                    action SetVariable("selected_ally", i)
+                # Use proper imagebutton with idle/hover images
+                if selected_ally == i:
+                    add ally_name:
+                        at gentle_float, ally_selected_effect
+                else:
+                    imagebutton:
+                        idle Transform(ally_name, at_list=[gentle_float])
+                        hover Transform(ally_name, at_list=[gentle_float, ally_hover_effect])
+                        action SetVariable("selected_ally", i)
 
 # Battle actions screen
 screen battle_actions():
@@ -159,7 +151,7 @@ screen battle_actions():
         frame:
             xalign 0.5
             yalign 0.95
-            background Solid("#000000CC")  # 80% opacity black
+            background Solid("#000000CC")
             padding (20, 10)
 
             hbox:
@@ -183,9 +175,6 @@ screen battle_actions():
 screen battle_main():
     use battle_ui
     use battle_actions
-
-# Ally names for display
-define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
 
 # Example usage
 label battle_start:
