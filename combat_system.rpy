@@ -103,13 +103,13 @@ transform custom_spin(duration=1.0, *, new_widget=None, old_widget=None):
 
     # Animate old widget (spinning out)
     old_widget:
-    events False  # Don't let it receive clicks
+        events False  # Don't let it receive clicks
         rotate 0.0 alpha 1.0
         easeout (duration/2) rotate 360.0 alpha 0.0
 
     # Animate new widget (spinning in)
     new_widget:
-    events True   # Let it receive clicks
+        events True   # Let it receive clicks
         rotate -360.0 alpha 0.0
         easein (duration/2) rotate 0.0 alpha 1.0
 
