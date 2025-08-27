@@ -65,3 +65,39 @@ transform hit_shake:
     linear 0.1 xoffset 10
     linear 0.1 xoffset -10
     linear 0.1 xoffset 0
+
+#####
+transform ally_selected_effect:
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
+    repeat
+
+transform boss_breathe:
+    yoffset 30 zoom 0.7
+    linear 3.0 yoffset 25 zoom 0.72
+    linear 3.0 yoffset 30 zoom 0.7
+    repeat
+
+transform ally_hover_effect:
+    zoom 1.08
+    matrixcolor BrightnessMatrix(0.2)
+
+transform ally_hover:
+    zoom 1.0
+    linear 0.25 zoom 1.08
+
+transform gentle_float:
+    yoffset 0
+    linear 4.0 yoffset -8
+    linear 4.0 yoffset 0
+    repeat
+
+transform selected_glow:
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
+    repeat
+
+transform ally_idle:
+    linear 0.25 zoom 1.0
