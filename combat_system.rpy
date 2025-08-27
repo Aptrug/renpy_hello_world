@@ -21,14 +21,15 @@ image suzume = "images/combat_system/suzume.webp"
 # 1 in battle
 default persistent.qmenu_bak = 0
 
-label battle_initialization:
+label battle_main:
     if persistent.quickmenu:
         $persistent.qmenu_bak = 2
     else:
         $persistent.qmenu_bak = 1
     $persistent.quickmenu = False
 
-lable battle_finalization:
+    show screen battle_ui
+
     if persistent.qmenu_bak == 2:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
