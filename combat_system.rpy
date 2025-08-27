@@ -21,6 +21,10 @@ image suzume = "images/combat_system/suzume.webp"
 # 1 in battle
 default persistent.qmenu_bak = 0
 
+init python:
+    if persistent.qmenu_bak == 2:
+        persistent.quickmenu = True
+
 screen battle_ui():
     # Feldgrau background
     add Solid("#4D5D53")
