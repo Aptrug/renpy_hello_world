@@ -33,6 +33,8 @@ label start:
 
     scene swamp with flash_black
 
+    "Good!"
+
     return
 
     play music "music/rancex.opus" volume 0.8
