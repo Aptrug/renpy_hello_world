@@ -80,7 +80,6 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    # scene swamp with ff_spiral
     scene forest with flash_black
     "One"
     scene swamp with flash_white
