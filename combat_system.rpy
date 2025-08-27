@@ -1,4 +1,10 @@
+# I'm making a combat system for my renpy game (hero party vs boss)
+# I've just started working on it, so it's pretty unimpressive right now
 # Portability & efficiency is priority (I want to target mobile users too)
+
+# I want to make the images feel... more alive, like they're real
+# Any ways to do that?
+# PS. research what effects card games use to make cards more alive
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
