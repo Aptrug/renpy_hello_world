@@ -124,8 +124,8 @@ label start_battle:
 
     hide screen battle_ui
 
-    $ renpy.block_rollback()
-    $ config.rollback_enabled = True
+    $renpy.block_rollback()
+    $config.rollback_enabled = True
 
     scene forest with fade
 
