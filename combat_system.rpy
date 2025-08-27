@@ -52,7 +52,7 @@ screen battle_ui():
         add "suzume" at ally_selected_effect
 
         if qm == 2:
-            $persistent.quickmenu = False
+            $persistent.quickmenu = True
         $qm = 0
 
 # Bunch of effects, some used, some not
