@@ -21,18 +21,10 @@ define camera_flash = Fade(0.1, 0.0, 0.5, color="#fff")
 define red_flash = Fade(0.1, 0.0, 0.3, color="#f00")
 
 # ===== FLASH EFFECTS =====
-image white_flash:
-    Solid("#ffffff")
-    alpha 0.0
-    linear 0.05 alpha 1.0
-    linear 0.1 alpha 0.7
-    linear 0.05 alpha 1.0
-    linear 0.1 alpha 0.0
-
 define lightning_flash = MultipleTransition([
+    False, Fade(0.05, 0.0, 0.0, color="#ffffff"),
     False, Pause(0.1),
-    "white_flash", Pause(0.25),
-    "white_flash", Pause(0.1),
+    False, Fade(0.0, 0.0, 0.2),
     True
 ])
 
@@ -187,88 +179,52 @@ label dramatic_reveal:
 
 # ===== FAMOUS VIDEO GAME TRANSITIONS =====
 
-# 1. POKEMON BATTLE TRANSITION (Classic swirl/whoosh)
-# The iconic encounter transition from Pokemon games
-image pokemon_swirl:
-    Solid("#000000")
-    alpha 0.0
-    linear 0.1 alpha 1.0
-    linear 0.2 alpha 0.8
-    linear 0.1 alpha 1.0
-    linear 0.2 alpha 0.0
-
+# 1. POKEMON BATTLE TRANSITION (Simplified - no missing images)
 define pokemon_battle = MultipleTransition([
     False, Fade(0.1, 0.0, 0.0, color="#fff"),
-    "pokemon_swirl", Pause(0.4),
-    "pokemon_swirl", Fade(0.0, 0.0, 0.1),
+    False, Pause(0.2),
+    False, Fade(0.0, 0.0, 0.3),
     True
 ])
 
 # 2. FINAL FANTASY VIII SWOOSH
-# The famous "swoosh" battle transition effect
 define ff8_swoosh = Fade(0.05, 0.0, 0.3, color="#fff")
 
 # 3. ZELDA SCREEN SLIDE
-# Classic 2D Zelda room-to-room transition
 define zelda_slide_right = CropMove(0.8, "slideright")
 define zelda_slide_left = CropMove(0.8, "slideleft")
 define zelda_slide_up = CropMove(0.8, "slideup")
 define zelda_slide_down = CropMove(0.8, "slidedown")
 
-# 4. METAL GEAR SOLID CODEC SCREEN
-# The distortion effect when entering codec calls
-image codec_static:
-    Solid("#ffffff")
-    alpha 0.0
-    block:
-        linear 0.02 alpha 0.3
-        linear 0.02 alpha 0.1
-        linear 0.02 alpha 0.4
-        linear 0.02 alpha 0.0
-        repeat 3
-
+# 4. METAL GEAR SOLID CODEC SCREEN (Simplified)
 define mgs_codec = MultipleTransition([
     False, Pause(0.1),
-    "codec_static", Pause(0.2),
-    "codec_static", Pause(0.1),
+    False, Fade(0.05, 0.0, 0.0, color="#ffffff"),
+    False, Pause(0.1),
     True
 ])
 
 # 5. CHRONO TRIGGER BATTLE FLASH
-# The bright flash followed by battle screen
 define chrono_battle = Fade(0.05, 0.1, 0.4, color="#ffffff")
 
-# 6. EARTHBOUND PSYCHEDELIC SWIRL
-# The trippy battle transition effect
-image earthbound_swirl:
-    Solid("#ff00ff")
-    alpha 0.0
-    linear 0.1 alpha 0.8
-    linear 0.2 alpha 0.4
-    linear 0.1 alpha 0.9
-    linear 0.2 alpha 0.0
-
+# 6. EARTHBOUND PSYCHEDELIC BATTLE (Simplified)
 define earthbound_battle = MultipleTransition([
-    False, Pause(0.05),
-    "earthbound_swirl", Pause(0.4),
-    "earthbound_swirl", fast_dissolve,
+    False, Fade(0.1, 0.0, 0.0, color="#ff00ff"),
+    False, Pause(0.2),
+    False, Fade(0.0, 0.0, 0.3, color="#ff00ff"),
     True
 ])
 
 # 7. RESIDENT EVIL DOOR TRANSITION
-# The famous door opening black fade
 define re_door = Fade(0.3, 0.5, 0.3, color="#000000")
 
 # 8. STREET FIGHTER VERSUS SCREEN FLASH
-# The dramatic flash before character select/battle
 define sf_versus_flash = Fade(0.02, 0.02, 0.3, color="#ffff00")
 
 # 9. MARIO RPG BATTLE SPIN
-# The spinning transition from Super Mario RPG
 define mario_rpg_spin = Swing(0.8, vertical=False)
 
 # 10. DRAGON QUEST BATTLE WHOOSH
-# Classic JRPG encounter transition
 define dq_battle = Fade(0.1, 0.05, 0.4, color="#000080")
 
 # ===== PERFORMANCE & COMPATIBILITY NOTES =====
