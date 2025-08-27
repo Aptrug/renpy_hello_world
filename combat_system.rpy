@@ -30,6 +30,8 @@ label start_battle:
 
     show screen battle_ui
 
+    ""
+
     if persistent.qmenu_bak == 2:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
