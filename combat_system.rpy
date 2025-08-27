@@ -25,7 +25,7 @@ screen battle_ui():
     if persistent.quickmenu:
         $persistent.quickmenu = False
         $qm = 2
-    else
+    else:
         $qm = 1
     # if persistent.quickmenu = False
     # Feldgrau background
