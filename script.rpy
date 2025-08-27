@@ -21,6 +21,8 @@
 label start:
     scene maison_1920x1080 with fade
 
+    "CHAAAAAAARGE!"
+
     show screen battle_ui
 
     "URAAAAAAA!"
