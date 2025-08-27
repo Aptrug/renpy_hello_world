@@ -23,7 +23,7 @@ default persistent.qmenu_bak = 0
 
 screen battle_ui():
     $persistent.quickmenu = False
-    if persistent.quickmenu:
+    if $persistent.quickmenu:
         $qmenu_bak = 2
     else:
         $qmenu_bak = 1
@@ -50,7 +50,7 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
-        if qmenu_bak == 2:
+        if $qmenu_bak == 2:
             $persistent.quickmenu = True
         $qmenu_bak = 0
 
