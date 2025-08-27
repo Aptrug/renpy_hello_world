@@ -80,44 +80,53 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    # Built-in transitions (always reliable)
+    scene forest
+    "Testing optimized battle transitions..."
+
+    # === RELIABLE BUILT-INS ===
     scene swamp with dissolve
-    "Standard dissolve"
+    "Standard dissolve - always works"
 
     scene forest with radial_wipe
-    "Iris wipe transition"
+    "Iris wipe - smooth and fast"
 
     scene swamp with pixel_dissolve
-    "Retro pixel effect"
+    "Pixel dissolve - retro style"
 
     scene forest with battle_swipe
-    "Horizontal swipe"
+    "Battle swipe - classic effect"
 
     scene swamp with zoom_burst
-    "Zoom in/out effect"
+    "Zoom burst - dramatic entrance"
 
     scene forest with battle_swing
-    "3D flip transition"
+    "3D swing - modern transition"
 
+    # === FLASH EFFECTS ===
     scene swamp with lightning_flash
-    "Lightning flash effect"
+    "Lightning flash - intense!"
 
     scene forest with camera_flash
-    "Camera flash"
+    "Camera flash - bright effect"
 
-    # Custom ATL transitions
-    scene swamp with battle_spiral
-    "Custom battle spiral"
+    scene swamp with red_flash
+    "Red flash - damage indicator"
 
-    scene forest with shatter_transition
-    "Shatter effect"
+    # === CUSTOM TIMING ===
+    scene forest with slow_dissolve
+    "Slow dissolve - dramatic buildup"
 
-    scene swamp with zoom_burst_transition
-    "Custom zoom burst"
+    scene swamp with fast_dissolve
+    "Fast dissolve - quick action"
 
-    scene forest with spin_transition
-    "Spinning transition"
+    # === COMPOSITE EFFECTS ===
+    scene forest with spin_dissolve
+    "Spin dissolve combo"
 
+    scene swamp with zoom_dissolve
+    "Zoom dissolve combo"
+
+    scene swamp with lightning_flash
     show rance startled with move
 
     play sound "sounds/teleport.opus"
