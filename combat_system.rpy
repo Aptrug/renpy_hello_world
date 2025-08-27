@@ -40,7 +40,7 @@ screen battle_ui():
         add "rance" at selected_glow
         add "reset" at ally_idle
         add "sachiko" at ally_hover_effect
-        add "suzume"
+        add "suzume" at ally_selected_effect
 
 transform idle_float:
     yoffset 0
