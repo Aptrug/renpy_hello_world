@@ -415,6 +415,7 @@ screen screen_save_name(slot):
 screen language_picker():
 
     modal True
+    key "K_ESCAPE" action Hide("language_picker")
     frame:
         style "menu_frame"
         xalign 0.5
