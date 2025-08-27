@@ -36,6 +36,8 @@ label start_battle:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
 
+    return
+
 screen battle_ui():
     # Feldgrau background
     add Solid("#4D5D53")
