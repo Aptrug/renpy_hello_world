@@ -90,7 +90,6 @@ define zoomfade = ComposeTransition(Dissolve(0.6), before=zoomout, after=zoomin)
 define spinslide = ComposeTransition(slideright, before=Swing(0.5), after=None)
 define pixelslide = ComposeTransition(slidedown, before=Pixellate(0.4, 4), after=None)
 
-
 # ===== CORE BATTLE TRANSITIONS =====
 # Fast, reliable transitions using optimized built-ins
 
