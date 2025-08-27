@@ -2,13 +2,12 @@
 
 screen battle_ui():
     # Boss image (centered top)
-    add "images/combat_system/boss.webp" xpos 0.5 ypos 0.1 anchor (0.5, 0.0)
+    add "images/combat_system/boss.webp" xalign 0.5 yalign 0.0
 
     # Allies row (bottom), occupy bottom space evenly
     hbox:
-        xpos 0.5
-        ypos 0.9
-        anchor (0.5, 1.0)
+        xalign 0.5
+        yalign 1.0
         spacing 20
 
         add "images/combat_system/kanami.webp"
