@@ -22,7 +22,7 @@ image suzume = "images/combat_system/suzume.webp"
 default persistent.qm = 0
 
 screen battle_ui():
-    $persistent.quickmenu = False
+    persistent.quickmenu = False
     if persistent.quickmenu:
         # $persistent.quickmenu = False
         $qm = 2
