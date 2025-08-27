@@ -110,6 +110,8 @@ label start_battle:
         $persistent.qmenu_bak = 1
     $persistent.quickmenu = False
 
+    $config.rollback_enabled = False
+
     show screen battle_ui
 
     "A wild boss appears!"
@@ -121,6 +123,9 @@ label start_battle:
     $persistent.qmenu_bak = 0
 
     hide screen battle_ui
+
+    $ renpy.block_rollback()
+    $ config.rollback_enabled = True
 
     scene forest with fade
 
