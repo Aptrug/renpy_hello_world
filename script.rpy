@@ -29,6 +29,10 @@ label start:
 
     "URAAAAAAA!"
 
+    "HAHAHAHAHA!"
+
+    scene swamp with flash_black
+
     return
 
     play music "music/rancex.opus" volume 0.8
