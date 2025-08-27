@@ -81,52 +81,81 @@ label start:
     mc bored "Wait, I feel something..."
 
     scene forest
-    "Testing optimized battle transitions..."
+    "Testing working battle transitions..."
 
-    # === RELIABLE BUILT-INS ===
+    # === DISSOLVE FAMILY ===
     scene swamp with dissolve
-    "Standard dissolve - always works"
+    "Standard dissolve"
 
-    scene forest with radial_wipe
-    "Iris wipe - smooth and fast"
-
-    scene swamp with pixel_dissolve
-    "Pixel dissolve - retro style"
-
-    scene forest with battle_swipe
-    "Battle swipe - classic effect"
-
-    scene swamp with zoom_burst
-    "Zoom burst - dramatic entrance"
-
-    scene forest with battle_swing
-    "3D swing - modern transition"
-
-    # === FLASH EFFECTS ===
-    scene swamp with lightning_flash
-    "Lightning flash - intense!"
-
-    scene forest with camera_flash
-    "Camera flash - bright effect"
-
-    scene swamp with red_flash
-    "Red flash - damage indicator"
-
-    # === CUSTOM TIMING ===
     scene forest with slow_dissolve
-    "Slow dissolve - dramatic buildup"
+    "Slow dramatic dissolve"
 
     scene swamp with fast_dissolve
-    "Fast dissolve - quick action"
+    "Quick dissolve"
 
-    # === COMPOSITE EFFECTS ===
-    scene forest with spin_dissolve
-    "Spin dissolve combo"
+    # === FADE FAMILY ===
+    scene forest with fade_to_black
+    "Fade to black and back"
 
-    scene swamp with zoom_dissolve
-    "Zoom dissolve combo"
+    scene swamp with camera_flash
+    "Camera flash effect"
+
+    scene forest with red_flash
+    "Red flash (damage indicator)"
+
+    # === SLIDE FAMILY ===
+    scene swamp with battle_swipe
+    "Slide right transition"
+
+    scene forest with battle_swipe_left
+    "Slide left transition"
+
+    scene swamp with battle_swipe_up
+    "Slide up transition"
+
+    # === PUSH FAMILY ===
+    scene swamp with battle_push_right
+    "Push right transition"
+
+    scene forest with battle_push_left
+    "Push left transition"
+
+    # === IRIS/WIPE FAMILY ===
+    scene swamp with radial_wipe
+    "Iris in transition"
+
+    scene forest with battle_iris_out
+    "Iris out transition"
+
+    scene swamp with battle_wipe_right
+    "Wipe right transition"
+
+    # === SPECIAL EFFECTS ===
+    scene forest with pixel_dissolve
+    "Pixel dissolve (retro style)"
+
+    scene swamp with zoom_burst
+    "Zoom in/out burst"
+
+    scene forest with battle_swing
+    "3D swing transition"
 
     scene swamp with lightning_flash
+    "Lightning flash"
+
+    # === MOVE TRANSITIONS (Work with character movements) ===
+    scene forest with spin_move
+    "Spin move transition"
+
+    scene swamp with zoom_move
+    "Zoom move transition"
+
+    scene forest
+    show forest at screen_shake
+    show forest  # Return to normal position
+    scene forest with red_flash
+    scene swamp with camera_flash
+
     show rance startled with move
 
     play sound "sounds/teleport.opus"
