@@ -93,11 +93,5 @@ transform gentle_float:
     linear 4.0 yoffset 0
     repeat
 
-transform selected_glow:
-    matrixcolor BrightnessMatrix(0.3)
-    linear 0.8 matrixcolor BrightnessMatrix(0.1)
-    linear 0.8 matrixcolor BrightnessMatrix(0.3)
-    repeat
-
 transform ally_idle:
     linear 0.25 zoom 1.0
