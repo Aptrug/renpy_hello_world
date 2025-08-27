@@ -18,6 +18,7 @@ image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
 screen battle_ui():
+    quick_menu = False
     # Feldgrau background
     add Solid("#4D5D53")
 
