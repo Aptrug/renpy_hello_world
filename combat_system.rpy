@@ -15,7 +15,7 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     # Boss image, centered top, 70% height, top margin 30px
-    add "boss":
+    add boss:
         xalign 0.5
         yalign 0.0
         yoffset 30
@@ -27,10 +27,10 @@ screen battle_ui():
         yalign 1.0
         spacing 20
 
-        add "kanami"
-        add "kenshin"
-        add "magic"
-        add "rance"
-        add "reset"
-        add "sachiko"
-        add "suzume"
+        add kanami
+        add kenshin
+        add magic
+        add rance
+        add reset
+        add sachiko
+        add suzume
