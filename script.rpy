@@ -25,7 +25,15 @@ label start:
 
     $ boss_health = 100
     $ selected_ally = None
-    call screen battle_main
+
+    # Main battle loop
+    while boss_health > 0:
+        call screen battle_main
+
+        # Check for victory condition
+        if boss_health <= 0:
+            call screen victory_screen
+            jump after_battle
 
 
     with flash_white
