@@ -105,6 +105,44 @@ transform gentle_float:
 transform ally_idle:
     linear 0.25 zoom 1.0
 
+# === Extra Effects (High Impact, Low Cost) ===
+
+# Quick "anticipation" zoom before attacks, then reset
+transform attack_zoom:
+    zoom 1.0
+    linear 0.15 zoom 1.1
+    linear 0.15 zoom 1.0
+
+# Simple white flash overlay for hits
+transform hit_flash:
+    alpha 0.0
+    linear 0.05 alpha 0.6
+    linear 0.2 alpha 0.0
+
+# Smooth health bar changes (use on bar images)
+transform smooth_hp:
+    linear 0.5 xzoom 1.0  # You'd adjust size dynamically, this smooths it visually
+
+# Floating damage numbers or text (up and fade out)
+transform damage_float:
+    yoffset 0 alpha 1.0
+    linear 0.8 yoffset -40 alpha 0.0
+
+# Attack "impact shake" (slightly bigger than hit_shake)
+transform impact_shake:
+    linear 0.05 xoffset 15
+    linear 0.05 xoffset -15
+    linear 0.05 xoffset 10
+    linear 0.05 xoffset -10
+    linear 0.05 xoffset 0
+
+# Parallax-like background drift
+transform bg_drift:
+    xpos 0.0
+    linear 20.0 xpos -50.0
+    linear 20.0 xpos 0.0
+    repeat
+
 label start_battle:
     if persistent.quickmenu:
         $persistent.qmenu_bak = 2
