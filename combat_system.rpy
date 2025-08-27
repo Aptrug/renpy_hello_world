@@ -24,7 +24,6 @@ default persistent.qmenu_bak = 0
 screen battle_ui():
     $persistent.quickmenu = False
     if persistent.quickmenu:
-        exit
         $qmenu_bak = 2
     else:
         $qmenu_bak = 1
