@@ -59,6 +59,7 @@ transform slow_pulse:
     linear 1.5 alpha 0.9
     repeat
 
+# Play it when they attack
 transform hit_shake:
     linear 0.1 xoffset 10
     linear 0.1 xoffset -10
