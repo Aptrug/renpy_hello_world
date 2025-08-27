@@ -17,8 +17,9 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
-# 0 out of battle
-# 1 in battle
+# 0 all good
+# 1 still all good
+# 2 must re-enable quickmenu later
 default persistent.qmenu_bak = 0
 
 init python:
