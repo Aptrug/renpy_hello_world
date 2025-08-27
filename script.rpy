@@ -80,48 +80,13 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene forest
-    "Experience iconic video game transitions!"
-
-    # Pokemon style
-    scene swamp with pokemon_battle
-    "A wild Pokémon appears! (Pokemon-style swirl)"
-
-    # Final Fantasy VIII
-    scene forest with ff8_swoosh
-    "Final Fantasy VIII swoosh effect!"
-
-    # 2D Zelda
-    scene swamp with zelda_slide_right
-    "Link walks to the next screen (Zelda-style slide)"
-
-    # Metal Gear Solid
-    scene forest with mgs_codec
-    "Codec call incoming! (MGS static effect)"
-
-    # Chrono Trigger
-    scene swamp with chrono_battle
-    "Chrono Trigger battle flash!"
-
-    # Earthbound
-    scene forest with earthbound_battle
-    "You cannot grasp the true form of this transition! (Earthbound)"
-
-    # Resident Evil
-    scene swamp with re_door
-    "Opening door... (Resident Evil style)"
-
-    # Street Fighter
-    scene forest with sf_versus_flash
-    "VERSUS! (Street Fighter flash)"
-
-    # Super Mario RPG
-    scene swamp with mario_rpg_spin
-    "Mario RPG battle spin!"
-
-    # Dragon Quest
-    scene forest with dq_battle
-    "An enemy draws near! (Dragon Quest)"
+    # scene swamp with ff_spiral
+    scene swamp with ff_spiral
+    scene swamp with glass_shatter
+    scene swamp with radial_wipe
+    scene swamp with lightning_flash_transition
+    scene swamp with pixel_dissolve
+    scene swamp with battle_swipe
 
     show rance startled with move
 
