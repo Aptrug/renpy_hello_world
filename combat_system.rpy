@@ -1,5 +1,5 @@
-# Complete Combat System for RenPy - Fixed and Optimized
-# All syntax verified for RenPy 8.x compatibility
+# Complete Combat System for RenPy - CORRECTED VERSION
+# Using only verified RenPy syntax from official documentation
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
@@ -11,11 +11,16 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
-# Transform definitions
-transform ally_hover_effect:
-    zoom 1.08
-    matrixcolor BrightnessMatrix(0.2)
+# Create hover versions of each ally image
+image kanami_hover = Transform("kanami", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image kenshin_hover = Transform("kenshin", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image magic_hover = Transform("magic", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image rance_hover = Transform("rance", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image reset_hover = Transform("reset", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image sachiko_hover = Transform("sachiko", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
+image suzume_hover = Transform("suzume", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
 
+# Transform definitions
 transform ally_selected_effect:
     matrixcolor BrightnessMatrix(0.3)
     linear 0.8 matrixcolor BrightnessMatrix(0.1)
@@ -118,7 +123,7 @@ screen battle_ui():
 
             text "Selected: [selected_ally_names[selected_ally]]" size 16 color "#FFFFFF" xalign 0.5
 
-    # Allies section - FIXED VERSION
+    # Allies section - WORKING VERSION
     hbox:
         xalign 0.5
         yalign 0.82
@@ -134,28 +139,18 @@ screen battle_ui():
                     xalign 0.5
                     size (60, 12)
 
-                # Ally display - fixed approach
+                # Ally display - proper RenPy syntax
                 if selected_ally == i:
                     # Selected ally with pulsing effect
                     add ally_name:
                         at gentle_float, ally_selected_effect
                 else:
-                    # Non-selected ally with button functionality
-                    button:
-                        background None
+                    # Non-selected ally with imagebutton
+                    imagebutton:
+                        idle ally_name
+                        hover ally_name + "_hover"
+                        at gentle_float
                         action SetVariable("selected_ally", i)
-
-                        # Base ally image with floating
-                        add ally_name:
-                            at gentle_float
-
-                        # Hover overlay (invisible but provides hover effect)
-                        add ally_name:
-                            alpha 0.0
-                            hover_transform:
-                                alpha 1.0
-                                zoom 1.08
-                                matrixcolor BrightnessMatrix(0.2)
 
 # Battle actions screen
 screen battle_actions():
