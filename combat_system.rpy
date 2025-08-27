@@ -1,5 +1,5 @@
-# Unified Combat System for RenPy - Mobile & Desktop Compatible
-# Fixed RenPy syntax - tested patterns only
+# Unified Combat System for RenPy - Proper Syntax
+# Uses correct RenPy alpha/transparency methods
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
@@ -11,12 +11,7 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
-# Create semi-transparent backgrounds as images
-image bg_overlay = Solid("#000000")
-image bg_main = Solid("#4D5D53")
-image bg_shadow = Solid("#000000")
-
-# Unified transforms - lightweight but effective
+# Unified transforms
 transform boss_breathe:
     yoffset 30 zoom 0.7
     linear 3.0 yoffset 25 zoom 0.72
@@ -55,14 +50,15 @@ default boss_health = 100
 # Main unified battle screen
 screen battle_ui():
     # Background layers for depth
-    add "bg_main"
+    add Solid("#4D5D53")
 
-    add "bg_overlay":
+    # Semi-transparent overlays using alpha in add statements
+    add Solid("#000000"):
         alpha 0.15
         ysize 120
         yalign 0.0
 
-    add "bg_overlay":
+    add Solid("#000000"):
         alpha 0.1
         ysize 80
         yalign 1.0
@@ -73,10 +69,9 @@ screen battle_ui():
         yalign 0.05
         spacing 15
 
-        # Health bar frame
+        # Health bar frame - using hexadecimal alpha
         frame:
-            background Solid("#000000")
-            alpha 0.6
+            background Solid("#00000099")  # 60% opacity black
             padding (15, 8)
             xalign 0.5
 
@@ -92,7 +87,7 @@ screen battle_ui():
                     right_bar Solid("#333333")
 
         # Boss with shadow
-        add "bg_shadow":
+        add Solid("#000000"):
             alpha 0.25
             xalign 0.5
             yalign 1.0
@@ -122,8 +117,7 @@ screen battle_ui():
     # Selected ally info
     if selected_ally is not None:
         frame:
-            background Solid("#000000")
-            alpha 0.7
+            background Solid("#000000B3")  # 70% opacity black
             padding (15, 8)
             xalign 0.5
             yalign 0.75
@@ -141,7 +135,7 @@ screen battle_ui():
                 spacing -5
 
                 # Shadow for each ally
-                add "bg_shadow":
+                add Solid("#000000"):
                     alpha 0.2
                     xalign 0.5
                     size (60, 12)
@@ -165,8 +159,7 @@ screen battle_actions():
         frame:
             xalign 0.5
             yalign 0.95
-            background Solid("#000000")
-            alpha 0.8
+            background Solid("#000000CC")  # 80% opacity black
             padding (20, 10)
 
             hbox:
@@ -193,3 +186,10 @@ screen battle_main():
 
 # Ally names for display
 define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
+
+# Example usage
+label battle_start:
+    $ boss_health = 100
+    $ selected_ally = None
+
+    call screen battle_main
