@@ -24,9 +24,9 @@ default persistent.qm = 0
 screen battle_ui():
     if persistent.quickmenu:
         persistent.quickmenu = False
-        qm = 1
+        qm = 2
     else
-        qm = 0
+        qm = 1
     # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
@@ -51,7 +51,7 @@ screen battle_ui():
         add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
-        if qm == 1:
+        if qm == 2:
             persistent.quickmenu = False
             qm = 0
 
