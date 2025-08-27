@@ -80,9 +80,9 @@ label start:
 
     mc bored "Wait, I feel something..."
 
-    scene forest with flash_black
+    scene forest with flash_white
     "One"
-    scene swamp with flash_white
+    scene swamp with flash_black
     "Two"
 
     show rance startled with move
