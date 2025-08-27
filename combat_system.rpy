@@ -22,7 +22,7 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     # Boss image, centered top, 70% height, top margin 30px
-    add "boss" at idle_float:
+    add "boss" at boss_breathe:
         xalign 0.5
         yalign 0.1
         # yoffset 30
@@ -35,11 +35,11 @@ screen battle_ui():
         spacing 20
 
         add "kanami" at pulse_glow
-        add "kenshin"
-        add "magic" at hit_shake
-        add "rance" at slow_pulse
-        add "reset"
-        add "sachiko"
+        add "kenshin" at ally_hover
+        add "magic" at gentle_float
+        add "rance" at selected_glow
+        add "reset" at ally_idle
+        add "sachiko" at ally_hover_effect
         add "suzume"
 
 transform idle_float:
