@@ -415,7 +415,7 @@ screen screen_save_name(slot):
 screen language_picker():
 
     modal True
-    # screen disappears by pressing ESC or clicking anywhere outside it
+    # screen disappears by pressing ESC, RMB or clicking anywhere outside it
     dismiss action Hide("language_picker")
 
     frame:
