@@ -1,5 +1,5 @@
 # Unified Combat System for RenPy - Mobile & Desktop Compatible
-# Optimized effects that work smoothly on all devices
+# Fixed RenPy syntax - tested patterns only
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
@@ -11,6 +11,11 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
+# Create semi-transparent backgrounds as images
+image bg_overlay = Solid("#000000")
+image bg_main = Solid("#4D5D53")
+image bg_shadow = Solid("#000000")
+
 # Unified transforms - lightweight but effective
 transform boss_breathe:
     yoffset 30 zoom 0.7
@@ -19,16 +24,16 @@ transform boss_breathe:
     repeat
 
 transform ally_hover:
-    zoom 1.0 matrixcolor BrightnessMatrix(0.0)
-    linear 0.25 zoom 1.08 matrixcolor BrightnessMatrix(0.2)
+    zoom 1.0
+    linear 0.25 zoom 1.08
 
 transform ally_idle:
-    linear 0.25 zoom 1.0 matrixcolor BrightnessMatrix(0.0)
+    linear 0.25 zoom 1.0
 
 transform selected_glow:
-    matrixcolor BrightnessMatrix(0.3) * TintMatrix("#88DDFF")
-    linear 0.8 matrixcolor BrightnessMatrix(0.1) * TintMatrix("#88DDFF")
-    linear 0.8 matrixcolor BrightnessMatrix(0.3) * TintMatrix("#88DDFF")
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
     repeat
 
 transform gentle_float:
@@ -37,28 +42,30 @@ transform gentle_float:
     linear 4.0 yoffset 0
     repeat
 
+transform damage_flash:
+    matrixcolor TintMatrix("#FF4444")
+    linear 0.15 matrixcolor TintMatrix("#FFFFFF")
+    linear 0.15 matrixcolor TintMatrix("#FF4444")
+    linear 0.15 matrixcolor IdentityMatrix()
+
 # Game state variables
 default selected_ally = None
 default boss_health = 100
 
 # Main unified battle screen
 screen battle_ui():
-    # Multi-layer background for depth without heavy effects
-    add Solid("#3A4A40")
-    add Solid("#4D5D53") alpha 0.85
+    # Background layers for depth
+    add "bg_main"
 
-    # Subtle depth shadows (lightweight)
-    add Solid("#000000") alpha 0.15:
-        xsize config.screen_width
+    add "bg_overlay":
+        alpha 0.15
         ysize 120
         yalign 0.0
-        blur 8
 
-    add Solid("#000000") alpha 0.1:
-        xsize config.screen_width
+    add "bg_overlay":
+        alpha 0.1
         ysize 80
         yalign 1.0
-        blur 8
 
     # Boss area with health indicator
     vbox:
@@ -66,9 +73,10 @@ screen battle_ui():
         yalign 0.05
         spacing 15
 
-        # Health bar
+        # Health bar frame
         frame:
-            background Solid("#000000") alpha 0.6
+            background Solid("#000000")
+            alpha 0.6
             padding (15, 8)
             xalign 0.5
 
@@ -83,185 +91,105 @@ screen battle_ui():
                     left_bar Solid("#FF6B6B")
                     right_bar Solid("#333333")
 
-        # Boss with shadow and breathing
-        frame:
-            background None
-            padding (0, 0)
+        # Boss with shadow
+        add "bg_shadow":
+            alpha 0.25
             xalign 0.5
+            yalign 1.0
+            yoffset 38
+            zoom 0.7
 
-            # Simple shadow
-            add Solid("#000000") alpha 0.25:
-                xalign 0.5
-                yalign 1.0
-                yoffset 8
-                zoom 0.7
-                blur 12
-
+        if boss_health <= 30:
             add "boss":
-                xalign 0.5
-                yalign 0.0
                 at boss_breathe
-                # Visual feedback based on health
-                if boss_health <= 30:
-                    matrixcolor TintMatrix("#FF9999")
-                elif boss_health <= 60:
-                    matrixcolor TintMatrix("#FFCC99")
+                matrixcolor TintMatrix("#FF9999")
+        elif boss_health <= 60:
+            add "boss":
+                at boss_breathe
+                matrixcolor TintMatrix("#FFCC99")
+        else:
+            add "boss":
+                at boss_breathe
 
-    # Battle field surface illusion
-    add Solid("#2A3A30") alpha 0.2:
+    # Battle field surface
+    add Solid("#2A3A30"):
+        alpha 0.2
         xalign 0.5
         yalign 0.72
         xsize config.screen_width - 40
         ysize 180
-        blur 2
 
-    # Allies section with touch-friendly spacing
-    vbox:
+    # Selected ally info
+    if selected_ally is not None:
+        frame:
+            background Solid("#000000")
+            alpha 0.7
+            padding (15, 8)
+            xalign 0.5
+            yalign 0.75
+
+            text "Selected: [selected_ally_names[selected_ally]]" size 16 color "#FFFFFF" xalign 0.5
+
+    # Allies section
+    hbox:
         xalign 0.5
         yalign 0.82
-        spacing 10
+        spacing 18
 
-        # Optional ally info display
-        if selected_ally is not None:
-            frame:
-                background Solid("#000000") alpha 0.7
-                padding (15, 8)
-                xalign 0.5
+        for i, ally_name in enumerate(["kanami", "kenshin", "magic", "rance", "reset", "sachiko", "suzume"]):
+            vbox:
+                spacing -5
 
-                text "Selected: [selected_ally_names[selected_ally]]" size 16 color "#FFFFFF" xalign 0.5
+                # Shadow for each ally
+                add "bg_shadow":
+                    alpha 0.2
+                    xalign 0.5
+                    size (60, 12)
 
-        # Main ally selection row
-        hbox:
-            xalign 0.5
-            spacing 18  # Touch-friendly spacing
+                imagebutton:
+                    idle ally_name
+                    hover ally_name
+                    at gentle_float
 
-            for i, ally_name in enumerate(["kanami", "kenshin", "magic", "rance", "reset", "sachiko", "suzume"]):
-                frame:
-                    background None
-                    padding (0, 0)
+                    if selected_ally == i:
+                        at selected_glow
 
-                    # Subtle shadow for each ally
-                    add Solid("#000000") alpha 0.2:
-                        xalign 0.5
-                        yalign 1.0
-                        yoffset 5
-                        size (60, 12)
-                        blur 8
+                    hover_transform ally_hover
+                    unhover_transform ally_idle
 
-                    imagebutton:
-                        idle ally_name
-                        hover ally_name
+                    action SetVariable("selected_ally", i)
 
-                        # Floating animation
-                        at gentle_float
-
-                        # Selection highlighting
-                        if selected_ally == i:
-                            at selected_glow
-
-                        hover_transform ally_hover
-                        unhover_transform ally_idle
-
-                        action [
-                            SetVariable("selected_ally", i),
-                            # Add your battle action here
-                        ]
-
-                        # Touch/click feedback
-                        hover_sound "audio/ui_hover.ogg" # Optional
-                        activate_sound "audio/ui_select.ogg" # Optional
-
-# Ally names for UI display
-define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
-
-# Battle actions - example implementation
+# Battle actions screen
 screen battle_actions():
     if selected_ally is not None:
         frame:
             xalign 0.5
             yalign 0.95
-            background Solid("#000000") alpha 0.8
+            background Solid("#000000")
+            alpha 0.8
             padding (20, 10)
 
             hbox:
                 spacing 15
-                textbutton "Attack" action Call("battle_attack")
-                textbutton "Defend" action Call("battle_defend")
-                textbutton "Special" action Call("battle_special")
-                textbutton "Cancel" action SetVariable("selected_ally", None)
+                textbutton "Attack":
+                    action [
+                        SetVariable("boss_health", max(0, boss_health - renpy.random.randint(15, 25))),
+                        SetVariable("selected_ally", None)
+                    ]
+                textbutton "Defend":
+                    action SetVariable("selected_ally", None)
+                textbutton "Special":
+                    action [
+                        SetVariable("boss_health", max(0, boss_health - renpy.random.randint(25, 40))),
+                        SetVariable("selected_ally", None)
+                    ]
+                textbutton "Cancel":
+                    action SetVariable("selected_ally", None)
 
-# Main battle screen combining UI and actions
+# Main battle screen
 screen battle_main():
     use battle_ui
     use battle_actions
 
-# Damage feedback transform for hit reactions
-transform damage_flash:
-    matrixcolor TintMatrix("#FF4444")
-    linear 0.15 matrixcolor TintMatrix("#FFFFFF")
-    linear 0.15 matrixcolor TintMatrix("#FF4444")
-    linear 0.15 matrixcolor IdentityMatrix()
-
-# Victory/defeat animations
-transform victory_bounce:
-    yoffset 0
-    linear 0.3 yoffset -20
-    linear 0.3 yoffset 0
-    linear 0.2 yoffset -10
-    linear 0.2 yoffset 0
-
-# Example battle logic labels
-label battle_attack:
-    $ damage = renpy.random.randint(15, 25)
-    $ boss_health = max(0, boss_health - damage)
-
-    "You deal [damage] damage!"
-
-    # Visual feedback
-    show boss at damage_flash
-
-    if boss_health <= 0:
-        jump battle_victory
-    else:
-        jump battle_enemy_turn
-
-label battle_defend:
-    "You take a defensive stance!"
-    jump battle_enemy_turn
-
-label battle_special:
-    $ sp_damage = renpy.random.randint(25, 40)
-    $ boss_health = max(0, boss_health - sp_damage)
-
-    "Special attack for [sp_damage] damage!"
-
-    show boss at damage_flash
-
-    if boss_health <= 0:
-        jump battle_victory
-    else:
-        jump battle_enemy_turn
-
-label battle_enemy_turn:
-    "Boss attacks!"
-    # Add your enemy logic here
-    jump battle_player_turn
-
-label battle_player_turn:
-    $ selected_ally = None  # Reset selection
-    call screen battle_main
-
-label battle_victory:
-    show boss at victory_bounce
-    "Victory! The boss has been defeated!"
-    return
-
-# Example usage in your main script
-label start_battle:
-    scene black
-    "The battle begins!"
-
-    $ boss_health = 100
-    $ selected_ally = None
-
-    jump battle_player_turn
+# Ally names for display
+define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
