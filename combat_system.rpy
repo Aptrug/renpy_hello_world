@@ -1,6 +1,96 @@
 # Epic Battle Transitions for Ren'Py - OPTIMIZED & SIMPLIFIED
 # High-performance transitions using only built-in Ren'Py features
 
+# ===== GEOMETRIC PATTERN TRANSITIONS =====
+# Simple geometric effects using built-in classes
+
+define spiralwipe = Swing(0.8, vertical=False)          # Rotating spiral effect
+define diamondwipe = CropMove(0.8, "irisin")            # Diamond iris
+define starwipe = CropMove(1.0, "irisin")               # Star-like iris
+define hexwipe = CropMove(0.9, "wiperight")             # Hex-like wipe
+define trianglewipe = CropMove(0.7, "wipedown")         # Triangle wipe
+
+# ===== RETRO/PIXEL ART INSPIRED =====
+# Classic arcade and retro game styles
+
+define scanlinewipe = CropMove(0.8, "wipedown")         # Scanline sweep
+define glitchwipe = CropMove(0.6, "slideright")         # Glitchy slide
+define pixelburst = Pixellate(0.8, 4)                   # Chunky pixels
+define pixeldissolve = Pixellate(1.2, 6)                # Heavy pixelation
+define staticwipe = Dissolve(0.5)                       # Static-like dissolve
+
+# ===== ORGANIC/NATURAL PATTERNS =====
+# Nature-inspired smooth transitions
+
+define ripplewipe = CropMove(1.2, "irisin")             # Water ripple
+define flamewipe = CropMove(0.9, "wipeup")              # Fire lick
+define lightningwipe = CropMove(0.4, "wiperight")       # Lightning bolt
+define inkblotwipe = CropMove(1.0, "irisin")            # Ink spread
+define leafwipe = CropMove(1.3, "slidedown")            # Falling leaves
+
+# ===== MECHANICAL/TECH INSPIRED =====
+# Industrial and technological effects
+
+define gearwipe = Swing(1.0, vertical=True)             # Gear rotation
+define shutterwipe = CropMove(0.6, "irisin")            # Camera shutter
+define circuitwipe = CropMove(0.8, "wiperight")         # Circuit trace
+define conveyorwipe = CropMove(0.9, "slideright")       # Conveyor belt
+define angleblinds = CropMove(0.8, "wipedown")          # Angled blinds
+
+# ===== SIMPLE GEOMETRIC WIPES =====
+# Clean geometric patterns
+
+define crosswipe = CropMove(0.7, "irisin")              # Cross expand
+define cornerpeel = CropMove(1.0, "slideawayright")     # Corner peel
+define mosaicwipe = Pixellate(1.0, 3)                   # Mosaic blocks
+define radialwipe = CropMove(0.8, "irisin")             # Radial sweep
+define ringswipe = CropMove(1.1, "irisin")              # Concentric rings
+
+# ===== MINIMAL MODERN EFFECTS =====
+# Contemporary smooth transitions
+
+define elasticwipe = Dissolve(0.8)                      # Elastic feel
+define foldwipe = CropMove(0.6, "wipedown")             # Paper fold
+define slidefade = ComposeTransition(Dissolve(0.5), before=slideawayleft, after=slideright)
+define scalerotatewipe = Swing(0.9, vertical=False)     # Scale + rotate
+define colorshift = Fade(0.3, 0.1, 0.3, color="#ff00ff") # Color transition
+
+# ===== DIRECTIONAL VARIATIONS =====
+# Additional directional options
+
+define spiralleft = Swing(0.8, vertical=False, reverse=True)
+define spiralup = Swing(0.8, vertical=True)
+define spiraldown = Swing(0.8, vertical=True, reverse=True)
+
+define quickwipe = CropMove(0.3, "wiperight")           # Fast wipe
+define slowwipe = CropMove(1.8, "wiperight")            # Slow wipe
+
+# ===== FLASH & COLOR EFFECTS =====
+# Color-coded transitions for different moods
+
+define flash_green = Fade(0.05, 0.02, 0.3, color="#0f0")     # Nature/poison
+define flash_purple = Fade(0.05, 0.02, 0.3, color="#f0f")    # Magic/psychic
+define flash_orange = Fade(0.05, 0.02, 0.3, color="#f80")    # Fire/energy
+define flash_cyan = Fade(0.05, 0.02, 0.3, color="#0ff")      # Ice/tech
+
+# ===== SPEED VARIATIONS =====
+# Fast, normal, and slow versions of key transitions
+
+define fast_dissolve = Dissolve(0.2)                    # Quick fade
+define slow_dissolve = Dissolve(2.0)                    # Dramatic fade
+define fast_pixel = Pixellate(0.4, 3)                   # Quick pixels
+define slow_pixel = Pixellate(1.8, 8)                   # Slow heavy pixels
+define fast_swing = Swing(0.4)                          # Quick spin
+define slow_swing = Swing(1.6)                          # Slow dramatic spin
+
+# ===== COMBO TRANSITIONS =====
+# Combinations of existing effects
+
+define zoomfade = ComposeTransition(Dissolve(0.6), before=zoomout, after=zoomin)
+define spinslide = ComposeTransition(slideright, before=Swing(0.5), after=None)
+define pixelslide = ComposeTransition(slidedown, before=Pixellate(0.4, 4), after=None)
+
+
 # ===== CORE BATTLE TRANSITIONS =====
 # Fast, reliable transitions using optimized built-ins
 
