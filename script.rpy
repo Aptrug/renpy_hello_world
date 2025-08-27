@@ -24,7 +24,8 @@ label start:
     "HAHAHAHAHAHA!"
     "CHAAAAAAARGE!"
 
-    show screen battle_ui with flash_white
+    jump start_battle
+    # show screen battle_ui with flash_white
 
     "URAAAAAAA!"
 
