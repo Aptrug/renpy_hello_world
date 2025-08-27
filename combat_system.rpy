@@ -25,7 +25,6 @@ screen battle_ui():
     add "boss" at boss_breathe:
         xalign 0.5
         yalign 0.1
-        # yoffset 30
         zoom 0.65
 
     # Allies row, bottom center
