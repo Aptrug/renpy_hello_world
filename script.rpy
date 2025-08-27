@@ -24,6 +24,7 @@ label start:
     "CHAAAAAAARGE!"
 
     show screen battle_ui
+    with flash_white
 
     "URAAAAAAA!"
 
