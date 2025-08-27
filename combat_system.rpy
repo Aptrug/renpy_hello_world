@@ -21,7 +21,7 @@ image suzume = "images/combat_system/suzume.webp"
 # 1 in battle
 default persistent.qmenu_bak = 0
 
-label battle_main:
+label start_battle:
     if persistent.quickmenu:
         $persistent.qmenu_bak = 2
     else:
