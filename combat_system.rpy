@@ -21,11 +21,12 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     # Boss image, centered top, 70% height, top margin 30px
-    add "boss" at idle_float
+    add "boss"
         xalign 0.5
         yalign 0.0
         yoffset 30
         zoom 0.7
+     at idle_float
 
     # Allies row, bottom center
     hbox:
