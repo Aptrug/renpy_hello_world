@@ -175,10 +175,3 @@ screen battle_actions():
 screen battle_main():
     use battle_ui
     use battle_actions
-
-# Example usage
-label battle_start:
-    $ boss_health = 100
-    $ selected_ally = None
-
-    call screen battle_main
