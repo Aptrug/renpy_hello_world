@@ -26,7 +26,7 @@ screen battle_ui():
         yalign 0.0
         yoffset 30
         zoom 0.7
-    at idle_float
+        at idle_float
 
     # Allies row, bottom center
     hbox:
