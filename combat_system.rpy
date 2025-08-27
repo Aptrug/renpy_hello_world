@@ -24,6 +24,7 @@ default persistent.qmenu_bak = 0
 init python:
     if persistent.qmenu_bak == 2:
         persistent.quickmenu = True
+        persistent.qmenu_bak = 0
 
 screen battle_ui():
     # Feldgrau background
