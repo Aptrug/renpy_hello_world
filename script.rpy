@@ -68,15 +68,6 @@ label start:
             mc "I thought so."
         "No.":
             mc "Yes, you are!"
-    # I want it to be like this
-    # menu:
-    #     "Tell me, are you an idiot?"
-    #     {"Yes.", "{i} (Nah, you're cool){/i}"} if mc_name != "Rance" :
-    #         mc "I thought so."
-    #     "Maybe." if mc_name == "Vance":
-    #         mc "I thought so."
-    #     "No.":
-    #         mc "Yes, you are!"
 
     mc bored "Wait, I feel something..."
 
