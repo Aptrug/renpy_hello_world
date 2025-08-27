@@ -81,26 +81,10 @@ label start:
     mc bored "Wait, I feel something..."
 
     # scene swamp with ff_spiral
-    scene forest with pixelslide
-    "One"
-    scene swamp with spinslide
-    "Two"
-    scene forest with zoomfade
-    "Three"
-    scene swamp with flash_gray
-    "Four"
-    scene forest with flash_white
-    "Five"
-    scene swamp with flash_black
-    "Six"
-    scene forest with colorshift
-    "Seven"
-    scene swamp with battle_push
-    "Eight"
-    scene forest with flash_white
-    "Nine"
     scene forest with flash_black
-    "Ten"
+    "One"
+    scene swamp with flash_white
+    "Two"
 
     show rance startled with move
 
