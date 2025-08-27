@@ -723,3 +723,63 @@ screen game_menu(title, scroll=None, yinitial=0.0, spacing=0):
 
     if main_menu:
         key "game_menu" action ShowMenu("main_menu")
+
+##############################################################################
+
+screen keyboard_help():
+
+    hbox:
+        label _("Enter")
+        text _("Advances dialogue and activates the interface.")
+
+    hbox:
+        label _("Space")
+        text _("Advances dialogue without selecting choices.")
+
+    hbox:
+        label _("Arrow Keys")
+        text _("Navigate the interface.")
+
+    hbox:
+        label _("Escape")
+        text _("Accesses the game menu.")
+
+    hbox:
+        label _("Ctrl")
+        text _("Skips dialogue while held down.")
+
+    hbox:
+        label _("Tab")
+        text _("Toggles dialogue skipping.")
+
+    hbox:
+        label _("Page Up")
+        text _("Rolls back to earlier dialogue.")
+
+    hbox:
+        label _("Page Down")
+        text _("Rolls forward to later dialogue.")
+
+    hbox:
+        label "H"
+        text _("Hides the user interface.")
+
+    hbox:
+        label "S"
+        text _("Takes a screenshot.")
+
+    hbox:
+        label "V"
+        text _("Toggles assistive {a=https://www.renpy.org/l/voicing}self-voicing{/a}.")
+
+    hbox:
+        label "Shift+A"
+        text _("Opens the accessibility menu.")
+
+    hbox:
+        label "F5"
+        text _("Save your current progress instantly.")
+
+    hbox:
+        label "F9"
+        text _("Load your most recent quick save.")
