@@ -116,6 +116,8 @@ label start_battle:
         $persistent.quickmenu = True
     $persistent.qmenu_bak = 0
 
+    scene forest with fade
+
     # Jump back to main story/dialogue
     jump after_battle
 
