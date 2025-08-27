@@ -1,8 +1,10 @@
+# Renpy latest version, 1920x1080
+
 screen battle_ui():
     # Boss image (centered top)
     add "images/combat_system/boss.webp" xpos 0.5 ypos 0.1 anchor (0.5, 0.0)
 
-    # Allies row (bottom)
+    # Allies row (bottom), occupy bottom space evenly
     hbox:
         xpos 0.5
         ypos 0.9
