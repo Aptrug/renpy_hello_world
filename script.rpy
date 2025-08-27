@@ -83,7 +83,7 @@ label start:
     # scene swamp with ff_spiral
     scene forest with battle_dissolve
     "One"
-    scene swamp with starwipe
+    scene swamp with glitchwipe
     "Two"
     scene forest with battle_slow
     "Three"
