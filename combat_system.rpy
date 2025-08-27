@@ -19,10 +19,15 @@ image suzume = "images/combat_system/suzume.webp"
 
 # 0 out of battle
 # 1 in battle
-default persistent.battle_state = 0
+default persistent.qm = 0
 
 screen battle_ui():
-    persistent.quickmenu = False
+    if persistent.quickmenu:
+        persistent.quickmenu = False
+        qm = 0
+    else
+        qm = 1
+    # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
 
