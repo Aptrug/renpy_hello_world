@@ -98,7 +98,6 @@ transform gentle_float:
 transform ally_idle:
     linear 0.25 zoom 1.0
 
-
 label start_battle:
     if persistent.quickmenu:
         $persistent.qmenu_bak = 2
