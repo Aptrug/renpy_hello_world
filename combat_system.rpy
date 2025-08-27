@@ -1,5 +1,11 @@
-# Complete Combat System for RenPy - CORRECTED VERSION
-# Using only verified RenPy syntax from official documentation
+# I'm making a combat system for my renpy game (hero party vs boss)
+# I've just started working on it, so it's pretty unimpressive right now
+# Portability & efficiency is priority (I want to target mobile users too)
+
+# I want to make the images feel... more alive, like they're real or 3D
+# Any ways to do that?
+# PS. research what effects card games use to make cards more alive
+# Open to all kind of improvements
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
@@ -11,207 +17,51 @@ image reset = "images/combat_system/reset.webp"
 image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
-# Create hover versions of each ally image
-image kanami_hover = Transform("kanami", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image kenshin_hover = Transform("kenshin", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image magic_hover = Transform("magic", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image rance_hover = Transform("rance", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image reset_hover = Transform("reset", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image sachiko_hover = Transform("sachiko", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-image suzume_hover = Transform("suzume", zoom=1.08, matrixcolor=BrightnessMatrix(0.2))
-
-# Transform definitions
-transform ally_selected_effect:
-    matrixcolor BrightnessMatrix(0.3)
-    linear 0.8 matrixcolor BrightnessMatrix(0.1)
-    linear 0.8 matrixcolor BrightnessMatrix(0.3)
-    repeat
-
-transform boss_breathe:
-    yoffset 30 zoom 0.7
-    linear 3.0 yoffset 25 zoom 0.72
-    linear 3.0 yoffset 30 zoom 0.7
-    repeat
-
-transform gentle_float:
-    yoffset 0
-    linear 4.0 yoffset -8
-    linear 4.0 yoffset 0
-    repeat
-
-# Game state variables
-default selected_ally = None
-default boss_health = 100
-
-# Define ally names for display
-define selected_ally_names = ["Kanami", "Kenshin", "Magic", "Rance", "Reset", "Sachiko", "Suzume"]
-
-# Main battle UI screen
 screen battle_ui():
-    # Background layers
+    # Feldgrau background
     add Solid("#4D5D53")
 
-    add Solid("#000000"):
-        alpha 0.15
-        ysize 120
-        yalign 0.0
-
-    add Solid("#000000"):
-        alpha 0.1
-        ysize 80
-        yalign 1.0
-
-    # Boss area with health indicator
-    vbox:
+    # Boss image, centered top, 70% height, top margin 30px
+    add "boss" at idle_float:
         xalign 0.5
-        yalign 0.05
-        spacing 15
+        yalign 0.1
+        # yoffset 30
+        zoom 0.65
 
-        # Health bar
-        frame:
-            background Solid("#00000099")
-            padding (15, 8)
-            xalign 0.5
-
-            vbox:
-                spacing 5
-                text "Boss Health" size 18 color "#FFFFFF" xalign 0.5
-                bar:
-                    value boss_health
-                    range 100
-                    xsize 250
-                    ysize 15
-                    left_bar Solid("#FF6B6B")
-                    right_bar Solid("#333333")
-
-        # Boss shadow
-        add Solid("#000000"):
-            alpha 0.25
-            xalign 0.5
-            yalign 1.0
-            yoffset 38
-            zoom 0.7
-
-        # Boss with health-based effects
-        if boss_health <= 30:
-            add "boss":
-                at boss_breathe
-                matrixcolor TintMatrix("#FF9999")
-        elif boss_health <= 60:
-            add "boss":
-                at boss_breathe
-                matrixcolor TintMatrix("#FFCC99")
-        else:
-            add "boss":
-                at boss_breathe
-
-    # Battle field surface
-    add Solid("#2A3A30"):
-        alpha 0.2
-        xalign 0.5
-        yalign 0.72
-        xsize config.screen_width - 40
-        ysize 180
-
-    # Selected ally info display
-    if selected_ally is not None:
-        frame:
-            background Solid("#000000B3")
-            padding (15, 8)
-            xalign 0.5
-            yalign 0.75
-
-            text "Selected: [selected_ally_names[selected_ally]]" size 16 color "#FFFFFF" xalign 0.5
-
-    # Allies section - WORKING VERSION
+    # Allies row, bottom center
     hbox:
         xalign 0.5
-        yalign 0.82
-        spacing 18
+        yalign 0.95
+        spacing 20
 
-        for i, ally_name in enumerate(["kanami", "kenshin", "magic", "rance", "reset", "sachiko", "suzume"]):
-            vbox:
-                spacing -5
+        add "kanami" at pulse_glow
+        add "kenshin"
+        add "magic" at hit_shake
+        add "rance" at slow_pulse
+        add "reset"
+        add "sachiko"
+        add "suzume"
 
-                # Shadow for each ally
-                add Solid("#000000"):
-                    alpha 0.2
-                    xalign 0.5
-                    size (60, 12)
+transform idle_float:
+    yoffset 0
+    linear 2.0 yoffset -5
+    linear 2.0 yoffset 0
+    repeat
 
-                # Ally display - proper RenPy syntax
-                if selected_ally == i:
-                    # Selected ally with pulsing effect
-                    add ally_name:
-                        at gentle_float, ally_selected_effect
-                else:
-                    # Non-selected ally with imagebutton
-                    imagebutton:
-                        idle ally_name
-                        hover ally_name + "_hover"
-                        at gentle_float
-                        action SetVariable("selected_ally", i)
+transform pulse_glow:
+    alpha 0.5
+    linear 1.0 alpha 0.8
+    linear 1.0 alpha 0.5
+    repeat
 
-# Battle actions screen
-screen battle_actions():
-    if selected_ally is not None:
-        frame:
-            xalign 0.5
-            yalign 0.95
-            background Solid("#000000CC")
-            padding (20, 10)
+transform slow_pulse:
+    alpha 0.9
+    linear 1.5 alpha 1.0
+    linear 1.5 alpha 0.9
+    repeat
 
-            hbox:
-                spacing 15
-                textbutton "Attack":
-                    action [
-                        SetVariable("boss_health", max(0, boss_health - renpy.random.randint(15, 25))),
-                        SetVariable("selected_ally", None)
-                    ]
-                    text_color "#FFFFFF"
-                    text_hover_color "#FFD700"
-
-                textbutton "Defend":
-                    action SetVariable("selected_ally", None)
-                    text_color "#FFFFFF"
-                    text_hover_color "#FFD700"
-
-                textbutton "Special":
-                    action [
-                        SetVariable("boss_health", max(0, boss_health - renpy.random.randint(25, 40))),
-                        SetVariable("selected_ally", None)
-                    ]
-                    text_color "#FFFFFF"
-                    text_hover_color "#FFD700"
-
-                textbutton "Cancel":
-                    action SetVariable("selected_ally", None)
-                    text_color "#FFFFFF"
-                    text_hover_color "#FF6B6B"
-
-# Main battle screen combining both UI components
-screen battle_main():
-    use battle_ui
-    use battle_actions
-
-# Game over screen for when boss is defeated
-screen victory_screen():
-    modal True
-    add Solid("#000000"):
-        alpha 0.8
-
-    frame:
-        xalign 0.5
-        yalign 0.5
-        background Solid("#2A3A30")
-        padding (40, 30)
-
-        vbox:
-            spacing 20
-            text "Victory!" size 40 color "#FFD700" xalign 0.5
-            text "The boss has been defeated!" size 20 color "#FFFFFF" xalign 0.5
-            textbutton "Continue":
-                xalign 0.5
-                action Return()
-                text_color "#FFFFFF"
-                text_hover_color "#FFD700"
+# Play it when they attack
+transform hit_shake:
+    linear 0.1 xoffset 10
+    linear 0.1 xoffset -10
+    linear 0.1 xoffset 0
