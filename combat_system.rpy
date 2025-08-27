@@ -35,7 +35,7 @@ screen battle_ui():
 
         add "kanami" at pulse_glow
         add "kenshin"
-        add "magic"
+        add "magic" at hit_shake
         add "rance" at slow_pulse
         add "reset"
         add "sachiko"
@@ -58,3 +58,8 @@ transform slow_pulse:
     linear 1.5 alpha 1.0
     linear 1.5 alpha 0.9
     repeat
+
+transform hit_shake:
+    linear 0.1 xoffset 10
+    linear 0.1 xoffset -10
+    linear 0.1 xoffset 0
