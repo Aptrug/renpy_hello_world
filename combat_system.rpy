@@ -24,9 +24,9 @@ default persistent.qm = 0
 screen battle_ui():
     if persistent.quickmenu:
         persistent.quickmenu = False
-        qm = 0
-    else
         qm = 1
+    else
+        qm = 0
     # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
