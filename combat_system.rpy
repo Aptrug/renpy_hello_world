@@ -1,10 +1,8 @@
-# Renpy latest version, 1920x1080
-
 screen battle_ui():
     # Full black background
-    add Solid("#000")  # solid black fills everything
+    add Solid("#000")
 
-    # Boss image (top 70% of screen)
+    # Boss image (top 70% of screen with top margin)
     add "images/combat_system/boss.webp" at boss_resize
 
     # Allies row (bottom center)
@@ -21,10 +19,9 @@ screen battle_ui():
         add "images/combat_system/sachiko.webp"
         add "images/combat_system/suzume.webp"
 
-# Transform to resize boss to ~70% of screen height with margin
+# Simplified transform for boss
 transform boss_resize:
-    xpos 0.5
+    xalign 0.5
     yalign 0.0
-    xanchor 0.5
-    yanchor 0.0
-    zoom 0.7  # roughly 70% of screen height
+    yoffset 30   # top margin
+    zoom 0.7     # 70% height
