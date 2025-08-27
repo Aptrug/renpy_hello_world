@@ -23,6 +23,7 @@ label start:
 
     "CHAAAAAAARGE!"
 
+    # Initialize battle state
     $ boss_health = 100
     $ selected_ally = None
 
