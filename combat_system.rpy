@@ -22,6 +22,7 @@ image suzume = "images/combat_system/suzume.webp"
 default persistent.qmenu_bak = 0
 
 init python:
+    # If left mid battle
     if persistent.qmenu_bak == 2:
         persistent.quickmenu = True
         persistent.qmenu_bak = 0
