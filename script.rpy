@@ -23,7 +23,11 @@ label start:
 
     "CHAAAAAAARGE!"
 
-    show screen battle_ui
+    $ boss_health = 100
+    $ selected_ally = None
+    call screen battle_main
+
+
     with flash_white
 
     "URAAAAAAA!"
