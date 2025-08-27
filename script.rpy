@@ -21,7 +21,7 @@
 label start:
     scene maison_1920x1080 with fade
 
-    call start_battle
+    call battle_ui
 
     return
 
