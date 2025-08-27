@@ -23,7 +23,7 @@ screen battle_ui():
     # Boss image, centered top, 70% height, top margin 30px
     add "boss" at idle_float:
         xalign 0.5
-        yalign 0.0
+        yalign 0.1
         # yoffset 30
         zoom 0.65
 
