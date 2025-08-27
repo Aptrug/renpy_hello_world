@@ -5,6 +5,7 @@
 # I want to make the images feel... more alive, like they're real or 3D
 # Any ways to do that?
 # PS. research what effects card games use to make cards more alive
+# Open to all kind of improvements
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
