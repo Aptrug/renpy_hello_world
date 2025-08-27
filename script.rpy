@@ -84,38 +84,38 @@ label start:
     scene swamp with dissolve
     "Standard dissolve"
 
-    scene swamp with radial_wipe
+    scene forest with radial_wipe
     "Iris wipe transition"
 
     scene swamp with pixel_dissolve
     "Retro pixel effect"
 
-    scene swamp with battle_swipe
+    scene forest with battle_swipe
     "Horizontal swipe"
 
     scene swamp with zoom_burst
     "Zoom in/out effect"
 
-    scene swamp with battle_swing
+    scene forest with battle_swing
     "3D flip transition"
 
     scene swamp with lightning_flash
     "Lightning flash effect"
 
-    scene swamp with camera_flash
+    scene forest with camera_flash
     "Camera flash"
 
     # Custom ATL transitions
     scene swamp with battle_spiral
     "Custom battle spiral"
 
-    scene swamp with shatter_transition
+    scene forest with shatter_transition
     "Shatter effect"
 
     scene swamp with zoom_burst_transition
     "Custom zoom burst"
 
-    scene swamp with spin_transition
+    scene forest with spin_transition
     "Spinning transition"
 
     show rance startled with move
