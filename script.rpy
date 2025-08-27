@@ -80,32 +80,40 @@ label start:
 
     mc bored "Wait, I feel something..."
 
+    # Built-in transitions (recommended)
     scene swamp with dissolve
     "Standard dissolve"
 
-    scene bg forest with ff_spiral_transition
-    "Final Fantasy spiral!"
-
-    scene swamp with radial_wipe
-    "Radial iris transition!"
-
-    scene swamp with lightning_flash_transition
-    "Lightning flash!"
+    scene bg forest with radial_wipe
+    "Radial iris wipe"
 
     scene swamp with pixel_dissolve
-    "Pixel dissolve!"
+    "Pixel dissolve"
 
-    scene swamp with battle_swipe
-    "Battle swipe right!"
+    scene bg forest with battle_swipe
+    "Battle swipe"
 
     scene swamp with zoom_burst
-    "Zoom burst!"
+    "Zoom burst"
 
-    scene swamp with battle_swing
-    "3D swing transition!"
+    scene bg forest with battle_swing
+    "3D swing"
 
-    scene swamp with custom_spin
-    "Custom spinning transition!"
+    scene swamp with lightning_flash
+    "Lightning flash"
+
+    # Custom ATL transitions
+    scene bg forest with spin_transition
+    "Spinning transition"
+
+    scene swamp with battle_spiral
+    "Battle spiral"
+
+    scene bg forest with shatter_transition
+    "Shatter effect"
+
+    scene swamp with zoom_burst_transition
+    "Custom zoom burst"
 
     show rance startled with move
 
