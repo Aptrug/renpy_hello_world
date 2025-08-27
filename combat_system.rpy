@@ -119,7 +119,6 @@ define flash_blue = Fade(0.05, 0.02, 0.3, color="#00f")     # Ice/magic
 define flash_yellow = Fade(0.05, 0.02, 0.3, color="#ff0")   # Electric
 define flash_black = Fade(0.2, 0.3, 0.2, color="#000")      # Dark/mystery
 define flash_gray = Fade(0.1, 0.05, 0.2, color="#888")
-define colorshift = Fade(0.3, 0.1, 0.3, color="#ff00ff")
 
 # # ===== FAMOUS GAME STYLES =====
 # # Simplified versions of iconic game transitions
