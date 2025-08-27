@@ -33,10 +33,10 @@ screen battle_ui():
         yalign 1.0
         spacing 20
 
-        add "kanami" at slow_pulse
+        add "kanami" at idle_float
         add "kenshin"
         add "magic"
-        add "rance"
+        add "rance" at slow_pulse
         add "reset"
         add "sachiko"
         add "suzume"
