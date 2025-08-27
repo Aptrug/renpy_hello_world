@@ -86,9 +86,6 @@ transform working_spin(duration=1.0):
 define spin_dissolve = ComposeTransition(dissolve, before=spin_out, after=None)
 define zoom_dissolve = ComposeTransition(dissolve, before=zoom_out, after=zoom_in)
 
-# ===== USAGE EXAMPLES =====
-label battle_transitions:
-
 # ===== PERFORMANCE NOTES =====
 # 1. Built-in transitions (dissolve, fade, etc.) are fastest
 # 2. Simple ATL transforms work better than complex ones
