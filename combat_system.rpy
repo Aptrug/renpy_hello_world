@@ -33,7 +33,7 @@ screen battle_ui():
         yalign 1.0
         spacing 20
 
-        add "kanami"
+        add "kanami" at slow_pulse
         add "kenshin"
         add "magic"
         add "rance"
@@ -45,4 +45,10 @@ transform idle_float:
     yoffset 0
     linear 2.0 yoffset -5
     linear 2.0 yoffset 0
+    repeat
+
+transform slow_pulse:
+    alpha 0.9
+    linear 1.5 alpha 1.0
+    linear 1.5 alpha 0.9
     repeat
