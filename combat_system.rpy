@@ -30,9 +30,9 @@ define flash_blue = Fade(0.05, 0.02, 0.3, color="#00f")     # Ice/magic
 define flash_yellow = Fade(0.05, 0.02, 0.3, color="#ff0")   # Electric
 define flash_black = Fade(0.2, 0.3, 0.2, color="#000")      # Dark/mystery
 
-# ===== FAMOUS GAME STYLES =====
-# Simplified versions of iconic game transitions
-
+# # ===== FAMOUS GAME STYLES =====
+# # Simplified versions of iconic game transitions
+#
 # define pokemon_style = flash_white             # Pokemon encounter
 # define ff_style = flash_white                  # Final Fantasy
 # define zelda_style = battle_right              # Zelda room change
