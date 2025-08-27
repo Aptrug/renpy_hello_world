@@ -23,10 +23,10 @@ default persistent.qm = 0
 
 screen battle_ui():
     if persistent.quickmenu:
-        persistent.quickmenu = False
-        qm = 2
+        $persistent.quickmenu = False
+        $qm = 2
     else
-        qm = 1
+        $qm = 1
     # if persistent.quickmenu = False
     # Feldgrau background
     add Solid("#4D5D53")
@@ -53,7 +53,7 @@ screen battle_ui():
 
         if qm == 2:
             persistent.quickmenu = False
-            qm = 0
+            $qm = 0
 
 # Bunch of effects, some used, some not
 transform idle_float:
