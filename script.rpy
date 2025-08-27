@@ -23,20 +23,7 @@ label start:
 
     "CHAAAAAAARGE!"
 
-    # Initialize battle state
-    $ boss_health = 100
-    $ selected_ally = None
-
-    # Main battle loop
-    while boss_health > 0:
-        call screen battle_main
-
-        # Check for victory condition
-        if boss_health <= 0:
-            call screen victory_screen
-            jump after_battle
-
-
+    show screen battle_ui
     with flash_white
 
     "URAAAAAAA!"
