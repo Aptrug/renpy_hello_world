@@ -417,7 +417,7 @@ screen language_picker():
     modal True
     # screen disappears by pressing ESC or clicking anywhere outside it
     key "K_ESCAPE" action Hide("language_picker")
-     dismiss action Hide("language_picker")
+    dismiss action Hide("language_picker")
 
     frame:
         style "menu_frame"
