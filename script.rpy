@@ -24,7 +24,7 @@ label start:
     "HAHAHAHAHAHA!"
     "CHAAAAAAARGE!"
 
-    show screen round_ap_indicator
+    show screen round_ap_indicator_cus
 
     ""
     # Update values during gameplay
@@ -33,7 +33,7 @@ label start:
 
     ""
     # Hide when not needed
-    hide screen round_ap_indicator
+    hide screen round_ap_indicator_cus
     ""
 
     jump start_battle
