@@ -39,14 +39,12 @@ screen round_ui:
 
 # Define styles for text
 style round_label:
-    font "arial.ttf"  # Ensure you have Arial or another font in your game folder
     size 36
     color "#ffffff"
     outlines [(2, "#00000080", 2, 2)]  # Text shadow effect
     xalign 0.5
 
 style round_number:
-    font "arial.ttf"
     size 90
     color "#ffffff"
     outlines [(2, "#00000080", 2, 2)]
