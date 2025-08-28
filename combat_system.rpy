@@ -200,7 +200,7 @@ screen battle_ui():
             yalign 0.5
             spacing 8
 
-                        for i in range(max_ap):
+            for i in range(max_ap):
                 if i < current_ap:
                     button:
                         xsize 35
