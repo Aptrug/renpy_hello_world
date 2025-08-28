@@ -79,31 +79,3 @@ init python:
 # Screen using the custom displayable
 screen round_ap_indicator_custom():
     add RoundAPIndicator(current_round, max_ap, available_ap) xalign 0.5 yalign 0.5
-
-# Example of how to use it in your game
-label start:
-    # Show the UI
-    show screen round_ap_indicator
-
-    # Your game content here
-    "The round and AP indicator is now displayed!"
-
-    # Example of updating the values
-    $ available_ap = 5
-    $ current_round = 60
-
-    "AP and round updated!"
-
-    # Hide when done
-    hide screen round_ap_indicator
-
-    return
-
-# Alternative usage with the custom displayable
-label test_custom:
-    show screen round_ap_indicator_custom
-
-    "Using the custom displayable version!"
-
-    hide screen round_ap_indicator_custom
-    return
