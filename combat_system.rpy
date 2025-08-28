@@ -9,12 +9,10 @@
 
 # Preload all images
 image boss = "images/combat_system/boss.webp"
-image kanami = "images/combat_system/kanami.webp"
 image kenshin = "images/combat_system/kenshin.webp"
 image magic = "images/combat_system/magic.webp"
 image rance = "images/combat_system/rance.webp"
 image reset = "images/combat_system/reset.webp"
-image sachiko = "images/combat_system/sachiko.webp"
 image suzume = "images/combat_system/suzume.webp"
 
 # 0 all good
@@ -44,12 +42,10 @@ screen battle_ui():
         yalign 0.95
         spacing 20
 
-        add "kanami" at pulse_glow
         add "kenshin" at ally_hover
         add "magic" at gentle_float
         add "rance" at ally_selected_effect
         add "reset" at ally_idle
-        add "sachiko" at ally_hover_effect
         add "suzume" at ally_selected_effect
 
 # Bunch of effects, some used, some not
