@@ -1,3 +1,7 @@
+# Import math module
+init python:
+    import math
+
 # Define variables for the UI state
 default current_round = 59
 default max_ap = 9
@@ -39,9 +43,9 @@ screen round_ap_indicator():
 
         # Orbs positioned in a circle
         for i in range(max_ap):
-            $ angle = (i / max_ap) * 2 * 3.14159 - 3.14159 / 2
-            $ x_pos = 125 + 125 * renpy.math.cos(angle) - 16  # 16 = half of 32px orb
-            $ y_pos = 125 + 125 * renpy.math.sin(angle) - 16
+            $ angle = (i / max_ap) * 2 * math.pi - math.pi / 2
+            $ x_pos = 125 + 125 * math.cos(angle) - 16  # 16 = half of 32px orb
+            $ y_pos = 125 + 125 * math.sin(angle) - 16
 
             if i < available_ap:
                 add "orb_active.png" xpos int(x_pos) ypos int(y_pos)
