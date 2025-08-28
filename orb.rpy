@@ -34,16 +34,19 @@ screen round_ui:
                 x_pos = 128 + x_offset - orb_size / 2  # 128 is half of background width
                 y_pos = 128 + y_offset - orb_size / 2
                 # Add the orb at calculated position
+                orb_image = "orb_active.png" if i < available_ap else "orb_inactive.png"
                 ui.image(orb_image, xpos=int(x_pos), ypos=int(y_pos))
 
 # Define styles for text
 style round_label:
+    font "arial.ttf"  # Ensure you have Arial or another font in your game folder
     size 36
     color "#ffffff"
     outlines [(2, "#00000080", 2, 2)]  # Text shadow effect
     xalign 0.5
 
 style round_number:
+    font "arial.ttf"
     size 90
     color "#ffffff"
     outlines [(2, "#00000080", 2, 2)]
