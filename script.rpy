@@ -24,19 +24,17 @@ label start:
     "HAHAHAHAHAHA!"
     "CHAAAAAAARGE!"
 
-    # Show the round UI screen defined in orb.rpy
-    show screen round_ui
-    "The game begins in Round [round_number] with [available_ap] AP."
+    show screen round_ap_indicator
 
-    # Example: Update the round and AP values
-    $ round_number += 1
-    $ available_ap = 5
-    "Now in Round [round_number] with [available_ap] AP."
+    ""
+    # Update values during gameplay
+    $ available_ap = 7
+    $ current_round += 1
 
-    # Example: Hide the screen when no longer needed
-    # hide screen round_ui
-    # "The round UI is now hidden."
-
+    ""
+    # Hide when not needed
+    hide screen round_ap_indicator
+    ""
 
     jump start_battle
     # show screen battle_ui with flash_white
