@@ -200,26 +200,22 @@ screen battle_ui():
             yalign 0.5
             spacing 8
 
-            for i in range(max_ap):
+                        for i in range(max_ap):
                 if i < current_ap:
-                    imagebutton:
-                        idle Solid("#FFD700")
-                        hover Solid("#FFA500")
+                    button:
                         xsize 35
                         ysize 35
+                        background Solid("#FFD700")
+                        hover_background Solid("#FFA500")
                         at ap_orb_glow
                         action NullAction()
 
-                        frame:
-                            xsize 35
-                            ysize 35
-                            background None
-                            text str(i+1):
-                                xalign 0.5
-                                yalign 0.5
-                                color "#000000"
-                                size 14
-                                bold True
+                        text str(i+1):
+                            xalign 0.5
+                            yalign 0.5
+                            color "#000000"
+                            size 14
+                            bold True
                 else:
                     frame:
                         xsize 35
@@ -309,47 +305,39 @@ screen character_button(char_name, cooldown, is_hero=False):
 
             # Character portrait (clickable area)
             if cooldown == 0:
-                # Upper half click area
-                imagebutton:
-                    idle char_name
-                    hover char_name
+                frame:
                     xsize base_size
-                    ysize int(char_height * 0.35)
-                    action Function(use_character_attack, char_name, "upper")
-                    at attack_hover_effect
+                    ysize int(char_height * 0.7)
+                    background None
 
-                    if renpy.get_screen("battle_ui"):
-                        # Attack name overlay on hover
-                        frame:
+                    # Upper half click area
+                    button:
+                        xsize base_size
+                        ysize int(char_height * 0.35)
+                        background char_name
+                        hover_background char_name
+                        action Function(use_character_attack, char_name, "upper")
+                        at attack_hover_effect
+
+                        # Attack name overlay
+                        text char_data["attacks"][0]:
+                            xalign 0.5
+                            yalign 0.5
+                            color "#FFFFFF"
+                            size 12
+                            bold True
                             background Solid("#4CAF50")
                             alpha 0.0
-                            xfill True
-                            ysize 30
-                            yalign 0.5
 
-                            text char_data["attacks"][0]:
-                                xalign 0.5
-                                yalign 0.5
-                                color "#FFFFFF"
-                                size 12
-                                bold True
-
-                # Lower half click area
-                imagebutton:
-                    idle char_name
-                    hover char_name
-                    xsize base_size
-                    ysize int(char_height * 0.35)
-                    action Function(use_character_attack, char_name, "lower")
-                    at attack_hover_effect
-
-                    # Attack name overlay on hover
-                    frame:
-                        background Solid("#4CAF50")
-                        alpha 0.0
-                        xfill True
-                        ysize 30
-                        yalign 0.5
+                    # Lower half click area
+                    button:
+                        ypos int(char_height * 0.35)
+                        xsize base_size
+                        ysize int(char_height * 0.35)
+                        background char_name
+                        hover_background char_name
+                        action Function(use_character_attack, char_name, "lower")
+                        at attack_hover_effect
 
                         text char_data["attacks"][1]:
                             xalign 0.5
@@ -357,6 +345,8 @@ screen character_button(char_name, cooldown, is_hero=False):
                             color "#FFFFFF"
                             size 12
                             bold True
+                            background Solid("#4CAF50")
+                            alpha 0.0
             else:
                 # Grayed out portrait when on cooldown
                 add char_name:
