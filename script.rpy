@@ -1,12 +1,12 @@
-﻿# Round UI for Ren'Py Game - Minimal Optimization of Original Code
-# Only removes the Creator-Defined Displayables, everything else stays the same
+﻿# Round UI for Ren'Py Game - MINIMAL fix to original working code
+# Only removes Creator-Defined Displayables, everything else unchanged
 
 # Game variables
 default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
-# ATL Transform definitions for animations (unchanged from original)
+# ATL Transform definitions for animations
 transform orb_glow:
     alpha 1.0
     zoom 1.0
@@ -29,13 +29,13 @@ transform round_breathe:
     ease 3.0 zoom 1.0
     repeat
 
-# Simple image definitions using basic displayables instead of Creator-Defined ones
-image round_bg = "#505050"
-image round_inner = "#808080"
-image orb_active = "#FFD700"
-image orb_inactive_img = "#666666"
+# Simple displayables instead of Creator-Defined ones
+define round_bg = Transform(Solid("#505050"), size=(250, 250))
+define round_inner = Transform(Solid("#808080"), size=(240, 240))
+define orb_active = Transform(Solid("#FFD700"), size=(50, 50))
+define orb_inactive_img = Transform(Solid("#666666"), size=(50, 50))
 
-# Python functions for positioning (unchanged from original)
+# Python functions for positioning
 init python:
     import math
 
@@ -50,7 +50,7 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# Main UI Screen (minimal changes from original)
+# Main UI Screen
 screen round_ui():
     # Container positioned at screen center
     fixed:
@@ -60,12 +60,12 @@ screen round_ui():
         ysize 250
 
         # Main round circle background with breathing animation
-        add Transform(round_bg, size=(250, 250)) at round_breathe:
+        add round_bg at round_breathe:
             xpos 0
             ypos 0
 
         # Inner circle for depth effect
-        add Transform(round_inner, size=(240, 240)) at round_breathe:
+        add round_inner at round_breathe:
             xpos 5
             ypos 5
 
@@ -93,16 +93,16 @@ screen round_ui():
         for i, (x, y) in enumerate(orb_positions):
             if i < available_ap:
                 # Active orb with glow
-                add Transform(orb_active, size=(50, 50)) at orb_glow:
+                add orb_active at orb_glow:
                     xpos x
                     ypos y
             else:
                 # Inactive orb
-                add Transform(orb_inactive_img, size=(50, 50)) at orb_inactive:
+                add orb_inactive_img at orb_inactive:
                     xpos x
                     ypos y
 
-# Helper functions for AP/Round management (unchanged from original)
+# Helper functions for AP/Round management
 init python:
     def update_round(new_round):
         """Update current round"""
@@ -133,7 +133,7 @@ init python:
         available_ap = min(max_ap, available_ap + amount)
         renpy.restart_interaction()
 
-# Demo/Test label (unchanged from original)
+# Demo/Test label
 label start:
     show screen round_ui
 
