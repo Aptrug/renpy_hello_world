@@ -67,9 +67,14 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-define round_bg = Circle(96, (80, 80, 80), (50, 50, 50), 3)
-define orb_active = Circle(25, (255, 215, 0), (184, 134, 11), 2)
-define orb_inactive_img = Circle(25, (102, 102, 102), (60, 60, 60), 2)
+
+define ROUND_RADIUS = 96
+define ORB_RADIUS = 20
+define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
+
+define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
+define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
 # Main UI Screen
@@ -78,8 +83,8 @@ screen round_ui():
     fixed:
         xalign 0.5
         yalign 0.4
-        xsize 250
-        ysize 250
+        xsize ORB_RADIUS
+        ysize ORB_RADIUS
 
         # Round circle background with breathing animation
         add round_bg at round_breathe:
