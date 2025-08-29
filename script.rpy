@@ -1,7 +1,19 @@
-﻿# Define the variables that control the UI
+﻿# ==============================================================================
+# ROUND UI SYSTEM - RENPY IMPLEMENTATION
+# ==============================================================================
+# This file should be placed in your game/ folder as a .rpy file
+# Make sure these variable names don't conflict with existing ones in your project
+
+# Variable declarations - use define for constants, default for changing values
+# These MUST be declared only once across your entire project
+define MAX_AP_DEFAULT = 9
 default current_round = 59
-default max_ap = 9
+default max_ap = MAX_AP_DEFAULT
 default available_ap = 3
+
+# ==============================================================================
+# ATL TRANSFORM DEFINITIONS
+# ==============================================================================
 
 # Transform for the glowing effect on active orbs
 transform orb_glow:
@@ -28,7 +40,10 @@ transform round_circle_transform:
     ease 2.0 zoom 1.0
     repeat
 
-# Creator-defined displayable for drawing circular orbs
+# ==============================================================================
+# CREATOR-DEFINED DISPLAYABLE FOR CIRCULAR ORBS
+# ==============================================================================
+
 init python:
     import math
 
@@ -74,10 +89,17 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# Simple image definitions for the round background
-image round_bg = Solid("#808080")
+# ==============================================================================
+# SIMPLE IMAGE DEFINITIONS
+# ==============================================================================
 
-# Screen definition for the round UI
+# Background for the round display - using a simple solid color
+define round_bg_color = Solid("#505050")
+
+# ==============================================================================
+# SCREEN DEFINITION
+# ==============================================================================
+
 screen round_ui():
     # Main container positioned at center of screen
     fixed:
@@ -86,17 +108,22 @@ screen round_ui():
         xsize 750
         ysize 400
 
-        # Background round circle using Transform with proper size and shape
-        add Transform(round_bg, size=(250, 250)) at round_circle_transform:
-            xpos 250  # Center in the fixed container
+        # Background round circle with gradient-like effect using multiple circles
+        add Transform(round_bg_color, size=(250, 250)) at round_circle_transform:
+            xpos 250
             ypos 75
+
+        # Inner circle for depth
+        add Transform(Solid("#808080"), size=(240, 240)) at round_circle_transform:
+            xpos 255
+            ypos 80
 
         # Round text display
         vbox:
-            xpos 375  # Center the text over the circle
+            xpos 375
             ypos 115
             xanchor 0.5
-            spacing 0
+            spacing -10
 
             text "Round":
                 size 36
@@ -110,7 +137,7 @@ screen round_ui():
                 text_align 0.5
                 outlines [(2, "#000000", 0, 0)]
 
-        # Calculate orb positions
+        # Calculate orb positions based on current max_ap
         $ orb_positions = calculate_orb_positions(max_ap, radius=125, center_x=375, center_y=200)
 
         # Display orbs in calculated positions
@@ -126,35 +153,149 @@ screen round_ui():
                     xpos x
                     ypos y
 
-# Functions to update the UI state
+# ==============================================================================
+# UI MANAGEMENT FUNCTIONS
+# ==============================================================================
+
 init python:
     def update_round(new_round):
+        """Update the current round number"""
         global current_round
         current_round = new_round
         renpy.restart_interaction()
 
     def update_ap(new_available, new_max=None):
+        """Update AP values. If new_max is provided, also update max AP"""
         global available_ap, max_ap
-        available_ap = new_available
+        available_ap = max(0, new_available)
         if new_max is not None:
-            max_ap = new_max
+            max_ap = max(1, new_max)
+            available_ap = min(available_ap, max_ap)
         renpy.restart_interaction()
 
     def gain_ap(amount=1):
+        """Increase available AP by the specified amount"""
         global available_ap
         available_ap = min(max_ap, available_ap + amount)
         renpy.restart_interaction()
 
     def spend_ap(amount=1):
+        """Decrease available AP by the specified amount"""
         global available_ap
-        available_ap = max(0, available_ap - amount)
+        if available_ap >= amount:
+            available_ap = max(0, available_ap - amount)
+            renpy.restart_interaction()
+            return True
+        return False
+
+    def refresh_ap():
+        """Restore AP to maximum (typically used at start of new round)"""
+        global available_ap
+        available_ap = max_ap
         renpy.restart_interaction()
 
-# Alternative simpler implementation using basic shapes
-# If you prefer not to use creator-defined displayables, uncomment this:
+# ==============================================================================
+# DEMONSTRATION LABEL
+# ==============================================================================
 
-# image orb_active = Transform(Solid("#FFD700"), size=(50, 50))
-# image orb_inactive = Transform(Solid("#787878"), size=(50, 50))
+label start:
+    # Show the round UI screen
+    show screen round_ui
+
+    "Welcome to the Round UI demo!"
+    "Current status: Round [current_round], AP: [available_ap]/[max_ap]"
+
+    menu demo_loop:
+        "What would you like to do?"
+
+        "Spend 1 AP" if available_ap > 0:
+            $ success = spend_ap(1)
+            if success:
+                "AP spent! You now have [available_ap]/[max_ap] AP remaining."
+            jump demo_loop
+
+        "Spend 1 AP" if available_ap == 0:
+            "You don't have any AP to spend!"
+            jump demo_loop
+
+        "Gain 1 AP" if available_ap < max_ap:
+            $ gain_ap(1)
+            "AP gained! You now have [available_ap]/[max_ap] AP."
+            jump demo_loop
+
+        "Gain 1 AP" if available_ap >= max_ap:
+            "Your AP is already at maximum!"
+            jump demo_loop
+
+        "Next Round":
+            $ update_round(current_round + 1)
+            $ refresh_ap()
+            "Welcome to round [current_round]! AP refreshed to [available_ap]/[max_ap]."
+            jump demo_loop
+
+        "Change AP Settings":
+            menu ap_settings:
+                "What AP setting would you like to change?"
+
+                "Set Max AP to 6":
+                    $ update_ap(available_ap, 6)
+                    "Max AP changed to 6. Current AP: [available_ap]/[max_ap]"
+                    jump demo_loop
+
+                "Set Max AP to 12":
+                    $ update_ap(available_ap, 12)
+                    "Max AP changed to 12. Current AP: [available_ap]/[max_ap]"
+                    jump demo_loop
+
+                "Reset to Default (9)":
+                    $ update_ap(available_ap, MAX_AP_DEFAULT)
+                    "Reset to default settings. AP: [available_ap]/[max_ap]"
+                    jump demo_loop
+
+                "Back":
+                    jump demo_loop
+
+        "Test Different Rounds":
+            menu round_settings:
+                "Which round would you like to test?"
+
+                "Round 1":
+                    $ update_round(1)
+                    jump demo_loop
+
+                "Round 99":
+                    $ update_round(99)
+                    jump demo_loop
+
+                "Round 999":
+                    $ update_round(999)
+                    jump demo_loop
+
+                "Back":
+                    jump demo_loop
+
+        "Hide UI":
+            hide screen round_ui
+            "UI hidden. You can show it again from the next menu."
+
+            menu:
+                "Show UI again":
+                    show screen round_ui
+                    "UI is back!"
+                    jump demo_loop
+
+        "Exit Demo":
+            hide screen round_ui
+            "Thanks for trying the Round UI demo!"
+            return
+
+# ==============================================================================
+# ALTERNATIVE SIMPLE IMPLEMENTATION
+# ==============================================================================
+# Uncomment the following if you prefer a simpler approach without creator-defined displayables
+
+# define orb_active_img = Transform(Solid("#FFD700"), size=(50, 50))
+# define orb_inactive_img = Transform(Solid("#787878"), size=(50, 50))
 
 # screen round_ui_simple():
 #     fixed:
@@ -173,7 +314,7 @@ init python:
 #             xpos 375
 #             ypos 115
 #             xanchor 0.5
-#             spacing 0
+#             spacing -10
 #
 #             text "Round" size 36 color "#FFFFFF" text_align 0.5 outlines [(2, "#000000", 0, 0)]
 #             text str(current_round) size 90 color "#FFFFFF" text_align 0.5 outlines [(2, "#000000", 0, 0)]
@@ -182,61 +323,10 @@ init python:
 #         $ orb_positions = calculate_orb_positions(max_ap, radius=125, center_x=375, center_y=200)
 #         for i, (x, y) in enumerate(orb_positions):
 #             if i < available_ap:
-#                 add "orb_active" at orb_glow:
+#                 add orb_active_img at orb_glow:
 #                     xpos x
 #                     ypos y
 #             else:
-#                 add "orb_inactive" at orb_inactive:
+#                 add orb_inactive_img at orb_inactive:
 #                     xpos x
 #                     ypos y
-
-# Label to demonstrate the UI
-label start:
-    # Show the round UI screen
-    show screen round_ui
-
-    "This is the round UI display. Round: [current_round], AP: [available_ap]/[max_ap]"
-
-    menu:
-        "Spend 1 AP":
-            if available_ap > 0:
-                $ spend_ap(1)
-                "AP spent! Now you have [available_ap]/[max_ap] AP remaining."
-            else:
-                "No AP to spend!"
-
-        "Gain 1 AP":
-            $ gain_ap(1)
-            "AP gained! Now you have [available_ap]/[max_ap] AP."
-
-        "Next Round":
-            $ update_round(current_round + 1)
-            $ available_ap = max_ap  # Refresh AP for new round
-            "Welcome to round [current_round]! AP refreshed to [available_ap]/[max_ap]."
-
-        "Change AP Settings":
-            menu:
-                "Set Max AP to 6":
-                    $ update_ap(min(available_ap, 6), 6)
-                    "Max AP changed to 6. Current AP: [available_ap]/[max_ap]"
-
-                "Set Max AP to 12":
-                    $ update_ap(available_ap, 12)
-                    "Max AP changed to 12. Current AP: [available_ap]/[max_ap]"
-
-                "Reset to Default (9)":
-                    $ update_ap(min(available_ap, 9), 9)
-                    "Reset to default settings. AP: [available_ap]/[max_ap]"
-
-        "Test Different Round Numbers":
-            menu:
-                "Round 1":
-                    $ update_round(1)
-
-                "Round 99":
-                    $ update_round(99)
-
-                "Round 999":
-                    $ update_round(999)
-
-    jump start
