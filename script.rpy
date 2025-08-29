@@ -54,13 +54,12 @@ init python:
 
             return render
 
-    def get_orb_positions(num_orbs, radius=125, center_x=125, center_y=125):
-        """Compute (x,y) positions for orbs around a circle center."""
+    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
-            x = center_x + radius * math.cos(angle) - 25
-            y = center_y + radius * math.sin(angle) - 25
+            x = center_x + distance * math.cos(angle) - orb_radius
+            y = center_y + distance * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
