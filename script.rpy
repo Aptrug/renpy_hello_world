@@ -7,6 +7,7 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
+define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 # ========================
 # ATL Transforms
@@ -57,17 +58,7 @@ init python:
 
             return render
 
-    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=None, center_x=None, center_y=None):
-        """
-        Compute orb positions around the circle's visible edge.
-        """
-        if center_x is None:
-            center_x = ROUND_RADIUS + ORB_RADIUS + round_bg.border_width / 2
-        if center_y is None:
-            center_y = ROUND_RADIUS + ORB_RADIUS + round_bg.border_width / 2
-        if distance is None:
-            distance = ROUND_RADIUS + round_bg.border_width / 2
-
+    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
@@ -79,6 +70,7 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
+
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
@@ -89,9 +81,9 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 screen round_ui():
     fixed:
         xalign 0.5
-        yalign 0.75  # lower-center quarter
-        xsize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
-        ysize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
+        yalign 0.75
+        xsize ROUND_RADIUS*2
+        ysize ROUND_RADIUS*2
 
         # Round circle background with breathing animation
         add round_bg at round_breathe:
