@@ -29,11 +29,35 @@ transform round_breathe:
     ease 3.0 zoom 1.0
     repeat
 
-# Image definitions using simple graphics
-define round_bg = Transform(Solid("#505050"), size=(250, 250))
-define round_inner = Transform(Solid("#808080"), size=(240, 240))
-define orb_active = Transform(Solid("#FFD700"), size=(50, 50))
-define orb_inactive_img = Transform(Solid("#666666"), size=(50, 50))
+# Circular image definitions using Creator-Defined Displayables
+init python:
+    class Circle(renpy.Displayable):
+        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
+            super(Circle, self).__init__(**kwargs)
+            self.radius = radius
+            self.size = radius * 2
+            self.color = color
+            self.border_color = border_color
+            self.border_width = border_width
+
+        def render(self, width, height, st, at):
+            render = renpy.Render(self.size, self.size)
+            canvas = render.canvas()
+
+            # Draw filled circle
+            canvas.circle(self.color, (self.radius, self.radius), self.radius)
+
+            # Draw border if specified
+            if self.border_color:
+                canvas.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
+
+            return render
+
+# Create circular images
+define round_bg = Circle(125, (80, 80, 80), (50, 50, 50), 3)
+define round_inner = Circle(120, (128, 128, 128))
+define orb_active = Circle(25, (255, 215, 0), (184, 134, 11), 2)
+define orb_inactive_img = Circle(25, (102, 102, 102), (60, 60, 60), 2)
 
 # Python functions for positioning
 init python:
