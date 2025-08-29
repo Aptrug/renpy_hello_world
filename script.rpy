@@ -1,4 +1,4 @@
-﻿# This code works, but the question is, can you try to simplify & optimize it if possible?
+﻿# This code works, but the question is, is the logic sound?
 
 # ========================
 # Game Variables
@@ -23,7 +23,7 @@ transform orb_glow:
     repeat
 
 transform round_breathe:
-    ease 3.0 zoom 1.02
+    ease 3.0 zoom 1.05
     ease 3.0 zoom 1.0
     repeat
 
@@ -44,20 +44,28 @@ init python:
             self.border_color, self.border_width = border_color, border_width
 
         def render(self, w, h, st, at):
-            r = renpy.Render(self.radius*2, self.radius*2)
+            size = self.radius * 2
+            r = renpy.Render(size, size)
             c = r.canvas()
-            if self.color: c.circle(self.color, (self.radius, self.radius), self.radius)
-            if self.border_color: c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
+
+            if self.color:
+                c.circle(self.color, (self.radius, self.radius), self.radius)
+            if self.border_color:
+                c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
             return r
 
     def get_orb_positions(num_orbs):
-        return [
-            (
-                int(ROUND_RADIUS + ROUND_RADIUS * math.cos(2*math.pi*i/num_orbs - math.pi/2) - ORB_RADIUS),
-                int(ROUND_RADIUS + ROUND_RADIUS * math.sin(2*math.pi*i/num_orbs - math.pi/2) - ORB_RADIUS)
-            )
-            for i in range(num_orbs)
-        ]
+        """
+        Returns orb positions arranged evenly in a circle around ROUND_RADIUS.
+        Offsets by ORB_RADIUS so they align properly.
+        """
+        positions = []
+        for i in range(num_orbs):
+            angle = 2 * math.pi * i / num_orbs - math.pi/2
+            x = ROUND_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
+            y = ROUND_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
+            positions.append((int(x), int(y)))
+        return positions
 
 # ========================
 # Circle Definitions
@@ -83,12 +91,12 @@ screen round_ui():
         vbox:
             xalign 0.5
             yalign 0.5
-            spacing -5
+            spacing 2
 
             text "Round":
                 size 22
                 color "#FFFFFF"
-                xalign 0.45
+                xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
             text "[current_round]":
@@ -112,18 +120,15 @@ label start:
     menu:
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
-            $ renpy.restart_interaction()
             jump start
 
         "Gain AP" if available_ap < max_ap:
             $ available_ap += 1
-            $ renpy.restart_interaction()
             jump start
 
         "Next Round":
             $ current_round += 1
             $ available_ap = max_ap
-            $ renpy.restart_interaction()
             jump start
 
         "Exit":
