@@ -1,16 +1,13 @@
-﻿# Defaults at top-level
-default round_number = 5
+﻿default round_number = 5
 default maxAP = 9
 default availableAP = 3
 
-# Transform for positioning orbs around the center
 transform orb(angle=0):
     anchor (0.5, 0.5)
     pos (0.5, 0.5)
     angle angle
     radius 125
 
-# Glow animation for active orbs
 transform glow:
     parallel:
         linear 1.0 alpha 0.5
@@ -22,13 +19,11 @@ label start:
     pause
 
 screen battle_ui:
-    # Center frame with one background
     frame:
         xysize (250, 250)
-        background Solid("#505050")  # only one background now
+        background Solid("#505050")
         align (0.5, 0.5)
 
-    # Round text
     text "Round":
         xalign 0.5
         yalign 0.45
@@ -39,10 +34,9 @@ screen battle_ui:
         yalign 0.55
         size 90 color "#FFFFFF"
 
-    # Orb loop
     for i in range(maxAP):
         $ deg = 360.0 * i / maxAP - 90.0
         if i < availableAP:
-            add Solid("#FFD700", xysize=(50,50)) at orb(angle=deg) at glow
+            add Solid("#FFD700", xysize=(50,50)) at (orb(angle=deg), glow)
         else:
             add Solid("#DAA520", xysize=(50,50)) at orb(angle=deg)
