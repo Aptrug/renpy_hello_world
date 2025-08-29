@@ -1,4 +1,6 @@
-﻿# ========================
+﻿# This code works, but the question is, can the logic be simplified though?
+
+# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -7,7 +9,7 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-define ORB_DISTANCE = ROUND_RADIUS
+define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 # ========================
 # ATL Transforms
@@ -45,12 +47,11 @@ init python:
             self.border_width = border_width
 
         def render(self, width, height, st, at):
-            r = self.radius
-            render = renpy.Render(r*2, r*2)
+            render = renpy.Render(self.radius*2, self.radius*2)
             canvas = render.canvas()
-            canvas.circle(self.color, (r, r), r)
+            canvas.circle(self.color, (self.radius, self.radius), self.radius)
             if self.border_color:
-                canvas.circle(self.border_color, (r, r), r, self.border_width)
+                canvas.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
             return render
 
     def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center=ROUND_RADIUS):
@@ -82,14 +83,28 @@ screen round_ui():
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Round circle background
+        # Round circle background with breathing animation
         add round_bg at round_breathe xpos 0 ypos 0
 
         # Round number in the center
-        text "[current_round]" size 56 color "#FFFFFF" xalign 0.5 outlines [(2, "#000000", 0, 0)] ypos ROUND_RADIUS - 28
-        text "Round" size 22 color "#FFFFFF" xalign 0.5 outlines [(2, "#000000", 0, 0)] ypos ROUND_RADIUS - 50
+        vbox:
+            xalign 0.5
+            yalign 0.5
+            spacing -5
 
-        # Orbs
+            text "Round":
+                size 22
+                color "#FFFFFF"
+                xalign 0.45
+                outlines [(2, "#000000", 0, 0)]
+
+            text "[current_round]":
+                size 56
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
+
+        # Orbs arranged around the circle
         $ orb_positions = get_orb_positions(max_ap)
         for i, (x, y) in enumerate(orb_positions):
             $ orb_img, orb_tr = get_orb_display(i, available_ap)
@@ -100,19 +115,25 @@ screen round_ui():
 # ========================
 label start:
     show screen round_ui
+
     "Round UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
 
-    # Menu actions condensed into a list
-    $ actions = []
-    if available_ap > 0:
-        actions.append(("Spend AP", lambda: setattr(globals(), "available_ap", available_ap - 1)))
-    if available_ap < max_ap:
-        actions.append(("Gain AP", lambda: setattr(globals(), "available_ap", available_ap + 1)))
-    actions.append(("Next Round", lambda: (setattr(globals(), "current_round", current_round + 1),
-                                           setattr(globals(), "available_ap", max_ap))))
-    actions.append(("Exit", renpy.quit))
+    menu:
+        "Spend AP" if available_ap > 0:
+            $ available_ap -= 1
+            $ renpy.restart_interaction()
+            jump start
 
-    $ result = renpy.display_menu([label for label, _ in actions])
-    $ actions[result][1]()
-    $ renpy.restart_interaction()
-    jump start
+        "Gain AP" if available_ap < max_ap:
+            $ available_ap += 1
+            $ renpy.restart_interaction()
+            jump start
+
+        "Next Round":
+            $ current_round += 1
+            $ available_ap = max_ap
+            $ renpy.restart_interaction()
+            jump start
+
+        "Exit":
+            return
