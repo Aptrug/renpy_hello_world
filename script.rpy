@@ -83,8 +83,8 @@ screen round_ui():
     fixed:
         xalign 0.5
         yalign 0.4
-        xsize ORB_RADIUS
-        ysize ORB_RADIUS
+        xsize ROUND_RADIUS*2
+        ysize ROUND_RADIUS*2
 
         # Round circle background with breathing animation
         add round_bg at round_breathe:
