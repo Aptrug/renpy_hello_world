@@ -8,8 +8,11 @@ label start:
 
     menu:
         "Spend 1 AP":
-            $ spend_ap(1)
-            "AP spent! Now you have [available_ap]/[max_ap] AP remaining."
+            if available_ap > 0:
+                $ spend_ap(1)
+                "AP spent! Now you have [available_ap]/[max_ap] AP remaining."
+            else:
+                "No AP to spend!"
 
         "Gain 1 AP":
             $ gain_ap(1)
@@ -33,5 +36,16 @@ label start:
                 "Reset to Default (9)":
                     $ update_ap(min(available_ap, 9), 9)
                     "Reset to default settings. AP: [available_ap]/[max_ap]"
+
+        "Test Different Round Numbers":
+            menu:
+                "Round 1":
+                    $ update_round(1)
+
+                "Round 99":
+                    $ update_round(99)
+
+                "Round 999":
+                    $ update_round(999)
 
     jump start
