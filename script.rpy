@@ -57,22 +57,24 @@ init python:
 
             return render
 
-    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=None, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
-        """
-        Compute positions for orbs around a circle.
-        Automatically adjusts distance to account for circle border.
-        """
-        if distance is None:
-            # Use circle radius + half of border width
-            distance = ROUND_RADIUS + round_bg.border_width / 2
+def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=None, center_x=None, center_y=None):
+    """
+    Compute orb positions around the circle's visible edge.
+    """
+    if center_x is None:
+        center_x = ROUND_RADIUS + ORB_RADIUS + round_bg.border_width / 2
+    if center_y is None:
+        center_y = ROUND_RADIUS + ORB_RADIUS + round_bg.border_width / 2
+    if distance is None:
+        distance = ROUND_RADIUS + round_bg.border_width / 2
 
-        positions = []
-        for i in range(num_orbs):
-            angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
-            x = center_x + distance * math.cos(angle) - orb_radius
-            y = center_y + distance * math.sin(angle) - orb_radius
-            positions.append((int(x), int(y)))
-        return positions
+    positions = []
+    for i in range(num_orbs):
+        angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
+        x = center_x + distance * math.cos(angle) - orb_radius
+        y = center_y + distance * math.sin(angle) - orb_radius
+        positions.append((int(x), int(y)))
+    return positions
 
 # ========================
 # Circle Definitions
