@@ -88,8 +88,8 @@ screen round_ui():
     fixed:
         xalign 0.5
         yalign 0.75  # lower-center quarter
-xsize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
-ysize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
+        xsize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
+        ysize (ROUND_RADIUS + ORB_RADIUS + round_bg.border_width) * 2
 
         # Round circle background with breathing animation
         add round_bg at round_breathe:
