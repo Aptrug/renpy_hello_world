@@ -7,7 +7,6 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-# Fix: Set orb distance to place orb centers exactly on the circle's circumference
 define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 # ========================
@@ -63,12 +62,8 @@ init python:
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
-            # Calculate orb center positions on the circumference
-            orb_center_x = center_x + distance * math.cos(angle)
-            orb_center_y = center_y + distance * math.sin(angle)
-            # Adjust for orb rendering (subtract orb radius to position the orb image)
-            x = orb_center_x - orb_radius
-            y = orb_center_y - orb_radius
+            x = center_x + distance * math.cos(angle) - orb_radius
+            y = center_y + distance * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
