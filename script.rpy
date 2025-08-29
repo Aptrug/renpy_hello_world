@@ -33,45 +33,41 @@ transform orb_inactive:
     zoom 0.9
 
 # ========================
-# Python: Circle + Orb Positions
+# Python Helpers
 # ========================
 init python:
     import math
 
-    class Circle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
-            super().__init__(**kwargs)
-            self.radius = radius
-            self.color = color
-            self.border_color = border_color
-            self.border_width = border_width
-
-        def render(self, width, height, st, at):
-            render = renpy.Render(self.radius*2, self.radius*2)
-            canvas = render.canvas()
-            canvas.circle(self.color, (self.radius, self.radius), self.radius)
-            if self.border_color:
-                canvas.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
-            return render
+    def CircleImage(radius, color, border_color=None, border_width=2):
+        """Draws a filled circle (with optional border) as a render object."""
+        d = renpy.Render(radius*2, radius*2)
+        c = d.canvas()
+        c.circle(color, (radius, radius), radius)
+        if border_color:
+            c.circle(border_color, (radius, radius), radius, border_width)
+        return d
 
     def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center=ROUND_RADIUS):
+        """Returns a list of (x, y) positions around a circle."""
+        step = 2 * math.pi / num_orbs
         return [
             (
-                int(center + distance * math.cos(2*math.pi*i/num_orbs - math.pi/2) - orb_radius),
-                int(center + distance * math.sin(2*math.pi*i/num_orbs - math.pi/2) - orb_radius)
+                int(center + distance * math.cos(step*i - math.pi/2) - orb_radius),
+                int(center + distance * math.sin(step*i - math.pi/2) - orb_radius)
             )
             for i in range(num_orbs)
         ]
 
-    def get_orb_display(i, available_ap):
+    def orb_state(i):
+        """Returns (image, transform) depending on whether orb is active."""
         return (orb_active, orb_glow) if i < available_ap else (orb_inactive_img, orb_inactive)
 
 # ========================
 # Circle Definitions
 # ========================
-define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
-define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
+define round_bg = CircleImage(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define orb_active = CircleImage(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
+define orb_inactive_img = CircleImage(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
 # Main UI Screen
@@ -84,7 +80,7 @@ screen round_ui():
         ysize ROUND_RADIUS*2
 
         # Round circle background with breathing animation
-        add round_bg at round_breathe xpos 0 ypos 0
+        add round_bg at round_breathe
 
         # Round number in the center
         vbox:
@@ -95,19 +91,16 @@ screen round_ui():
             text "Round":
                 size 22
                 color "#FFFFFF"
-                xalign 0.45
                 outlines [(2, "#000000", 0, 0)]
 
             text "[current_round]":
                 size 56
                 color "#FFFFFF"
-                xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
         # Orbs arranged around the circle
-        $ orb_positions = get_orb_positions(max_ap)
-        for i, (x, y) in enumerate(orb_positions):
-            $ orb_img, orb_tr = get_orb_display(i, available_ap)
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+            $ orb_img, orb_tr = orb_state(i)
             add orb_img at orb_tr xpos x ypos y
 
 # ========================
