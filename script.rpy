@@ -97,13 +97,13 @@ screen round_ui():
             spacing -5
 
             text "Round":
-                size 28
+                size 22  # was 28
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
             text "[current_round]":
-                size 72
+                size 56  # was 72
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
