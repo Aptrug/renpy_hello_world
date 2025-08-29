@@ -28,9 +28,41 @@ transform round_circle_transform:
     ease 2.0 zoom 1.0
     repeat
 
-# Calculate orb positions using Python
+# Creator-defined displayable for drawing circular orbs
 init python:
     import math
+
+    class CircularOrb(renpy.Displayable):
+        def __init__(self, radius=25, color=(255, 215, 0), border_color=(184, 134, 11), active=True, **kwargs):
+            super(CircularOrb, self).__init__(**kwargs)
+            self.radius = radius
+            self.color = color
+            self.border_color = border_color
+            self.active = active
+            self.size = radius * 2
+
+        def render(self, width, height, st, at):
+            # Create a render object
+            render = renpy.Render(self.size, self.size)
+
+            # Get the canvas for drawing
+            canvas = render.canvas()
+
+            # Draw the main circle
+            if self.active:
+                canvas.circle(self.color, (self.radius, self.radius), self.radius - 2)
+                # Add highlight for 3D effect
+                highlight_color = tuple(min(255, c + 50) for c in self.color[:3])
+                canvas.circle(highlight_color, (self.radius - 8, self.radius - 8), 8)
+            else:
+                # Inactive orb - darker color
+                inactive_color = (120, 120, 120)
+                canvas.circle(inactive_color, (self.radius, self.radius), self.radius - 2)
+
+            # Draw border
+            canvas.circle(self.border_color, (self.radius, self.radius), self.radius - 2, 2)
+
+            return render
 
     def calculate_orb_positions(max_orbs, radius=125, center_x=375, center_y=200):
         """Calculate positions for orbs in a circle around the center"""
@@ -42,6 +74,9 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
+# Simple image definitions for the round background
+image round_bg = Solid("#808080")
+
 # Screen definition for the round UI
 screen round_ui():
     # Main container positioned at center of screen
@@ -51,16 +86,14 @@ screen round_ui():
         xsize 750
         ysize 400
 
-        # Background round circle
-        add Solid("#808080") at round_circle_transform:
-            xsize 250
-            ysize 250
+        # Background round circle using Transform with proper size and shape
+        add Transform(round_bg, size=(250, 250)) at round_circle_transform:
             xpos 250  # Center in the fixed container
             ypos 75
 
         # Round text display
         vbox:
-            xpos 325  # Center the text over the circle
+            xpos 375  # Center the text over the circle
             ypos 115
             xanchor 0.5
             spacing 0
@@ -84,71 +117,14 @@ screen round_ui():
         for i, (x, y) in enumerate(orb_positions):
             if i < available_ap:
                 # Active orb with glow effect
-                add "orb_active" at orb_glow:
+                add CircularOrb(active=True) at orb_glow:
                     xpos x
                     ypos y
             else:
                 # Inactive orb
-                add "orb_inactive" at orb_inactive:
+                add CircularOrb(active=False) at orb_inactive:
                     xpos x
                     ypos y
-
-# Define orb images using LayeredImage for better control
-layeredimage orb_active:
-    always "orb_base"
-    group glow:
-        attribute normal default "orb_glow"
-
-layeredimage orb_inactive:
-    always "orb_base"
-
-# Create the orb images using Transform and Solid
-# You can replace these with actual PNG files if you have them
-image orb_base = Transform(Solid("#FFD700"), xsize=50, ysize=50)
-image orb_glow = Transform(Solid("#FFD700"), xsize=50, ysize=50)
-
-# Alternative implementation using actual circular shapes (if you prefer)
-init python:
-    import pygame
-
-    def create_orb_surface(color, size=50, border_color=None, border_width=2):
-        """Create a circular orb surface"""
-        surf = pygame.Surface((size, size), pygame.SRCALPHA)
-        center = size // 2
-
-        # Draw the main circle with gradient effect (simplified as solid color)
-        pygame.draw.circle(surf, color, (center, center), center - border_width)
-
-        # Draw border if specified
-        if border_color:
-            pygame.draw.circle(surf, border_color, (center, center), center - border_width, border_width)
-
-        # Add highlight for 3D effect
-        highlight_color = tuple(min(255, c + 50) for c in color[:3]) + (color[3] if len(color) > 3 else (255,))
-        pygame.draw.circle(surf, highlight_color, (center - 8, center - 8), 8)
-
-        return surf
-
-# Create orb images using pygame surfaces (more authentic look)
-image orb_active_surface = Transform(
-    im.Data(
-        pygame.image.tostring(
-            create_orb_surface((255, 215, 0, 255), border_color=(184, 134, 11, 255)),
-            "RGBA"
-        ),
-        (50, 50)
-    )
-)
-
-image orb_inactive_surface = Transform(
-    im.Data(
-        pygame.image.tostring(
-            create_orb_surface((120, 120, 120, 255), border_color=(80, 80, 80, 255)),
-            "RGBA"
-        ),
-        (50, 50)
-    )
-)
 
 # Functions to update the UI state
 init python:
@@ -173,3 +149,43 @@ init python:
         global available_ap
         available_ap = max(0, available_ap - amount)
         renpy.restart_interaction()
+
+# Alternative simpler implementation using basic shapes
+# If you prefer not to use creator-defined displayables, uncomment this:
+
+# image orb_active = Transform(Solid("#FFD700"), size=(50, 50))
+# image orb_inactive = Transform(Solid("#787878"), size=(50, 50))
+
+# screen round_ui_simple():
+#     fixed:
+#         xalign 0.5
+#         yalign 0.4
+#         xsize 750
+#         ysize 400
+#
+#         # Background circle
+#         add Transform(Solid("#808080"), size=(250, 250)) at round_circle_transform:
+#             xpos 250
+#             ypos 75
+#
+#         # Round text
+#         vbox:
+#             xpos 375
+#             ypos 115
+#             xanchor 0.5
+#             spacing 0
+#
+#             text "Round" size 36 color "#FFFFFF" text_align 0.5 outlines [(2, "#000000", 0, 0)]
+#             text str(current_round) size 90 color "#FFFFFF" text_align 0.5 outlines [(2, "#000000", 0, 0)]
+#
+#         # Orbs
+#         $ orb_positions = calculate_orb_positions(max_ap, radius=125, center_x=375, center_y=200)
+#         for i, (x, y) in enumerate(orb_positions):
+#             if i < available_ap:
+#                 add "orb_active" at orb_glow:
+#                     xpos x
+#                     ypos y
+#             else:
+#                 add "orb_inactive" at orb_inactive:
+#                     xpos x
+#                     ypos y
