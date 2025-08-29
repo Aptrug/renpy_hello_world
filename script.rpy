@@ -1,4 +1,6 @@
-﻿# ========================
+﻿# This code works, but the question is, can the logic be simplified though?
+
+# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -34,8 +36,6 @@ transform orb_inactive:
 # Python: Circle + Orb Positions
 # ========================
 init python:
-    import math
-
     class Circle(renpy.Displayable):
         def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
             super(Circle, self).__init__(**kwargs)
