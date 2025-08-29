@@ -1,63 +1,56 @@
-﻿default current_round = 59
-default max_ap = 9
-default available_ap = 3
+﻿init python:
+    # Example variables (could be updated during gameplay)
+    default round_number = 5
+    default maxAP = 9
+    default availableAP = 3
 
-init python:
-    import math
+# Define an ATL transform that places a child at a given angle around center.
+transform orb(angle=0):
+    anchor (0.5, 0.5)       # center of orb image is pivot
+    pos (0.5, 0.5)          # start at screen center
+    angle angle            # polar angle in degrees (0 = up)
+    radius 125             # distance (pixels) from center
 
-    renpy.register_shader("custom.radial_gradient", variables="""
-        uniform vec4 u_center_color;
-        uniform vec4 u_edge_color;
-        uniform vec2 u_model_size;
-        varying float v_done;
-        attribute vec4 a_position;
-    """, vertex_300="""
-        vec2 center = u_model_size / 2.0;
-        vec2 pixel = vec2(a_position.xy) - center;
-        v_done = length(pixel) / length(center);
-    """, fragment_300="""
-        float radius_factor = 1.0 / sqrt(2.0);
-        float done = v_done / radius_factor;
-        if (done > 1.0) {
-            discard;
-        }
-        gl_FragColor *= mix(u_center_color, u_edge_color, done);
-    """)
+# A “glow” transform to animate active orbs (optional).
+transform glow:
+    parallel:
+        linear 1.0 alpha 0.5
+        linear 1.0 alpha 1.0
+        repeat
 
-transform radial_bg_gradient(center_color=(0.502, 0.502, 0.502, 1.0), edge_color=(0.314, 0.314, 0.314, 1.0)):
-    shader "custom.radial_gradient"
-    u_center_color center_color
-    u_edge_color edge_color
+label start:
+    # Show the battle UI and pause to view.
+    show screen battle_ui
+    pause
 
-transform radial_orb_gradient(center_color=(1.0, 0.843, 0.0, 1.0), edge_color=(0.854, 0.647, 0.125, 1.0)):
-    shader "custom.radial_gradient"
-    u_center_color center_color
-    u_edge_color edge_color
-
-transform orb_glow:
-    zoom 1.2
-    blur 15
-    alpha 0.5
-
-define round_bg_base = Solid("#ffffff", xsize=250, ysize=250)
-define orb_base = Solid("#ffffff", xsize=50, ysize=50)
-
-screen round_indicator():
-    fixed:
+screen battle_ui:
+    # Background circle (using frame or an image of a circle).
+    frame:
         xysize (250, 250)
+        background Solid("#505050")
+        background Frame("gui/frame.png", 0, 0)  # example frame (replace with your style)
+        align (0.5, 0.5)
 
-        add round_bg_base at radial_bg_gradient xalign 0.5 yalign 0.5
+    # Centered text: "Round" and the round number.
+    text "Round" at truecenter:
+        xalign 0.5
+        yalign 0.45
+        size 36 color "#FFFFFF"
+    text str(round_number) at truecenter:
+        xalign 0.5
+        yalign 0.55
+        size 90 color "#FFFFFF"
 
-        text "Round" xalign 0.5 ypos 60 size 36 color "#ffffff" outlines [(absolute(2), "#00000080", absolute(2), absolute(2))] text_align 0.5
-
-        text "[current_round]" xalign 0.5 ypos 100 size 90 color "#ffffff" outlines [(absolute(2), "#00000080", absolute(2), absolute(2))] text_align 0.5
-
-        for i in range(max_ap):
-            $ angle = (float(i) / max_ap) * 2 * math.pi - math.pi / 2
-            $ x = int(125 + 125 * math.cos(angle))
-            $ y = int(125 + 125 * math.sin(angle))
-
-            if i < available_ap:
-                add orb_base at [radial_orb_gradient, orb_glow] xpos x ypos y anchor (0.5, 0.5)
-
-            add orb_base at radial_orb_gradient xpos x ypos y anchor (0.5, 0.5)
+    # Loop to create orbs around the circle.
+    for i in range(maxAP):
+        # Compute angle: start at -90° so i=0 is top (0 deg = up by default).
+        $ deg = 360.0 * i / maxAP - 90.0
+        # Choose image and transform based on active/inactive.
+        if i < availableAP:
+            # Active orb: use glow animation and/or a highlighted image.
+            add Solid("#FFD700", xysize=(50,50)) at orb(angle=deg) xalign 0.5 yalign 0.5 rotate 0:
+                zoom 1.0
+                at glow  # apply glowing animation
+        else:
+            # Inactive orb: use plain orb image (no glow).
+            add Solid("#DAA520", xysize=(50,50)) at orb(angle=deg) xalign 0.5 yalign 0.5 rotate 0
