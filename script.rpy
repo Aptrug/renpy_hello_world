@@ -67,7 +67,7 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-define round_bg = Circle(125, (80, 80, 80), (50, 50, 50), 3)
+define round_bg = Circle(100, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(25, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(25, (102, 102, 102), (60, 60, 60), 2)
 
