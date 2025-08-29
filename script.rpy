@@ -1,5 +1,5 @@
-﻿# Round UI for Ren'Py Game - MINIMAL fix to original working code
-# Only removes Creator-Defined Displayables, everything else unchanged
+﻿# Round UI for Ren'Py Game - Optimized ATL Implementation
+# Place this in your game/ folder as a .rpy file
 
 # Game variables
 default current_round = 59
@@ -29,24 +29,58 @@ transform round_breathe:
     ease 3.0 zoom 1.0
     repeat
 
-# Simple displayables instead of Creator-Defined ones
-define round_bg = Transform(Solid("#505050"), size=(250, 250))
-define round_inner = Transform(Solid("#808080"), size=(240, 240))
-define orb_active = Transform(Solid("#FFD700"), size=(50, 50))
-define orb_inactive_img = Transform(Solid("#666666"), size=(50, 50))
+# Creator-Defined Displayable for circles with optional radial gradient
+init python:
+    def lerp_color(c1, c2, t):
+        return tuple(int(c1[i] * (1 - t) + c2[i] * t) for i in range(3))
 
-# Python functions for positioning
+    class Circle(renpy.Displayable):
+        def __init__(self, radius, center_color, edge_color=None, border_color=None, border_width=0, **kwargs):
+            super(Circle, self).__init__(**kwargs)
+            self.radius = radius
+            self.size = radius * 2
+            self.center_color = renpy.easy.color(center_color)
+            self.edge_color = renpy.easy.color(edge_color) if edge_color else None
+            self.border_color = renpy.easy.color(border_color) if border_color else None
+            self.border_width = border_width
+
+        def render(self, width, height, st, at):
+            render = renpy.Render(self.size, self.size)
+            canvas = render.canvas()
+            center = (self.radius, self.radius)
+
+            if self.edge_color:
+                # Radial gradient from center (light) to edge (dark)
+                for r in range(self.radius, 0, -1):
+                    t = 1 - (r / float(self.radius))  # t=0 at edge, t=1 at center
+                    col = lerp_color(self.edge_color, self.center_color, t)
+                    canvas.circle(col + (255,), center, r)  # Add alpha 255 for opaque
+            else:
+                # Solid fill
+                canvas.circle(self.center_color + (255,), center, self.radius)
+
+            # Draw border if specified
+            if self.border_color and self.border_width > 0:
+                canvas.circle(self.border_color + (255,), center, self.radius, self.border_width)
+
+            return render
+
+# Create circular displayables
+define round_bg = Circle(125, center_color=(128, 128, 128), edge_color=(80, 80, 80))
+define orb_active = Circle(25, center_color=(255, 215, 0), edge_color=(218, 165, 32), border_color=(184, 134, 11), border_width=2)
+define orb_inactive_img = Circle(25, center_color=(102, 102, 102), edge_color=(60, 60, 60), border_color=(50, 50, 50), border_width=2)
+
+# Python function for positioning
 init python:
     import math
 
-    def get_orb_positions(num_orbs, radius=125, center_x=125, center_y=125):
+    def get_orb_positions(num_orbs, radius=125, center_x=125, center_y=125, orb_radius=25):
         """Calculate circular positions for orbs around center"""
         positions = []
         for i in range(num_orbs):
-            # Start from top (-π/2) and go clockwise
-            angle = (i / num_orbs) * 2 * math.pi - math.pi / 2
-            x = center_x + radius * math.cos(angle) - 25  # -25 to center 50px orb
-            y = center_y + radius * math.sin(angle) - 25
+            angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
+            x = center_x + radius * math.cos(angle) - orb_radius
+            y = center_y + radius * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
@@ -55,7 +89,7 @@ screen round_ui():
     # Container positioned at screen center
     fixed:
         xalign 0.5
-        yalign 0.4
+        yalign 0.5  # Adjusted to true center for better alignment
         xsize 250
         ysize 250
 
@@ -64,28 +98,23 @@ screen round_ui():
             xpos 0
             ypos 0
 
-        # Inner circle for depth effect
-        add round_inner at round_breathe:
-            xpos 5
-            ypos 5
-
         # Round number display
         vbox:
             xalign 0.5
             yalign 0.5
-            spacing -5
+            spacing -10  # Tightened spacing for better visual match to HTML
 
             text "Round":
-                size 28
+                size 36
                 color "#FFFFFF"
                 xalign 0.5
-                outlines [(2, "#000000", 0, 0)]
+                outlines [(2, "#00000080", 0, 0)]  # Softer shadow for text
 
             text "[current_round]":
-                size 72
+                size 90
                 color "#FFFFFF"
                 xalign 0.5
-                outlines [(2, "#000000", 0, 0)]
+                outlines [(2, "#00000080", 0, 0)]
 
         # AP Orbs positioned in circle
         $ orb_positions = get_orb_positions(max_ap)
