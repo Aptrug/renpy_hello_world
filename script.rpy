@@ -5,7 +5,7 @@ default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
-define ROUND_RADIUS = 96
+define ROUND_RADIUS = 80
 define ORB_RADIUS = 20
 define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
