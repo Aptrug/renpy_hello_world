@@ -8,6 +8,15 @@ default available_ap = 3
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
 
+
+define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
+define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
+
+
+define ORB_DISTANCE = ROUND_RADIUS + round_bg.border_width / 2
+
+
 # ========================
 # ATL Transforms
 # ========================
@@ -70,12 +79,6 @@ init python:
 # Circle Definitions
 # ========================
 
-define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
-define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
-
-
-define ORB_DISTANCE = ROUND_RADIUS + round_bg.border_width / 2
 
 # ========================
 # Main UI Screen
