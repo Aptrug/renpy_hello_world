@@ -81,7 +81,7 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 screen round_ui():
     fixed:
         xalign 0.5
-        yalign 0.4
+        yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
