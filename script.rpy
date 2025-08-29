@@ -1,16 +1,21 @@
-﻿# Game variables
+﻿# ========================
+# Game Variables
+# ========================
 default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
-# ATL Transforms for animations
+# ========================
+# ATL Transforms
+# ========================
 transform orb_glow:
     parallel:
         ease 1.0 alpha 0.8
         ease 1.0 alpha 1.0
+    parallel:
         linear 0.1 additive 0.3
         linear 0.1 additive 0.0
-        repeat
+    repeat
 
 transform round_breathe:
     ease 3.0 zoom 1.02
@@ -21,11 +26,36 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
-# Python helper for orb positions
+# ========================
+# Python: Circle + Orb Positions
+# ========================
 init python:
     import math
 
+    class Circle(renpy.Displayable):
+        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
+            super(Circle, self).__init__(**kwargs)
+            self.radius = radius
+            self.size = radius * 2
+            self.color = color
+            self.border_color = border_color
+            self.border_width = border_width
+
+        def render(self, width, height, st, at):
+            render = renpy.Render(self.size, self.size)
+            canvas = render.canvas()
+
+            # Draw filled circle
+            canvas.circle(self.color, (self.radius, self.radius), self.radius)
+
+            # Draw border if given
+            if self.border_color:
+                canvas.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
+
+            return render
+
     def get_orb_positions(num_orbs, radius=125, center_x=125, center_y=125):
+        """Compute (x,y) positions for orbs around a circle center."""
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
@@ -34,26 +64,16 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# Circle graphics using Solid + Composite (no Python drawing)
-define round_bg = Composite(
-    (250, 250),
-    (0, 0), Solid("#505050"),
-    (3, 3), Solid("#808080", xysize=(244, 244))
-)
+# ========================
+# Circle Definitions
+# ========================
+define round_bg = Circle(125, (80, 80, 80), (50, 50, 50), 3)
+define orb_active = Circle(25, (255, 215, 0), (184, 134, 11), 2)
+define orb_inactive_img = Circle(25, (102, 102, 102), (60, 60, 60), 2)
 
-define orb_active = Composite(
-    (50, 50),
-    (0, 0), Solid("#DAA520"),
-    (5, 5), Solid("#FFD700", xysize=(40, 40))
-)
-
-define orb_inactive_img = Composite(
-    (50, 50),
-    (0, 0), Solid("#3C3C3C"),
-    (5, 5), Solid("#666666", xysize=(40, 40))
-)
-
-# Main UI screen
+# ========================
+# Main UI Screen
+# ========================
 screen round_ui():
     fixed:
         xalign 0.5
@@ -61,7 +81,7 @@ screen round_ui():
         xsize 250
         ysize 250
 
-        # Breathing round background
+        # Round circle background with breathing animation
         add round_bg at round_breathe:
             xpos 0
             ypos 0
@@ -84,7 +104,7 @@ screen round_ui():
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
-        # Orbs arranged in a circle
+        # Orbs arranged around the circle
         $ orb_positions = get_orb_positions(max_ap)
         for i, (x, y) in enumerate(orb_positions):
             if i < available_ap:
@@ -96,9 +116,12 @@ screen round_ui():
                     xpos x
                     ypos y
 
-# Demo/Test label
+# ========================
+# Demo Label (Optional)
+# ========================
 label start:
     show screen round_ui
+
     "Round UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
 
     menu:
