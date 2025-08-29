@@ -99,7 +99,7 @@ screen round_ui():
             text "Round":
                 size 22  # was 28
                 color "#FFFFFF"
-                xalign 0.5
+                xalign 0.45
                 outlines [(2, "#000000", 0, 0)]
 
             text "[current_round]":
