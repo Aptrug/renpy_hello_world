@@ -1,11 +1,12 @@
-﻿# Optimized Round UI for Ren'Py - Simplified ATL Implementation
+﻿# Optimized Round UI for Ren'Py - Actually Working Version
+# Fixes the broken transforms and simplifies the original code
 
 # Game variables
 default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
-# Optimized ATL transforms
+# Working ATL transforms
 transform round_breathe:
     zoom 1.0
     ease 3.0 zoom 1.02
@@ -14,7 +15,6 @@ transform round_breathe:
 
 transform orb_glow:
     alpha 1.0
-    additive 0.0
     parallel:
         ease 1.0 alpha 0.8
         ease 1.0 alpha 1.0
@@ -28,27 +28,26 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
-# Optimized orb positioning transform that takes angle as parameter
-transform orb_position(angle_deg):
-    # Convert to Ren'Py's coordinate system and place orb
-    anchor (0.5, 0.5)
-    pos (125, 125)  # Center of the 250x250 container
-    angle angle_deg
-    radius 125
+# Simplified displayable definitions using built-in shapes
+define round_bg = Solid("#505050")
+define round_inner = Solid("#808080")
+define orb_active_img = Solid("#FFD700")
+define orb_inactive_img = Solid("#666666")
 
-# Simple circle creation using Solid with Transform
-define round_bg = Transform(Solid("#505050"), size=(250, 250), corner1=(125, 125))
-define round_inner = Transform(Solid("#808080"), size=(240, 240), corner1=(120, 120))
-define orb_active_img = Transform(Solid("#FFD700"), size=(50, 50), corner1=(25, 25))
-define orb_inactive_img = Transform(Solid("#666666"), size=(50, 50), corner1=(25, 25))
-
-# Utility function for angle calculation
+# Optimized positioning function (simplified from original)
 init python:
-    def get_orb_angle(index, total):
-        """Calculate angle for orb positioning (starting from top)"""
-        return (index * 360.0 / total - 90) % 360
+    import math
+    def get_orb_positions(num_orbs, radius=100, center_x=125, center_y=125):
+        """Calculate positions for orbs around center - simplified math"""
+        positions = []
+        for i in range(num_orbs):
+            angle = (i * 2 * math.pi / num_orbs) - (math.pi / 2)
+            x = center_x + radius * math.cos(angle) - 25
+            y = center_y + radius * math.sin(angle) - 25
+            positions.append((int(x), int(y)))
+        return positions
 
-# Main optimized UI screen
+# Main UI screen - cleaner and working
 screen round_ui():
     fixed:
         xalign 0.5
@@ -56,11 +55,17 @@ screen round_ui():
         xsize 250
         ysize 250
 
-        # Background circles with shared breathe animation
-        add round_bg at round_breathe
-        add round_inner at round_breathe
+        # Background circle
+        add Transform(round_bg, size=(250, 250)) at round_breathe:
+            xpos 0
+            ypos 0
 
-        # Round number text
+        # Inner circle for gradient effect
+        add Transform(round_inner, size=(240, 240)) at round_breathe:
+            xpos 5
+            ypos 5
+
+        # Round text - simplified
         vbox:
             xalign 0.5
             yalign 0.5
@@ -78,18 +83,20 @@ screen round_ui():
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
-        # Optimized AP orbs using polar positioning
-        for i in range(max_ap):
-            $ angle = get_orb_angle(i, max_ap)
+        # AP Orbs - using working positioning
+        $ positions = get_orb_positions(max_ap)
 
+        for i, (x, y) in enumerate(positions):
             if i < available_ap:
-                add orb_active_img at Transform(orb_position(angle), orb_glow):
-                    anchor (0.5, 0.5)
+                add Transform(orb_active_img, size=(50, 50)) at orb_glow:
+                    xpos x
+                    ypos y
             else:
-                add orb_inactive_img at Transform(orb_position(angle), orb_inactive):
-                    anchor (0.5, 0.5)
+                add Transform(orb_inactive_img, size=(50, 50)) at orb_inactive:
+                    xpos x
+                    ypos y
 
-# Simplified management functions
+# Same management functions - they were fine
 init python:
     def update_round(new_round):
         global current_round
@@ -116,7 +123,7 @@ init python:
         available_ap = min(max_ap, available_ap + amount)
         renpy.restart_interaction()
 
-# Demo label
+# Demo - same as original
 label start:
     show screen round_ui
     "Round UI Demo - Current: Round [current_round], AP: [available_ap]/[max_ap]"
@@ -151,48 +158,56 @@ label start:
             hide screen round_ui
             return
 
-# Alternative: Even more optimized version using composite circles
-# This version eliminates individual transforms for better performance
+# ALTERNATIVE: More visually accurate to original HTML version
+# Using im.MatrixColor for better gradients
+define round_bg_gradient = im.MatrixColor(
+    Transform(Solid("#808080"), size=(250, 250)),
+    im.matrix.colorize("#505050", "#808080")
+)
 
-screen round_ui_ultra_optimized():
+define orb_gold_gradient = im.MatrixColor(
+    Transform(Solid("#FFD700"), size=(50, 50)),
+    im.matrix.colorize("#DAA520", "#FFD700")
+)
+
+# Screen version with gradients (optional upgrade)
+screen round_ui_with_gradients():
     fixed:
         xalign 0.5
         yalign 0.4
         xsize 250
         ysize 250
 
-        # Single composite background
-        add Composite(
-            (250, 250),
-            (0, 0), Transform(Solid("#505050"), size=(250, 250), corner1=(125, 125)),
-            (5, 5), Transform(Solid("#808080"), size=(240, 240), corner1=(120, 120))
-        ) at round_breathe
+        # Gradient background
+        add round_bg_gradient at round_breathe
 
-        # Text overlay
-        text "Round\n[current_round]":
+        # Round text
+        vbox:
             xalign 0.5
             yalign 0.5
-            size 28
-            color "#FFFFFF"
-            text_align 0.5
-            outlines [(2, "#000000", 0, 0)]
-            line_spacing -20
+            spacing -10
 
-        # Single composite for all orbs (most optimized approach)
-        python:
-            import math
-            orb_composite_list = [(250, 250)]  # Size tuple
+            text "Round":
+                size 36
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-            for i in range(max_ap):
-                angle_rad = (i / max_ap) * 2 * math.pi - math.pi / 2
-                x = int(125 + 125 * math.cos(angle_rad) - 25)
-                y = int(125 + 125 * math.sin(angle_rad) - 25)
+            text "[current_round]":
+                size 90
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-                if i < available_ap:
-                    orb_img = Transform(Solid("#FFD700"), size=(50, 50), corner1=(25, 25))
-                    orb_composite_list.extend([(x, y), orb_img])
-                else:
-                    orb_img = Transform(Solid("#666666"), size=(50, 50), corner1=(25, 25))
-                    orb_composite_list.extend([(x, y), orb_img])
+        # Orbs with gradients
+        $ positions = get_orb_positions(max_ap)
 
-        add Composite(*orb_composite_list) at orb_glow
+        for i, (x, y) in enumerate(positions):
+            if i < available_ap:
+                add orb_gold_gradient at orb_glow:
+                    xpos x
+                    ypos y
+            else:
+                add Transform(orb_inactive_img, size=(50, 50)) at orb_inactive:
+                    xpos x
+                    ypos y
