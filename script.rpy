@@ -5,6 +5,10 @@ default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
+define ROUND_RADIUS = 96
+define ORB_RADIUS = 20
+define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
+
 # ========================
 # ATL Transforms
 # ========================
@@ -66,10 +70,6 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-
-define ROUND_RADIUS = 96
-define ORB_RADIUS = 20
-define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
