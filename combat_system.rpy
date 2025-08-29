@@ -1,177 +1,175 @@
-# I'm making a combat system for my renpy game (hero party vs boss)
-# I've just started working on it, so it's pretty unimpressive right now
-# Portability & efficiency is priority (I want to target mobile users too)
+# Define the variables that control the UI
+default current_round = 59
+default max_ap = 9
+default available_ap = 3
 
-# I want to make the images feel... more alive, like they're real or 3D
-# Any ways to do that?
-# PS. research what effects card games use to make cards more alive
-# Open to all kind of improvements
+# Transform for the glowing effect on active orbs
+transform orb_glow:
+    alpha 1.0
+    zoom 1.0
+    parallel:
+        ease 0.8 alpha 0.7
+        ease 0.8 alpha 1.0
+        repeat
+    parallel:
+        ease 1.2 zoom 1.1
+        ease 1.2 zoom 1.0
+        repeat
 
-# Preload all images
-image boss = "images/combat_system/boss.webp"
-image kenshin = "images/combat_system/kenshin.webp"
-image magic = "images/combat_system/magic.webp"
-image rance = "images/combat_system/rance.webp"
-image reset = "images/combat_system/reset.webp"
-image suzume = "images/combat_system/suzume.webp"
+# Transform for inactive orbs
+transform orb_inactive:
+    alpha 0.6
+    zoom 1.0
 
-# 0 all good
-# 1 still all good
-# 2 must re-enable quickmenu later
-default persistent.qmenu_bak = 0
+# Transform for the main round circle (subtle breathing effect)
+transform round_circle_transform:
+    zoom 1.0
+    ease 2.0 zoom 1.02
+    ease 2.0 zoom 1.0
+    repeat
 
+# Calculate orb positions using Python
 init python:
-    # If quit the game mid battle
-    if persistent.qmenu_bak == 2:
-        persistent.quickmenu = True
-        persistent.qmenu_bak = 0
+    import math
 
-screen battle_ui():
-    # Feldgrau background
-    add Solid("#4D5D53")
+    def calculate_orb_positions(max_orbs, radius=125, center_x=375, center_y=200):
+        """Calculate positions for orbs in a circle around the center"""
+        positions = []
+        for i in range(max_orbs):
+            angle = (i / max_orbs) * 2 * math.pi - math.pi / 2  # Start at top
+            x = center_x + radius * math.cos(angle) - 25  # -25 to center the 50px orb
+            y = center_y + radius * math.sin(angle) - 25
+            positions.append((int(x), int(y)))
+        return positions
 
-    # Boss image, centered top, 70% height, top margin 30px
-    add "boss" at idle_float:
+# Screen definition for the round UI
+screen round_ui():
+    # Main container positioned at center of screen
+    fixed:
         xalign 0.5
-        yalign 0.1
-        zoom 0.65
+        yalign 0.4
+        xsize 750
+        ysize 400
 
-    # Allies row, bottom center
-    hbox:
-        xalign 0.5
-        yalign 0.95
-        spacing 20
+        # Background round circle
+        add Solid("#808080") at round_circle_transform:
+            xsize 250
+            ysize 250
+            xpos 250  # Center in the fixed container
+            ypos 75
 
-        add "kenshin" at ally_hover
-        add "magic" at gentle_float
-        add "rance" at ally_selected_effect
-        add "reset" at ally_idle
-        add "suzume" at ally_selected_effect
+        # Round text display
+        vbox:
+            xpos 325  # Center the text over the circle
+            ypos 115
+            xanchor 0.5
+            spacing 0
 
-# Bunch of effects, some used, some not
-transform idle_float:
-    yoffset 0
-    linear 2.0 yoffset -5
-    linear 2.0 yoffset 0
-    repeat
+            text "Round":
+                size 36
+                color "#FFFFFF"
+                text_align 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-transform pulse_glow:
-    alpha 0.5
-    linear 1.0 alpha 0.8
-    linear 1.0 alpha 0.5
-    repeat
+            text str(current_round):
+                size 90
+                color "#FFFFFF"
+                text_align 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-transform slow_pulse:
-    alpha 0.9
-    linear 1.5 alpha 1.0
-    linear 1.5 alpha 0.9
-    repeat
+        # Calculate orb positions
+        $ orb_positions = calculate_orb_positions(max_ap, radius=125, center_x=375, center_y=200)
 
-transform hit_shake:
-    linear 0.1 xoffset 10
-    linear 0.1 xoffset -10
-    linear 0.1 xoffset 0
+        # Display orbs in calculated positions
+        for i, (x, y) in enumerate(orb_positions):
+            if i < available_ap:
+                # Active orb with glow effect
+                add "orb_active" at orb_glow:
+                    xpos x
+                    ypos y
+            else:
+                # Inactive orb
+                add "orb_inactive" at orb_inactive:
+                    xpos x
+                    ypos y
 
-transform ally_selected_effect:
-    matrixcolor BrightnessMatrix(0.3)
-    linear 0.8 matrixcolor BrightnessMatrix(0.1)
-    linear 0.8 matrixcolor BrightnessMatrix(0.3)
-    repeat
+# Define orb images using LayeredImage for better control
+layeredimage orb_active:
+    always "orb_base"
+    group glow:
+        attribute normal default "orb_glow"
 
-transform boss_breathe:
-    yoffset 30 zoom 0.7
-    linear 3.0 yoffset 25 zoom 0.72
-    linear 3.0 yoffset 30 zoom 0.7
-    repeat
+layeredimage orb_inactive:
+    always "orb_base"
 
-transform ally_hover_effect:
-    zoom 1.08
-    matrixcolor BrightnessMatrix(0.2)
+# Create the orb images using Transform and Solid
+# You can replace these with actual PNG files if you have them
+image orb_base = Transform(Solid("#FFD700"), xsize=50, ysize=50)
+image orb_glow = Transform(Solid("#FFD700"), xsize=50, ysize=50)
 
-transform ally_hover:
-    zoom 1.0
-    linear 0.25 zoom 1.08
+# Alternative implementation using actual circular shapes (if you prefer)
+init python:
+    import pygame
 
-transform gentle_float:
-    yoffset 0
-    linear 4.0 yoffset -8
-    linear 4.0 yoffset 0
-    repeat
+    def create_orb_surface(color, size=50, border_color=None, border_width=2):
+        """Create a circular orb surface"""
+        surf = pygame.Surface((size, size), pygame.SRCALPHA)
+        center = size // 2
 
-transform ally_idle:
-    linear 0.25 zoom 1.0
+        # Draw the main circle with gradient effect (simplified as solid color)
+        pygame.draw.circle(surf, color, (center, center), center - border_width)
 
-# === Extra Effects (High Impact, Low Cost) ===
+        # Draw border if specified
+        if border_color:
+            pygame.draw.circle(surf, border_color, (center, center), center - border_width, border_width)
 
-# Quick "anticipation" zoom before attacks, then reset
-transform attack_zoom:
-    zoom 1.0
-    linear 0.15 zoom 1.1
-    linear 0.15 zoom 1.0
+        # Add highlight for 3D effect
+        highlight_color = tuple(min(255, c + 50) for c in color[:3]) + (color[3] if len(color) > 3 else (255,))
+        pygame.draw.circle(surf, highlight_color, (center - 8, center - 8), 8)
 
-# Simple white flash overlay for hits
-transform hit_flash:
-    alpha 0.0
-    linear 0.05 alpha 0.6
-    linear 0.2 alpha 0.0
+        return surf
 
-# Smooth health bar changes (use on bar images)
-transform smooth_hp:
-    linear 0.5 xzoom 1.0  # You'd adjust size dynamically, this smooths it visually
+# Create orb images using pygame surfaces (more authentic look)
+image orb_active_surface = Transform(
+    im.Data(
+        pygame.image.tostring(
+            create_orb_surface((255, 215, 0, 255), border_color=(184, 134, 11, 255)),
+            "RGBA"
+        ),
+        (50, 50)
+    )
+)
 
-# Floating damage numbers or text (up and fade out)
-transform damage_float:
-    yoffset 0 alpha 1.0
-    linear 0.8 yoffset -40 alpha 0.0
+image orb_inactive_surface = Transform(
+    im.Data(
+        pygame.image.tostring(
+            create_orb_surface((120, 120, 120, 255), border_color=(80, 80, 80, 255)),
+            "RGBA"
+        ),
+        (50, 50)
+    )
+)
 
-# Attack "impact shake" (slightly bigger than hit_shake)
-transform impact_shake:
-    linear 0.05 xoffset 15
-    linear 0.05 xoffset -15
-    linear 0.05 xoffset 10
-    linear 0.05 xoffset -10
-    linear 0.05 xoffset 0
+# Functions to update the UI state
+init python:
+    def update_round(new_round):
+        global current_round
+        current_round = new_round
+        renpy.restart_interaction()
 
-# Parallax-like background drift
-transform bg_drift:
-    xpos 0.0
-    linear 20.0 xpos -50.0
-    linear 20.0 xpos 0.0
-    repeat
+    def update_ap(new_available, new_max=None):
+        global available_ap, max_ap
+        available_ap = new_available
+        if new_max is not None:
+            max_ap = new_max
+        renpy.restart_interaction()
 
-label start_battle:
-    if persistent.quickmenu:
-        $persistent.qmenu_bak = 2
-    else:
-        $persistent.qmenu_bak = 1
-    $persistent.quickmenu = False
+    def gain_ap(amount=1):
+        global available_ap
+        available_ap = min(max_ap, available_ap + amount)
+        renpy.restart_interaction()
 
-    $config.rollback_enabled = False
-
-    show screen battle_ui
-
-    "A wild boss appears!"
-    "Kenshin attacks!"
-    "Boss retaliates!"
-
-    if persistent.qmenu_bak == 2:
-        $persistent.quickmenu = True
-    $persistent.qmenu_bak = 0
-
-    hide screen battle_ui
-
-    $renpy.block_rollback()
-    $config.rollback_enabled = True
-
-    scene forest with fade
-
-    # Jump back to main story/dialogue
-    jump after_battle
-
-label after_battle:
-    "The battle is over, and the heroes catch their breath."
-    "Kenshin: That was intense!"
-    "Rance: Let's keep moving."
-
-    # Continue with normal story
-    return
+    def spend_ap(amount=1):
+        global available_ap
+        available_ap = max(0, available_ap - amount)
+        renpy.restart_interaction()
