@@ -7,7 +7,6 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 # ========================
 # ATL Transforms
@@ -59,6 +58,14 @@ init python:
             return render
 
     def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
+        """
+        Compute positions for orbs around a circle.
+        Automatically adjusts distance to account for circle border.
+        """
+        if distance is None:
+            # Use circle radius + half of border width
+            distance = ROUND_RADIUS + round_bg.border_width / 2
+
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
@@ -81,7 +88,7 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 screen round_ui():
     fixed:
         xalign 0.5
-        yalign 0.75
+        yalign 0.75  # lower-center quarter
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
