@@ -57,7 +57,7 @@ init python:
 
             return render
 
-    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
+    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=None, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
         """
         Compute positions for orbs around a circle.
         Automatically adjusts distance to account for circle border.
@@ -77,7 +77,6 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
