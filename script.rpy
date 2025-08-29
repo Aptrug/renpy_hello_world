@@ -7,6 +7,7 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
+define ORB_DISTANCE = ROUND_RADIUS  # distance from center to orb center
 
 # ========================
 # ATL Transforms
