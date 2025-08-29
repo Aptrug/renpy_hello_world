@@ -58,7 +58,7 @@ init python:
 
             return render
 
-    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance = ROUND_RADIUS + round_bg.border_width / 2, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
+    def get_orb_positions(num_orbs, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE, center_x=ROUND_RADIUS, center_y=ROUND_RADIUS):
         positions = []
         for i in range(num_orbs):
             angle = (i / float(num_orbs)) * 2 * math.pi - math.pi / 2
@@ -109,7 +109,7 @@ screen round_ui():
                 outlines [(2, "#000000", 0, 0)]
 
         # Orbs arranged around the circle
-        $ orb_positions = get_orb_positions(max_ap, orb_radius=ORB_RADIUS, distance=ORB_DISTANCE)
+        $ orb_positions = get_orb_positions(max_ap)
         for i, (x, y) in enumerate(orb_positions):
             if i < available_ap:
                 add orb_active at orb_glow:
