@@ -1,6 +1,5 @@
 ﻿# script.rpy
-# Falchion HP Bars + Round Orb UI
-# Paste this into your project (script.rpy). Adjust sizes/colors as needed.
+# Falchion HP Bars + Round Orb UI - robust import version with diagnostics
 
 # ========================
 # Game Variables
@@ -37,54 +36,99 @@ transform orb_inactive:
     zoom 0.9
 
 # ========================
-# Python Helpers & Displayables
+# Python Helpers & Displayables (with robust imports + diagnostics)
 # ========================
 init python:
-    import math, renpy
+    import math, sys, os
 
-    # --- Circle Displayable for orbs / round background ---
-    class Circle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
-            super(Circle, self).__init__(**kwargs)
+    # Diagnostic: tell us which renpy module file is being used (if available).
+    try:
+        import renpy
+        try:
+            # renpy.__file__ is present if a plain module file is imported (helpful to debug shadowing).
+            renpy_path = getattr(renpy, "__file__", None)
+            renpy.log("DEBUG: renpy module file: " + repr(renpy_path))
+        except Exception:
+            # Best-effort log
+            try:
+                renpy.log("DEBUG: renpy module detected (no __file__ available).")
+            except Exception:
+                pass
+    except Exception as e:
+        # If import renpy fails entirely (very unlikely when running inside Ren'Py),
+        # raise a clear exception.
+        raise Exception("Could not import renpy module: " + repr(e))
+
+    # Try to resolve Displayable in a robust way.
+    Displayable = None
+    try:
+        # Preferred: top-level convenience alias (Ren'Py docs show renpy.Displayable).
+        Displayable = renpy.Displayable
+    except Exception:
+        try:
+            # Fallback: import from renpy.display.core (actual implementation location).
+            from renpy.display.core import Displayable
+            renpy.log("DEBUG: Imported Displayable from renpy.display.core")
+        except Exception:
+            # Give a helpful error (likely shadowing)
+            msg = [
+                "ERROR: Could not find renpy.Displayable.",
+                "This commonly happens when there is a file or folder named 'renpy' or 'renpy.py' inside your game folder",
+                "which shadows the engine's renpy package.",
+                "",
+                "Please check your game directory for any files/folders named 'renpy' and rename/remove them.",
+                "As a diagnostic, check the REN'PY module path printed in the logs above."
+            ]
+            # Try to log the error via renpy.log if available, then raise.
+            try:
+                renpy.log("\\n".join(msg))
+            except Exception:
+                pass
+            raise Exception("\n".join(msg))
+
+    # For Render, use the top-level renpy.Render (docs describe this).
+    try:
+        Render = renpy.Render
+    except Exception:
+        # fallback import (should not be necessary on normal Ren'Py)
+        try:
+            from renpy.display.core import Render
+        except Exception:
+            raise Exception("Could not find renpy.Render - Ren'Py environment may be broken or shadowed.")
+
+    # --- circle displayable and helpers ---
+    class Circle(Displayable):
+        def __init__(self, radius, color, border_color=None, border_width=2, **properties):
+            super(Circle, self).__init__(**properties)
             self.radius = int(radius)
             self.color = color
             self.border_color = border_color
             self.border_width = int(border_width)
 
-        def render(self, w, h, st, at):
+        def render(self, width, height, st, at):
             size = self.radius * 2
-            r = renpy.Render(size, size)
+            r = Render(size, size)
             c = r.canvas()
-
-            # fill circle
-            if self.color:
-                try:
-                    c.circle(self.color, (self.radius, self.radius), self.radius)
-                except Exception:
-                    # Fallback drawing if circle isn't available: use polygon approximation
-                    steps = 32
-                    pts = []
-                    for i in range(steps):
-                        ang = 2.0 * math.pi * i / steps
-                        pts.append((self.radius + int(math.cos(ang)*self.radius),
-                                    self.radius + int(math.sin(ang)*self.radius)))
-                    c.polygon(self.color, pts)
-
-            # border
+            # Try to use circle; fall back to polygon approximation if not available.
+            try:
+                c.circle(self.color, (self.radius, self.radius), self.radius)
+            except Exception:
+                steps = 32
+                pts = []
+                for i in range(steps):
+                    ang = 2.0 * math.pi * i / steps
+                    pts.append((self.radius + int(math.cos(ang)*self.radius),
+                                self.radius + int(math.sin(ang)*self.radius)))
+                c.polygon(self.color, pts)
             if self.border_color and self.border_width > 0:
                 try:
                     c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
                 except Exception:
-                    # fallback: approximate border
+                    # fallback border
                     c.polygon(self.border_color, [(0,0),(size,0),(size,size),(0,size)], width=self.border_width)
-
             return r
 
     def get_orb_positions(num_orbs):
-        """
-        Returns orb positions arranged evenly in a circle around ROUND_RADIUS.
-        Positions are (x, y) relative to top-left of the ROUND_RADIUS*2 area.
-        """
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
@@ -93,16 +137,16 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# define round/orb Displayables
+# define round/orb Displayables (outside init python so screen language can use them)
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
-# HPBar Displayable (falchion-like)
+# HPBar Displayable (falchion-like) - robust
 # ========================
 init python:
-    # basic lerp helpers
+    # simple lerp helpers
     def lerp(a, b, t):
         return a + (b - a) * t
 
@@ -111,17 +155,12 @@ init python:
                 int(lerp(c1[1], c2[1], t)),
                 int(lerp(c1[2], c2[2], t)))
 
-    class HPBar(renpy.Displayable):
-        """
-        HPBar(width, height, get_hp=lambda:1.0, color_from=(r,g,b), color_to=(r,g,b), bg_color, side)
-        get_hp must be a callable returning a float 0.0..1.0
-        side: 'left' or 'right' (affects angled end)
-        """
+    class HPBar(Displayable):
         def __init__(self, width=360, height=68, get_hp=lambda:1.0,
                      color_from=(204,0,0), color_to=(255,102,102),
                      bg_color=(18,18,18), border_color=(60,60,60),
-                     side='left', **kwargs):
-            super(HPBar, self).__init__(**kwargs)
+                     side='left', **properties):
+            super(HPBar, self).__init__(**properties)
             self.width = int(width)
             self.height = int(height)
             self.get_hp = get_hp
@@ -133,13 +172,12 @@ init python:
             self.wave_width = int(self.width * 0.18)
             self.strip_count = 28
 
-        def render(self, w, h, st, at):
+        def render(self, width, height, st, at):
             w = self.width
             h = self.height
-            r = renpy.Render(w, h)
+            r = Render(w, h)
             c = r.canvas()
 
-            # fetch hp safely
             try:
                 hp = float(self.get_hp())
             except Exception:
@@ -150,19 +188,16 @@ init python:
             try:
                 c.rect(self.bg_color, (0,0), (w,h))
             except Exception:
-                # fallback: fill polygon
                 c.polygon(self.bg_color, [(0,0),(w,0),(w,h),(0,h)])
 
-            # border (simple)
+            # border
             try:
                 c.polygon(self.border_color, [(0,0),(w,0),(w,h),(0,h)], width=2)
             except Exception:
                 pass
 
-            # compute fill width
             fill_w = int(w * hp)
 
-            # gradient-like fill using strips
             if fill_w > 0:
                 for i in range(self.strip_count):
                     x0 = int(i * fill_w / self.strip_count)
@@ -174,37 +209,34 @@ init python:
                     except Exception:
                         c.polygon(color, [(x0,0),(x1,0),(x1,h),(x0,h)])
 
-                # subtle top highlight
+                # top highlight
                 highlight_h = int(h * 0.18)
                 try:
                     c.rect((255,255,255,30), (0,0), (fill_w, highlight_h))
                 except Exception:
                     pass
 
-            # angled falchion-ish triangle tail (approximation)
+            # angled tail
             slash_width = int(h * 0.6)
             try:
                 if self.side == 'left':
-                    # angled tail on right of fill
                     if fill_w > 0:
                         poly = [(fill_w, 0), (min(w, fill_w + slash_width), int(h / 2)), (fill_w, h)]
                         c.polygon((255,255,255,30), poly)
                 else:
-                    # angled tail on left (mirror)
                     if fill_w > 0:
                         poly = [(w - fill_w, 0), (max(0, w - fill_w - slash_width), int(h / 2)), (w - fill_w, h)]
                         c.polygon((255,255,255,30), poly)
             except Exception:
                 pass
 
-            # wave highlight animation (uses 'st' for continuous animation)
+            # wave
             if fill_w > 0:
                 speed = max(30.0, 80.0 * (0.4 + hp))
                 wave_total = fill_w + self.wave_width + 8
                 wave_x = int(((st * speed) % (wave_total)) - self.wave_width)
                 band_w = self.wave_width
                 if wave_x < fill_w:
-                    # draw band clipped to fill_w
                     band_w_eff = min(band_w, max(0, fill_w - max(0, wave_x)))
                     if band_w_eff > 0:
                         try:
@@ -212,7 +244,7 @@ init python:
                         except Exception:
                             pass
 
-            # low / critical pulsing overlay
+            # low/critical overlay
             try:
                 if hp <= 0.15:
                     pulse = 0.4 + 0.6 * (0.5 + 0.5 * math.sin(st * 10.0))
@@ -227,7 +259,7 @@ init python:
 
             return r
 
-    # small wrappers to pass into HPBar
+    # wrappers for screen usage
     def get_enemy_hp():
         return enemy_hp
 
@@ -247,12 +279,10 @@ screen round_ui():
             xalign 0.5
             yalign 0.5
 
-            # LEFT HP (enemy)
             add HPBar(width=360, height=68, get_hp=get_enemy_hp,
                     color_from=(204,0,0), color_to=(255,102,102),
                     bg_color=(16,16,16), border_color=(50,50,50), side='left')
 
-            # Center round orb area
             frame:
                 xsize ROUND_RADIUS*2
                 ysize ROUND_RADIUS*2
@@ -277,14 +307,12 @@ screen round_ui():
                         xalign 0.5
                         outlines [(2, "#000000", 0, 0)]
 
-                # Orbs arranged around the circle
                 for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                     if i < available_ap:
                         add orb_active at orb_glow xpos x ypos y
                     else:
                         add orb_inactive_img at orb_inactive xpos x ypos y
 
-            # RIGHT HP (hero)
             add HPBar(width=360, height=68, get_hp=get_hero_hp,
                     color_from=(0,51,153), color_to=(102,170,255),
                     bg_color=(16,16,16), border_color=(50,50,50), side='right')
@@ -293,7 +321,6 @@ screen round_ui():
 # Demo label / Start
 # ========================
 label start:
-    # Show the Round UI by default
     show screen round_ui
 
     "Round UI Demo — Round [current_round], AP [available_ap]/[max_ap]."
