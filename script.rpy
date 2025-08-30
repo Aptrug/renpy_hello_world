@@ -5,16 +5,18 @@ default current_round = 59
 default max_ap = 9
 default available_ap = 3
 
-# HP Variables
-default enemy_hp = 0.75
-default hero_hp = 0.50
+# HP System Variables
+default player_hp = 100
+default player_max_hp = 100
+default enemy_hp = 75
 default enemy_max_hp = 100
-default hero_max_hp = 100
 
-define ROUND_RADIUS = 40  # Smaller since it's not the main focus
-define ORB_RADIUS = 8
-define HP_BAR_WIDTH = 300
-define HP_BAR_HEIGHT = 60
+define ROUND_RADIUS = 70
+define ORB_RADIUS = 15
+
+# HP Bar dimensions
+define HP_BAR_WIDTH = 400
+define HP_BAR_HEIGHT = 80
 
 # ========================
 # ATL Transforms
@@ -37,21 +39,32 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
-transform hp_wave:
-    alpha 0.0
-    linear 0.1 alpha 1.0
-    linear 2.8 alpha 1.0
-    linear 0.1 alpha 0.0
-    repeat
+# HP Bar Transforms
+transform hp_bar_appear:
+    alpha 0.0 yoffset 20
+    ease 0.5 alpha 1.0 yoffset 0
+
+transform hp_fill_transition:
+    linear 0.8 alpha 1.0
 
 transform low_hp_pulse:
-    ease 0.75 alpha 1.0
-    ease 0.75 alpha 0.6
+    ease 1.5 additive 0.4
+    ease 1.5 additive 0.0
     repeat
 
 transform critical_hp_flash:
-    ease 0.3 alpha 1.0
-    ease 0.3 alpha 0.7
+    ease 0.6 additive 0.6
+    ease 0.6 additive 0.0
+    repeat
+
+transform hp_wave_enemy:
+    xoffset -180 alpha 0.0
+    linear 3.0 xoffset 400 alpha 1.0
+    repeat
+
+transform hp_wave_hero:
+    xoffset 400 alpha 0.0
+    linear 3.0 xoffset -180 alpha 1.0
     repeat
 
 # ========================
@@ -78,16 +91,17 @@ init python:
             return r
 
     class FalchionHPBar(renpy.Displayable):
-        def __init__(self, width, height, is_enemy=True, **kwargs):
+        def __init__(self, width, height, is_enemy=False, **kwargs):
             super().__init__(**kwargs)
-            self.width, self.height = width, height
+            self.width = width
+            self.height = height
             self.is_enemy = is_enemy
 
         def render(self, w, h, st, at):
             r = renpy.Render(self.width, self.height)
             c = r.canvas()
 
-            # Create falchion shape points
+            # Create falchion shape path
             if self.is_enemy:
                 # Enemy falchion (pointing right)
                 points = [
@@ -127,109 +141,27 @@ init python:
                     (self.width, self.height * 0.82)
                 ]
 
-            # Draw background
+            # Draw background shape
             c.polygon((26, 26, 26), points)
-
-            # Draw border
-            for i in range(len(points)):
-                start = points[i]
-                end = points[(i + 1) % len(points)]
-                c.line((255, 255, 255, 40), start, end, 2)
+            c.polygon((255, 255, 255, 38), points, 2)  # Border
 
             return r
 
-    class FalchionHPFill(renpy.Displayable):
-        def __init__(self, width, height, hp_percent, is_enemy=True, **kwargs):
+    class HPWave(renpy.Displayable):
+        def __init__(self, width, height, **kwargs):
             super().__init__(**kwargs)
-            self.width, self.height = width, height
-            self.hp_percent = hp_percent
-            self.is_enemy = is_enemy
+            self.width = width
+            self.height = height
 
         def render(self, w, h, st, at):
-            r = renpy.Render(self.width, self.height)
+            r = renpy.Render(180, self.height)
             c = r.canvas()
 
-            # Calculate fill width
-            fill_width = self.width * self.hp_percent
+            # Create wave gradient effect
+            for i in range(180):
+                alpha_val = int(255 * (0.5 + 0.5 * math.sin(i * math.pi / 90)))
+                c.rect((255, 255, 255, alpha_val // 3), (i, 0, 1, self.height))
 
-            # Create falchion shape points for fill
-            if self.is_enemy:
-                # Enemy falchion fill
-                points = [
-                    (0, self.height * 0.35),
-                    (min(fill_width, self.width * 0.65), self.height * 0.35),
-                ]
-                if fill_width > self.width * 0.65:
-                    ratio = min(1.0, (fill_width - self.width * 0.65) / (self.width * 0.35))
-                    points.extend([
-                        (self.width * 0.65 + ratio * (self.width * 0.10), self.height * (0.35 + ratio * 0.10)),
-                        (self.width * 0.65 + ratio * (self.width * 0.17), self.height * (0.35 + ratio * 0.25)),
-                        (self.width * 0.65 + ratio * (self.width * 0.23), self.height * (0.35 + ratio * 0.40)),
-                        (self.width * 0.65 + ratio * (self.width * 0.27), self.height * (0.35 + ratio * 0.50)),
-                        (self.width * 0.65 + ratio * (self.width * 0.31), self.height * (0.35 + ratio * 0.57)),
-                        (self.width * 0.65 + ratio * (self.width * 0.35), self.height * (0.35 + ratio * 0.60)),
-                    ])
-                    # Add return points
-                    points.extend([
-                        (self.width * 0.65 + ratio * (self.width * 0.33), self.height * (0.35 + ratio * 0.45)),
-                        (self.width * 0.65 + ratio * (self.width * 0.29), self.height * (0.35 + ratio * 0.30)),
-                        (self.width * 0.65 + ratio * (self.width * 0.23), self.height * (0.35 + ratio * 0.15)),
-                        (self.width * 0.65 + ratio * (self.width * 0.17), self.height * (0.35 + ratio * 0.00)),
-                        (self.width * 0.65 + ratio * (self.width * 0.10), self.height * (0.35 - ratio * 0.17)),
-                        (min(fill_width, self.width * 0.65), self.height * 0.18),
-                    ])
-                else:
-                    points.append((fill_width, self.height * 0.18))
-
-                points.append((0, self.height * 0.18))
-
-                # Set color based on HP
-                if self.hp_percent <= 0.15:
-                    color = (255, 100, 100)  # Critical red
-                elif self.hp_percent <= 0.3:
-                    color = (255, 150, 100)  # Warning orange
-                else:
-                    color = (204, 0, 0)      # Normal red
-            else:
-                # Hero falchion fill (right-aligned)
-                start_x = self.width * (1 - self.hp_percent)
-                points = [
-                    (self.width, self.height * 0.65),
-                    (max(start_x, self.width * 0.35), self.height * 0.65),
-                ]
-                if start_x < self.width * 0.35:
-                    ratio = min(1.0, (self.width * 0.35 - start_x) / (self.width * 0.35))
-                    points.extend([
-                        (self.width * 0.35 - ratio * (self.width * 0.10), self.height * (0.65 - ratio * 0.10)),
-                        (self.width * 0.35 - ratio * (self.width * 0.17), self.height * (0.65 - ratio * 0.25)),
-                        (self.width * 0.35 - ratio * (self.width * 0.23), self.height * (0.65 - ratio * 0.40)),
-                        (self.width * 0.35 - ratio * (self.width * 0.27), self.height * (0.65 - ratio * 0.50)),
-                        (self.width * 0.35 - ratio * (self.width * 0.31), self.height * (0.65 - ratio * 0.57)),
-                        (self.width * 0.35 - ratio * (self.width * 0.35), self.height * (0.65 - ratio * 0.60)),
-                    ])
-                    # Add return points
-                    points.extend([
-                        (self.width * 0.35 - ratio * (self.width * 0.33), self.height * (0.65 - ratio * 0.45)),
-                        (self.width * 0.35 - ratio * (self.width * 0.29), self.height * (0.65 - ratio * 0.30)),
-                        (self.width * 0.35 - ratio * (self.width * 0.23), self.height * (0.65 - ratio * 0.15)),
-                        (self.width * 0.35 - ratio * (self.width * 0.17), self.height * (0.65 - ratio * 0.00)),
-                        (self.width * 0.35 - ratio * (self.width * 0.10), self.height * (0.65 + ratio * 0.17)),
-                        (max(start_x, self.width * 0.35), self.height * 0.82),
-                    ])
-                else:
-                    points.append((start_x, self.height * 0.82))
-
-                points.append((self.width, self.height * 0.82))
-
-                # Set color based on HP
-                if self.hp_percent <= 0.15:
-                    color = (100, 150, 255)  # Critical blue
-                elif self.hp_percent <= 0.3:
-                    color = (100, 180, 255)  # Warning light blue
-                else:
-                    color = (0, 51, 153)     # Normal blue
-
-            c.polygon(color, points)
             return r
 
     def get_orb_positions(num_orbs):
@@ -245,11 +177,8 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# ========================
-# HP Bar Definitions
-# ========================
-define enemy_hp_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, True)
-define hero_hp_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, False)
+    def get_hp_percentage(current, maximum):
+        return float(current) / float(maximum) if maximum > 0 else 0.0
 
 # ========================
 # Circle Definitions
@@ -258,77 +187,124 @@ define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
+# HP Bar Components
+define falchion_enemy_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, True)
+define falchion_hero_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, False)
+define hp_wave = HPWave(180, HP_BAR_HEIGHT)
+
 # ========================
-# HP Bar Screen
+# Battle UI Screen
 # ========================
 screen battle_ui():
-    # HP Bars positioned horizontally
+    # Background with effects
+    add Solid("#000000")
+
     fixed:
         xalign 0.5
-        yalign 0.2
-        xsize 800
-        ysize 200
+        yalign 0.5
 
-        # Enemy HP Bar (left side)
+        # Enemy HP Bar (Left side)
         fixed:
             xpos 50
-            ypos 70
-            xsize HP_BAR_WIDTH
-            ysize HP_BAR_HEIGHT
+            ypos 200
 
-            # HP bar background
-            add enemy_hp_bg
-
-            # HP fill
-            add FalchionHPFill(HP_BAR_WIDTH, HP_BAR_HEIGHT, enemy_hp, True):
-                if enemy_hp <= 0.15:
-                    at critical_hp_flash
-                elif enemy_hp <= 0.3:
-                    at low_hp_pulse
-
-            # Enemy HP text (above bar)
-            text "[int(enemy_hp * enemy_max_hp)]/[enemy_max_hp]":
-                xalign 0.0
-                ypos -35
-                size 24
+            # HP Value display (above bar for enemy)
+            text "[enemy_hp]%":
+                xpos 0
+                ypos -60
+                size 18
                 color "#ff6666"
-                outlines [(2, "#000000", 0, 0)]
-                if enemy_hp <= 0.15:
-                    at critical_hp_flash
-                elif enemy_hp <= 0.3:
-                    at low_hp_pulse
+                outlines [(1, "#000000", 0, 0)]
+                at (low_hp_pulse if get_hp_percentage(enemy_hp, enemy_max_hp) <= 0.3 else None)
 
-        # Hero HP Bar (right side)
+            # Falchion background
+            add falchion_enemy_bg at hp_bar_appear
+
+            # HP Fill with clipping
+            fixed:
+                # This creates the HP fill effect
+                bar:
+                    value AnimatedValue(enemy_hp, enemy_max_hp, delay=0.8)
+                    xsize HP_BAR_WIDTH * get_hp_percentage(enemy_hp, enemy_max_hp)
+                    ysize HP_BAR_HEIGHT
+                    left_bar Solid("#cc0000")
+                    right_bar Solid("#ff6666")
+                    at (critical_hp_flash if get_hp_percentage(enemy_hp, enemy_max_hp) <= 0.15
+                        else low_hp_pulse if get_hp_percentage(enemy_hp, enemy_max_hp) <= 0.3
+                        else hp_fill_transition)
+
+                # Animated wave effect
+                if get_hp_percentage(enemy_hp, enemy_max_hp) > 0:
+                    add hp_wave at hp_wave_enemy
+
+        # Round Circle (Center)
         fixed:
-            xpos 450
-            ypos 70
-            xsize HP_BAR_WIDTH
-            ysize HP_BAR_HEIGHT
+            xalign 0.5
+            yalign 0.5
+            xsize ROUND_RADIUS*2
+            ysize ROUND_RADIUS*2
 
-            # HP bar background
-            add hero_hp_bg
+            # Round circle background with breathing animation
+            add round_bg at round_breathe
 
-            # HP fill
-            add FalchionHPFill(HP_BAR_WIDTH, HP_BAR_HEIGHT, hero_hp, False):
-                if hero_hp <= 0.15:
-                    at critical_hp_flash
-                elif hero_hp <= 0.3:
-                    at low_hp_pulse
+            # Round number in the center
+            vbox:
+                xalign 0.5
+                yalign 0.5
+                spacing 2
 
-            # Hero HP text (below bar)
-            text "[int(hero_hp * hero_max_hp)]/[hero_max_hp]":
-                xalign 1.0
-                ypos HP_BAR_HEIGHT + 10
-                size 24
+                text "Round":
+                    size 22
+                    color "#FFFFFF"
+                    xalign 0.5
+                    outlines [(2, "#000000", 0, 0)]
+
+                text "[current_round]":
+                    size 56
+                    color "#FFFFFF"
+                    xalign 0.5
+                    outlines [(2, "#000000", 0, 0)]
+
+            # Orbs arranged around the circle
+            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+                add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
+
+        # Hero HP Bar (Right side)
+        fixed:
+            xpos config.screen_width - 50 - HP_BAR_WIDTH
+            ypos 200
+
+            # Falchion background
+            add falchion_hero_bg at hp_bar_appear
+
+            # HP Fill with clipping
+            fixed:
+                # This creates the HP fill effect
+                bar:
+                    value AnimatedValue(player_hp, player_max_hp, delay=0.8)
+                    xsize HP_BAR_WIDTH * get_hp_percentage(player_hp, player_max_hp)
+                    ysize HP_BAR_HEIGHT
+                    left_bar Solid("#003399")
+                    right_bar Solid("#4499ff")
+                    at (critical_hp_flash if get_hp_percentage(player_hp, player_max_hp) <= 0.15
+                        else low_hp_pulse if get_hp_percentage(player_hp, player_max_hp) <= 0.3
+                        else hp_fill_transition)
+
+                # Animated wave effect
+                if get_hp_percentage(player_hp, player_max_hp) > 0:
+                    add hp_wave at hp_wave_hero
+
+            # HP Value display (below bar for hero)
+            text "[player_hp]%":
+                xpos HP_BAR_WIDTH - 60
+                ypos HP_BAR_HEIGHT + 20
+                size 18
                 color "#66aaff"
-                outlines [(2, "#000000", 0, 0)]
-                if hero_hp <= 0.15:
-                    at critical_hp_flash
-                elif hero_hp <= 0.3:
-                    at low_hp_pulse
+                outlines [(1, "#000000", 0, 0)]
+                at (low_hp_pulse if get_hp_percentage(player_hp, player_max_hp) <= 0.3 else None)
 
 # ========================
-# Round UI Screen (positioned separately)
+# Alternative Round-only UI Screen
 # ========================
 screen round_ui():
     fixed:
@@ -347,13 +323,13 @@ screen round_ui():
             spacing 2
 
             text "Round":
-                size 18
+                size 22
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
             text "[current_round]":
-                size 32
+                size 56
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
@@ -367,10 +343,9 @@ screen round_ui():
 # ========================
 label start:
     show screen battle_ui
-    show screen round_ui
 
     "Battle UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
-    "Enemy HP: [int(enemy_hp * 100)]%, Hero HP: [int(hero_hp * 100)]%"
+    "Player HP: [player_hp]/[player_max_hp] | Enemy HP: [enemy_hp]/[enemy_max_hp]"
 
     menu:
         "Spend AP" if available_ap > 0:
@@ -381,20 +356,20 @@ label start:
             $ available_ap += 1
             jump start
 
-        "Damage Enemy" if enemy_hp > 0:
-            $ enemy_hp = max(0, enemy_hp - (renpy.random.random() * 0.15 + 0.05))
+        "Damage Player":
+            $ player_hp = max(0, player_hp - renpy.random.randint(10, 25))
             jump start
 
-        "Damage Hero" if hero_hp > 0:
-            $ hero_hp = max(0, hero_hp - (renpy.random.random() * 0.15 + 0.05))
+        "Damage Enemy":
+            $ enemy_hp = max(0, enemy_hp - renpy.random.randint(10, 25))
             jump start
 
-        "Heal Enemy" if enemy_hp < 1.0:
-            $ enemy_hp = min(1.0, enemy_hp + 0.1)
+        "Heal Player":
+            $ player_hp = min(player_max_hp, player_hp + renpy.random.randint(15, 30))
             jump start
 
-        "Heal Hero" if hero_hp < 1.0:
-            $ hero_hp = min(1.0, hero_hp + 0.1)
+        "Heal Enemy":
+            $ enemy_hp = min(enemy_max_hp, enemy_hp + renpy.random.randint(15, 30))
             jump start
 
         "Next Round":
@@ -403,9 +378,155 @@ label start:
             jump start
 
         "Reset HP":
-            $ enemy_hp = 0.75
-            $ hero_hp = 0.50
+            $ player_hp = player_max_hp
+            $ enemy_hp = enemy_max_hp
+            jump start
+
+        "Switch to Round UI only":
+            hide screen battle_ui
+            show screen round_ui
+            jump start
+
+        "Switch to Battle UI":
+            hide screen round_ui
+            show screen battle_ui
             jump start
 
         "Exit":
             return
+
+# ========================
+# Enhanced HP Bar with Improved Clipping
+# ========================
+init python:
+    class AdvancedFalchionBar(renpy.Displayable):
+        def __init__(self, width, height, is_enemy=False, current_hp=100, max_hp=100, **kwargs):
+            super().__init__(**kwargs)
+            self.width = width
+            self.height = height
+            self.is_enemy = is_enemy
+            self.current_hp = current_hp
+            self.max_hp = max_hp
+
+        def render(self, w, h, st, at):
+            r = renpy.Render(self.width, self.height)
+            c = r.canvas()
+
+            hp_percentage = float(self.current_hp) / float(self.max_hp) if self.max_hp > 0 else 0.0
+
+            # Background shape
+            if self.is_enemy:
+                # Enemy falchion shape
+                bg_points = [
+                    (0, self.height * 0.35), (self.width * 0.65, self.height * 0.35),
+                    (self.width * 0.75, self.height * 0.45), (self.width * 0.82, self.height * 0.60),
+                    (self.width * 0.88, self.height * 0.75), (self.width * 0.92, self.height * 0.85),
+                    (self.width * 0.96, self.height * 0.92), (self.width, self.height * 0.95),
+                    (self.width * 0.98, self.height * 0.80), (self.width * 0.94, self.height * 0.65),
+                    (self.width * 0.88, self.height * 0.50), (self.width * 0.82, self.height * 0.35),
+                    (self.width * 0.75, self.height * 0.25), (self.width * 0.65, self.height * 0.18),
+                    (0, self.height * 0.18)
+                ]
+                fill_color = (204, 0, 0) if hp_percentage > 0.3 else (255, 68, 68)
+            else:
+                # Hero falchion shape
+                bg_points = [
+                    (self.width, self.height * 0.65), (self.width * 0.35, self.height * 0.65),
+                    (self.width * 0.25, self.height * 0.55), (self.width * 0.18, self.height * 0.40),
+                    (self.width * 0.12, self.height * 0.25), (self.width * 0.08, self.height * 0.15),
+                    (self.width * 0.04, self.height * 0.08), (0, self.height * 0.05),
+                    (self.width * 0.02, self.height * 0.20), (self.width * 0.06, self.height * 0.35),
+                    (self.width * 0.12, self.height * 0.50), (self.width * 0.18, self.height * 0.65),
+                    (self.width * 0.25, self.height * 0.75), (self.width * 0.35, self.height * 0.82),
+                    (self.width, self.height * 0.82)
+                ]
+                fill_color = (0, 51, 153) if hp_percentage > 0.3 else (68, 153, 255)
+
+            # Draw background
+            c.polygon((26, 26, 26), bg_points)
+
+            # Draw HP fill (clipped to percentage)
+            if hp_percentage > 0:
+                fill_width = self.width * hp_percentage
+
+                if self.is_enemy:
+                    # Fill from left for enemy
+                    fill_points = [(x, y) for x, y in bg_points if x <= fill_width]
+                    if fill_points:
+                        c.polygon(fill_color, fill_points)
+                else:
+                    # Fill from right for hero
+                    offset = self.width * (1 - hp_percentage)
+                    fill_points = [(x - offset, y) for x, y in bg_points if x >= offset]
+                    if fill_points:
+                        c.polygon(fill_color, fill_points)
+
+            # Border
+            c.polygon((255, 255, 255, 38), bg_points, 2)
+
+            return r
+
+# ========================
+# Alternative Enhanced Battle Screen
+# ========================
+screen enhanced_battle_ui():
+    add Solid("#000000")
+
+    fixed:
+        xalign 0.5
+        yalign 0.5
+
+        # Enemy HP (Left)
+        fixed:
+            xpos 50
+            ypos 150
+
+            text "Enemy: [enemy_hp]/[enemy_max_hp]":
+                xpos 0
+                ypos -40
+                size 16
+                color "#ff6666"
+
+            add AdvancedFalchionBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, True, enemy_hp, enemy_max_hp) at hp_bar_appear
+
+        # Round Circle (Center) - keeping your existing implementation
+        fixed:
+            xalign 0.5
+            yalign 0.5
+            xsize ROUND_RADIUS*2
+            ysize ROUND_RADIUS*2
+
+            add round_bg at round_breathe
+
+            vbox:
+                xalign 0.5
+                yalign 0.5
+                spacing 2
+
+                text "Round":
+                    size 22
+                    color "#FFFFFF"
+                    xalign 0.5
+                    outlines [(2, "#000000", 0, 0)]
+
+                text "[current_round]":
+                    size 56
+                    color "#FFFFFF"
+                    xalign 0.5
+                    outlines [(2, "#000000", 0, 0)]
+
+            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+                add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
+
+        # Hero HP (Right)
+        fixed:
+            xpos config.screen_width - 50 - HP_BAR_WIDTH
+            ypos 150
+
+            add AdvancedFalchionBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, False, player_hp, player_max_hp) at hp_bar_appear
+
+            text "Hero: [player_hp]/[player_max_hp]":
+                xpos HP_BAR_WIDTH - 120
+                ypos HP_BAR_HEIGHT + 20
+                size 16
+                color "#66aaff"
