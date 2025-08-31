@@ -1,4 +1,4 @@
-﻿# I want you to add an HP bar to the top left and make it look exactly like HP bar
+﻿# I want you to add an HP bar to the top left and make it look exactly like Witcher 3 HP bar
 
 # ========================
 # Game Variables
