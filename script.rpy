@@ -93,11 +93,14 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize (CIRCLE_RADIUS + 3) * 2
-            ysize (CIRCLE_RADIUS + 3) * 2
+            xsize (CIRCLE_RADIUS + 12) * 2
+            ysize (CIRCLE_RADIUS + 12) * 2
 
-            # Subtle golden glimmer (just slightly larger)
-            add get_circle(CIRCLE_RADIUS + 3, "#ffd700") align (0.5, 0.5) at golden_glow
+            # Layered aura effect (simulates blur with multiple circles)
+            add get_circle(CIRCLE_RADIUS + 12, "#ffd700") align (0.5, 0.5) alpha 0.05
+            add get_circle(CIRCLE_RADIUS + 9, "#ffd700") align (0.5, 0.5) alpha 0.08
+            add get_circle(CIRCLE_RADIUS + 6, "#ffd700") align (0.5, 0.5) alpha 0.12
+            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align (0.5, 0.5) alpha 0.15 at golden_glow
 
             # Main background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
