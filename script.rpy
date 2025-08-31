@@ -15,10 +15,9 @@ define AURA_BLUR = 20
 define AURA_BORDER_WIDTH = 4
 define UI_SIZE = 2 * (ROUND_RADIUS + AURA_PADDING)
 
-# HP Bar defines (Witcher 3 style)
+# HP Bar defines
 define HP_BAR_WIDTH = 200
 define HP_BAR_HEIGHT = 12
-define HP_BAR_BORDER = 2
 
 # ========================
 # ATL Transforms
@@ -68,47 +67,8 @@ init python:
                 c.circle(self.border_color, (center, center), self.radius, self.border_width)
             return r
 
-    class WitcherHealthBar(renpy.Displayable):
-        def __init__(self, width, height, border_width=2, **kwargs):
-            super().__init__(**kwargs)
-            self.width = width
-            self.height = height
-            self.border_width = border_width
-
-        def render(self, w, h, st, at):
-            r = renpy.Render(self.width, self.height)
-            c = r.canvas()
-
-            # Calculate HP percentage
-            hp_percent = current_hp / float(max_hp)
-            fill_width = int((self.width - 2 * self.border_width) * hp_percent)
-
-            # Draw outer dark border (black/dark gray)
-            c.rect("#1a1a1a", (0, 0, self.width, self.height))
-
-            # Draw inner border (darker red/brown)
-            c.rect("#2d1810", (self.border_width, self.border_width,
-                              self.width - 2 * self.border_width,
-                              self.height - 2 * self.border_width))
-
-            # Draw HP fill (red gradient effect)
-            if fill_width > 0:
-                # Main red fill
-                c.rect("#c41e3a", (self.border_width, self.border_width,
-                                  fill_width, self.height - 2 * self.border_width))
-
-                # Highlight on top edge for 3D effect
-                if fill_width > 2:
-                    c.rect("#ff4d6d", (self.border_width, self.border_width,
-                                      fill_width, 2))
-
-                # Dark shadow on bottom edge
-                if fill_width > 2:
-                    c.rect("#8b0000", (self.border_width, self.height - self.border_width - 2,
-                                      fill_width, 2))
-
-            renpy.redraw(self, 0.1)  # Redraw to update HP changes
-            return r
+    def get_hp_percent():
+        return current_hp / float(max_hp)
 
     def get_orb_positions(num_orbs, center_x, center_y, orbit_radius):
         """
@@ -132,70 +92,28 @@ define glow_source = Circle(ROUND_RADIUS, None, "#ffffff", AURA_BORDER_WIDTH, pa
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
-# Witcher 3 HP Bar
-define witcher_hp_bar = WitcherHealthBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, HP_BAR_BORDER)
+# Witcher HP Bar
+define hp_bar_bg = Solid("#000000")
+define hp_bar_fill = Solid("#c41e3a")
 
 # ========================
-# Witcher 3 HP Bar Screen
+# HP Bar Screen
 # ========================
-screen witcher_hp_bar():
-    # HP Bar container in top left
+screen hp_bar():
     fixed:
         xpos 30
         ypos 30
-        xsize HP_BAR_WIDTH + 100
-        ysize 60
-
-        # HP Bar background frame (medieval style border)
-        add Solid("#0f0f0f"):
-            xsize HP_BAR_WIDTH + 8
-            ysize HP_BAR_HEIGHT + 8
-            xpos -4
-            ypos 16
-
-        # Decorative corners (simple medieval style)
-        add Solid("#3d2914"):
-            xsize 6
-            ysize 6
-            xpos -7
-            ypos 13
-        add Solid("#3d2914"):
-            xsize 6
-            ysize 6
-            xpos HP_BAR_WIDTH + 5
-            ypos 13
-        add Solid("#3d2914"):
-            xsize 6
-            ysize 6
-            xpos -7
-            ypos HP_BAR_HEIGHT + 17
-        add Solid("#3d2914"):
-            xsize 6
-            ysize 6
-            xpos HP_BAR_WIDTH + 5
-            ypos HP_BAR_HEIGHT + 17
-
-        # Main HP Bar
-        add witcher_hp_bar:
-            xpos 0
-            ypos 20
-            at hp_pulse
-
-        # HP Text (Witcher 3 style font positioning)
-        text "[current_hp]":
+        # Background
+        add hp_bar_bg xsize HP_BAR_WIDTH ysize HP_BAR_HEIGHT
+        # Red fill
+        $ fill_width = int(HP_BAR_WIDTH * get_hp_percent())
+        add hp_bar_fill xsize fill_width ysize HP_BAR_HEIGHT
+        # HP percentage text
+        text "[current_hp]%":
+            xpos HP_BAR_WIDTH + 10
+            ypos -2
             size 16
             color "#ffffff"
-            xpos HP_BAR_WIDTH + 15
-            ypos 18
-            outlines [(1, "#000000", 0, 0)]
-
-        # HP Icon (simple red cross/heart symbol)
-        text "♥":
-            size 20
-            color "#c41e3a"
-            xpos -25
-            ypos 16
-            outlines [(1, "#000000", 0, 0)]
 
 # ========================
 # Main UI Screen
@@ -203,8 +121,8 @@ screen witcher_hp_bar():
 screen round_ui():
     add Solid("#808080")  # Gray color in hex
 
-    # Show the Witcher 3 HP bar
-    use witcher_hp_bar
+    # Show HP bar
+    use hp_bar
 
     fixed:
         xalign 0.5
