@@ -36,12 +36,13 @@ init python:
     def get_enemy_hp_percent():
         return enemy_hp / float(enemy_max_hp)
 
-    def get_orb_positions(num_orbs, radius=70):
+    def get_orb_positions(num_orbs, radius=50):
         positions = []
+        center = 70  # Center of the 140x140 container
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = 140 + radius * math.cos(angle) - 15
-            y = 140 + radius * math.sin(angle) - 15
+            x = center + radius * math.cos(angle) - 15  # 15 = orb radius
+            y = center + radius * math.sin(angle) - 15
             positions.append((int(x), int(y)))
         return positions
 
@@ -104,10 +105,10 @@ screen round_ui():
                 text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
             # AP Orbs
-            for i, (x, y) in enumerate(get_orb_positions(max_ap, radius=50)):
+            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 add (orb_active if i < available_ap else orb_inactive):
-                    xpos x - 70 + 70  # Adjust for smaller container
-                    ypos y - 70 + 70
+                    xpos x
+                    ypos y
                     at (glow if i < available_ap else inactive)
 
         # Hero HP bar (right) - Blue
