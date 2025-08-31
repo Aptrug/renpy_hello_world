@@ -40,6 +40,23 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
+    class SimpleCircle(renpy.Displayable):
+        def __init__(self, radius, color):
+            super().__init__()
+            self.radius = radius
+            self.color = color
+        def render(self, w, h, st, at):
+            size = 2 * self.radius
+            r = renpy.Render(size, size)
+            c = r.canvas()
+            c.circle(self.color, (self.radius, self.radius), self.radius)
+            return r
+
+# ========================
+# Simple Displayables
+# ========================
+define round_bg = SimpleCircle(70, "#505050")
+
 # ========================
 # Main UI Screen
 # ========================
@@ -68,8 +85,7 @@ screen round_ui():
             ysize 140
 
             # Background circle
-            add Solid("#505050", xysize=(140, 140)) at transform:
-                around (0.5, 0.5)
+            add round_bg align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -81,11 +97,10 @@ screen round_ui():
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 $ is_active = i < available_ap
-                add Solid("#ffd700" if is_active else "#666666", xysize=(30, 30)):
+                add SimpleCircle(15, "#ffd700" if is_active else "#666666"):
                     xpos x
                     ypos y
                     at (glow if is_active else inactive)
-                    around (0.5, 0.5)
 
         # Hero HP bar
         vbox:
