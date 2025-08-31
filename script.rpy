@@ -10,8 +10,8 @@ default current_hp = 85
 default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
-default CIRCLE_RADIUS = 70
-default ORB_RADIUS = 14
+default CIRCLE_RADIUS = 72
+default ORB_RADIUS = 12
 
 # ========================
 # ATL Transforms
