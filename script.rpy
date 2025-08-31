@@ -86,9 +86,9 @@ screen round_ui():
 
             # Round text
             vbox:
-                spacing -10
+                spacing -5
                 xalign 0.5
-                yalign 0.7
+                yalign 0.6
                 text "Round" size 24 color "#FFFFFF" xalign 0.5
                 text "[current_round]" 48 color "#FFFFFF" xalign 0.5
 
