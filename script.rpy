@@ -26,6 +26,12 @@ transform glow:
 transform inactive:
     alpha 0.4
 
+transform hp_smooth:
+    ease 0.8 xsize int(bar_width * current_hp / max_hp)
+
+transform enemy_hp_smooth:
+    ease 0.8 xsize int(bar_width * enemy_hp / enemy_max_hp)
+
 # ========================
 # Python Helpers
 # ========================
@@ -96,7 +102,8 @@ screen round_ui():
                 add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
 
                 # HP fill
-                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12 xpos 2 ypos 2
+                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12 xpos 2 ypos 2:
+                    at enemy_hp_smooth
 
                 # Inner highlight (top edge)
                 add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
@@ -142,7 +149,8 @@ screen round_ui():
                 add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
 
                 # HP fill
-                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12 xpos 2 ypos 2
+                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12 xpos 2 ypos 2:
+                    at hp_smooth
 
                 # Inner highlight (top edge)
                 add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
