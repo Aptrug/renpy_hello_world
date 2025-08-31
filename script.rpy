@@ -10,6 +10,7 @@ default current_hp = 85
 default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
+default circle_radius = 70
 
 # ========================
 # ATL Transforms
@@ -32,8 +33,8 @@ init python:
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = 70 + 70 * math.cos(angle) - 15
-            y = 70 + 70 * math.sin(angle) - 15
+            x = circle_radius + circle_radius * math.cos(angle) - 15
+            y = circle_radius + circle_radius * math.sin(angle) - 15
             positions.append((int(x), int(y)))
         return positions
 
@@ -52,7 +53,7 @@ init python:
 # ========================
 # Simple Displayables
 # ========================
-define round_bg = SimpleCircle(70, "#505050")
+define round_bg = None  # Will be created dynamically
 
 # ========================
 # Main UI Screen
@@ -61,7 +62,8 @@ screen round_ui():
     add "#808080"
 
     $ available_width = config.screen_width - 200  # Leave 200px total margin
-    $ bar_width = (available_width - 140 - 100) // 2  # Subtract circle and spacing
+    $ circle_size = circle_radius * 2
+    $ bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
 
     hbox:
         xalign 0.5
@@ -81,11 +83,11 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize 140
-            ysize 140
+            xsize circle_size
+            ysize circle_size
 
             # Background circle
-            add round_bg align (0.5, 0.5)
+            add SimpleCircle(circle_radius, "#505050") align (0.5, 0.5)
 
             # Round text
             vbox:
