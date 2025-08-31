@@ -1,4 +1,4 @@
-﻿# I want you to add an HP bar to the top left and make it look exactly like Witcher 3 HP bar
+﻿# I want you to add an HP bar to the top left and make it look exactly like HP bar
 
 # ========================
 # Game Variables
@@ -92,7 +92,7 @@ define glow_source = Circle(ROUND_RADIUS, None, "#ffffff", AURA_BORDER_WIDTH, pa
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
-# Witcher HP Bar
+# HP Bar
 define hp_bar_bg = Solid("#000000")
 define hp_bar_fill = Solid("#c41e3a")
 
