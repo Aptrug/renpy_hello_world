@@ -1,4 +1,111 @@
-﻿# ========================
+﻿class FalchionHPFill(renpy.Displayable):
+        def __init__(self, width, height, hp_ratio, is_enemy=True, **kwargs):
+            super(FalchionHPFill, self).__init__(**kwargs)
+            self.width = width
+            self.height = height
+            self.hp_ratio = max(0, min(1, hp_ratio))
+            self.is_enemy = is_enemy
+
+        def render(self, width, height, st, at):
+            if self.hp_ratio <= 0:
+                return renpy.Render(0, 0)
+
+            # Choose colors based on HP level
+            if self.hp_ratio <= 0.15:
+                base_color = (255, 80, 80) if self.is_enemy else (80, 140, 255)
+            elif self.hp_ratio <= 0.30:
+                base_color = (220, 40, 40) if self.is_enemy else (40, 110, 220)
+            else:
+                base_color = (180, 20, 20) if self.is_enemy else (20, 80, 180)
+
+            # Create a mask for HP fill
+            if self.is_enemy:
+                # Enemy fills left to right
+                fill_width = int(self.width * self.hp_ratio)
+                r = renpy.Render(fill_width, self.height)
+                canvas = r.canvas()
+
+                # Create clipped falchion shape
+                points = [
+                    (0, int(self.height * 0.30)),
+                    (min(fill_width, int(self.width * 0.12)), int(self.height * 0.28)),
+                ]
+
+                # Progressively add more complex shape as HP fill increases
+                if fill_width > int(self.width * 0.12):
+                    if fill_width >= int(self.width * 0.20):
+                        points.append((min(fill_width, int(self.width * 0.20)), int(self.height * 0.25)))
+                    if fill_width >= int(self.width * 0.30):
+                        points.append((min(fill_width, int(self.width * 0.30)), int(self.height * 0.22)))
+                    if fill_width >= int(self.width * 0.45):
+                        points.append((min(fill_width, int(self.width * 0.45)), int(self.height * 0.18)))
+                    if fill_width >= int(self.width * 0.60):
+                        points.append((min(fill_width, int(self.width * 0.60)), int(self.height * 0.15)))
+                    if fill_width >= int(self.width * 0.72):
+                        points.append((min(fill_width, int(self.width * 0.72)), int(self.height * 0.20)))
+                    if fill_width >= int(self.width * 0.82):
+                        points.append((min(fill_width, int(self.width * 0.82)), int(self.height * 0.30)))
+                    if fill_width >= int(self.width * 0.90):
+                        points.append((min(fill_width, int(self.width * 0.90)), int(self.height * 0.42)))
+                    if fill_width >= int(self.width * 0.96):
+                        points.append((min(fill_width, int(self.width * 0.96)), int(self.height * 0.48)))
+                    if fill_width >= self.width:
+                        points.append((self.width, int(self.height * 0.50)))
+
+                # Create bottom edge (mirror of top)
+                bottom_points = []
+                for x, y in reversed(points):
+                    if y != int(self.height * 0.50):  # Don't duplicate tip
+                        bottom_y = self.height - y + int(self.height * 0.30) - int(self.height * 0.30)
+                        bottom_y = int(self.height * 0.70) + (int(self.height * 0.30) - y)
+                        bottom_points.append((x, bottom_y))
+
+                points.extend(bottom_points)
+
+            else:
+                # Hero fills right to left
+                fill_width = int(self.width * self.hp_ratio)
+                start_x = self.width - fill_width
+                r = renpy.Render(self.width, self.height)
+                canvas = r.canvas()
+
+                points = [
+                    (self.width, int(self.height * 0.30)),
+                    (max(start_x, int(self.width * 0.88)), int(self.height * 0.28)),
+                ]
+
+                # Add shape points based on fill level
+                if start_x <= int(self.width * 0.88):
+                    if start_x <= int(self.width * 0.80):
+                        points.append((max(start_x, int(self.width * 0.80)), int(self.height * 0.25)))
+                    if start_x <= int(self.width * 0.70):
+                        points.append((max(start_x, int(self.width * 0.70)), int(self.height * 0.22)))
+                    if start_x <= int(self.width * 0.55):
+                        points.append((max(start_x, int(self.width * 0.55)), int(self.height * 0.18)))
+                    if start_x <= int(self.width * 0.40):
+                        points.append((max(start_x, int(self.width * 0.40)), int(self.height * 0.15)))
+                    if start_x <= int(self.width * 0.28):
+                        points.append((max(start_x, int(self.width * 0.28)), int(self.height * 0.20)))
+                    if start_x <= int(self.width * 0.18):
+                        points.append((max(start_x, int(self.width * 0.18)), int(self.height * 0.30)))
+                    if start_x <= int(self.width * 0.10):
+                        points.append((max(start_x, int(self.width * 0.10)), int(self.height * 0.42)))
+                    if start_x <= int(self.width * 0.04):
+                        points.append((max(start_x, int(self.width * 0.04)), int(self.height * 0.48)))
+                    if start_x <= 0:
+                        points.append((0, int(self.height * 0.50)))
+
+                # Create bottom edge
+                bottom_points = []
+                for x, y in reversed(points):
+                    if y != int(self.height * 0.50):
+                        bottom_y = int(self.height * 0.70) + (int(self.height * 0.30) - y)
+                        bottom_points.append((x, bottom_y))
+
+                points.extend(bottom_points)
+
+            canvas.polygon(base_color, points)
+            return r# ========================
 # Game Variables
 # ========================
 default current_round = 18
@@ -90,133 +197,151 @@ init python:
             r = renpy.Render(self.width, self.height)
             canvas = r.canvas()
 
-            # Create falchion blade shape
+            # Create authentic falchion blade shape
             if self.is_enemy:
-                # Enemy falchion - blade curves right, sharper tip
+                # Enemy falchion - elegant curved blade pointing right
                 points = [
-                    (0, int(self.height * 0.35)),                     # Hilt start top
-                    (int(self.width * 0.65), int(self.height * 0.35)), # Blade start top
-                    (int(self.width * 0.75), int(self.height * 0.40)), # Curve begin
-                    (int(self.width * 0.85), int(self.height * 0.45)), # Mid curve
-                    (int(self.width * 0.92), int(self.height * 0.48)), # Near tip
-                    (int(self.width * 0.98), int(self.height * 0.50)), # Tip point
-                    (int(self.width * 0.92), int(self.height * 0.52)), # Tip back
-                    (int(self.width * 0.85), int(self.height * 0.55)), # Mid curve back
-                    (int(self.width * 0.75), int(self.height * 0.60)), # Curve end
-                    (int(self.width * 0.65), int(self.height * 0.65)), # Blade end bottom
-                    (0, int(self.height * 0.65))                      # Hilt end bottom
+                    # Hilt section (left side)
+                    (0, int(self.height * 0.25)),                     # Hilt top
+                    (int(self.width * 0.15), int(self.height * 0.25)), # Hilt end top
+                    # Blade starts with slight widening
+                    (int(self.width * 0.25), int(self.height * 0.20)), # Blade start top
+                    (int(self.width * 0.40), int(self.height * 0.15)), # Early blade top
+                    (int(self.width * 0.60), int(self.height * 0.10)), # Mid blade top
+                    (int(self.width * 0.75), int(self.height * 0.08)), # Late blade top
+                    # Curved tip section
+                    (int(self.width * 0.85), int(self.height * 0.15)), # Tip curve start
+                    (int(self.width * 0.92), int(self.height * 0.25)), # Tip curve mid
+                    (int(self.width * 0.97), int(self.height * 0.40)), # Near tip
+                    (int(self.width), int(self.height * 0.50)),        # Sharp tip point
+                    (int(self.width * 0.97), int(self.height * 0.60)), # Tip back
+                    (int(self.width * 0.92), int(self.height * 0.75)), # Tip curve back
+                    (int(self.width * 0.85), int(self.height * 0.85)), # Curve back
+                    # Blade back edge
+                    (int(self.width * 0.75), int(self.height * 0.92)), # Late blade bottom
+                    (int(self.width * 0.60), int(self.height * 0.90)), # Mid blade bottom
+                    (int(self.width * 0.40), int(self.height * 0.85)), # Early blade bottom
+                    (int(self.width * 0.25), int(self.height * 0.80)), # Blade end bottom
+                    # Back to hilt
+                    (int(self.width * 0.15), int(self.height * 0.75)), # Hilt start bottom
+                    (0, int(self.height * 0.75))                      # Hilt bottom
                 ]
             else:
-                # Hero falchion - blade curves left, mirrored
+                # Hero falchion - mirrored elegant curved blade pointing left
                 points = [
-                    (int(self.width), int(self.height * 0.35)),        # Hilt start top
-                    (int(self.width * 0.35), int(self.height * 0.35)), # Blade start top
-                    (int(self.width * 0.25), int(self.height * 0.40)), # Curve begin
-                    (int(self.width * 0.15), int(self.height * 0.45)), # Mid curve
-                    (int(self.width * 0.08), int(self.height * 0.48)), # Near tip
-                    (int(self.width * 0.02), int(self.height * 0.50)), # Tip point
-                    (int(self.width * 0.08), int(self.height * 0.52)), # Tip back
-                    (int(self.width * 0.15), int(self.height * 0.55)), # Mid curve back
-                    (int(self.width * 0.25), int(self.height * 0.60)), # Curve end
-                    (int(self.width * 0.35), int(self.height * 0.65)), # Blade end bottom
-                    (int(self.width), int(self.height * 0.65))         # Hilt end bottom
+                    # Hilt section (right side)
+                    (int(self.width), int(self.height * 0.25)),        # Hilt top
+                    (int(self.width * 0.85), int(self.height * 0.25)), # Hilt end top
+                    # Blade starts with slight widening
+                    (int(self.width * 0.75), int(self.height * 0.20)), # Blade start top
+                    (int(self.width * 0.60), int(self.height * 0.15)), # Early blade top
+                    (int(self.width * 0.40), int(self.height * 0.10)), # Mid blade top
+                    (int(self.width * 0.25), int(self.height * 0.08)), # Late blade top
+                    # Curved tip section
+                    (int(self.width * 0.15), int(self.height * 0.15)), # Tip curve start
+                    (int(self.width * 0.08), int(self.height * 0.25)), # Tip curve mid
+                    (int(self.width * 0.03), int(self.height * 0.40)), # Near tip
+                    (0, int(self.height * 0.50)),                      # Sharp tip point
+                    (int(self.width * 0.03), int(self.height * 0.60)), # Tip back
+                    (int(self.width * 0.08), int(self.height * 0.75)), # Tip curve back
+                    (int(self.width * 0.15), int(self.height * 0.85)), # Curve back
+                    # Blade back edge
+                    (int(self.width * 0.25), int(self.height * 0.92)), # Late blade bottom
+                    (int(self.width * 0.40), int(self.height * 0.90)), # Mid blade bottom
+                    (int(self.width * 0.60), int(self.height * 0.85)), # Early blade bottom
+                    (int(self.width * 0.75), int(self.height * 0.80)), # Blade end bottom
+                    # Back to hilt
+                    (int(self.width * 0.85), int(self.height * 0.75)), # Hilt start bottom
+                    (int(self.width), int(self.height * 0.75))         # Hilt bottom
                 ]
 
             # Draw background (dark)
-            canvas.polygon((30, 30, 30), points)
+            canvas.polygon((25, 25, 25), points)
             # Draw border
-            canvas.polygon((120, 120, 120), points, 2)
+            canvas.polygon((100, 100, 100), points, 2)
 
             return r
 
-    class FalchionHPFill(renpy.Displayable):
-        def __init__(self, width, height, hp_ratio, is_enemy=True, **kwargs):
-            super(FalchionHPFill, self).__init__(**kwargs)
+    class FalchionHPBar(renpy.Displayable):
+        def __init__(self, width, height, is_enemy=True, **kwargs):
+            super(FalchionHPBar, self).__init__(**kwargs)
             self.width = width
             self.height = height
-            self.hp_ratio = max(0, min(1, hp_ratio))
             self.is_enemy = is_enemy
 
         def render(self, width, height, st, at):
-            if self.hp_ratio <= 0:
-                return renpy.Render(0, 0)
-
-            fill_width = int(self.width * self.hp_ratio)
-            r = renpy.Render(fill_width, self.height)
+            r = renpy.Render(self.width, self.height)
             canvas = r.canvas()
 
-            # Choose color based on HP level
-            if self.hp_ratio <= 0.15:
-                color = (255, 100, 100) if self.is_enemy else (100, 150, 255)
-            elif self.hp_ratio <= 0.30:
-                color = (220, 50, 50) if self.is_enemy else (50, 120, 220)
-            else:
-                color = (200, 40, 40) if self.is_enemy else (40, 100, 200)
-
-            # Create clipped falchion shape for HP fill
+            # Create authentic falchion blade shape with proper curves
             if self.is_enemy:
+                # Enemy falchion - graceful S-curve pointing right
                 points = [
-                    (0, int(self.height * 0.35)),
-                    (min(fill_width, int(self.width * 0.65)), int(self.height * 0.35)),
+                    # Hilt/guard section
+                    (0, int(self.height * 0.30)),
+                    (int(self.width * 0.12), int(self.height * 0.28)),
+                    # Blade base - starts wide
+                    (int(self.width * 0.20), int(self.height * 0.25)),
+                    (int(self.width * 0.30), int(self.height * 0.22)),
+                    (int(self.width * 0.45), int(self.height * 0.18)),
+                    # Mid-blade with characteristic curve
+                    (int(self.width * 0.60), int(self.height * 0.15)),
+                    (int(self.width * 0.72), int(self.height * 0.20)),
+                    (int(self.width * 0.82), int(self.height * 0.30)),
+                    # Tip section - sharp curved point
+                    (int(self.width * 0.90), int(self.height * 0.42)),
+                    (int(self.width * 0.96), int(self.height * 0.48)),
+                    (int(self.width), int(self.height * 0.50)),        # Sharp tip
+                    (int(self.width * 0.96), int(self.height * 0.52)),
+                    (int(self.width * 0.90), int(self.height * 0.58)),
+                    # Back edge with reverse curve
+                    (int(self.width * 0.82), int(self.height * 0.70)),
+                    (int(self.width * 0.72), int(self.height * 0.80)),
+                    (int(self.width * 0.60), int(self.height * 0.85)),
+                    # Back to base
+                    (int(self.width * 0.45), int(self.height * 0.82)),
+                    (int(self.width * 0.30), int(self.height * 0.78)),
+                    (int(self.width * 0.20), int(self.height * 0.75)),
+                    (int(self.width * 0.12), int(self.height * 0.72)),
+                    (0, int(self.height * 0.70))
                 ]
-
-                # Only add curved parts if we have enough width
-                if fill_width > int(self.width * 0.65):
-                    remaining_ratio = (fill_width - int(self.width * 0.65)) / (self.width - int(self.width * 0.65))
-                    points.extend([
-                        (int(self.width * 0.65 + (self.width * 0.10) * remaining_ratio),
-                         int(self.height * (0.35 + 0.05 * remaining_ratio))),
-                        (int(self.width * 0.65 + (self.width * 0.20) * remaining_ratio),
-                         int(self.height * (0.35 + 0.10 * remaining_ratio))),
-                        (int(self.width * 0.65 + (self.width * 0.27) * remaining_ratio),
-                         int(self.height * (0.35 + 0.13 * remaining_ratio))),
-                        (int(self.width * 0.65 + (self.width * 0.33) * remaining_ratio),
-                         int(self.height * (0.35 + 0.15 * remaining_ratio))),
-                    ])
-                    # Mirror for bottom
-                    bottom_points = []
-                    for x, y in reversed(points[1:]):
-                        bottom_y = self.height - y + int(self.height * 0.35)
-                        bottom_points.append((x, bottom_y))
-                    points.extend(bottom_points)
-                else:
-                    points.extend([
-                        (min(fill_width, int(self.width * 0.65)), int(self.height * 0.65)),
-                        (0, int(self.height * 0.65))
-                    ])
             else:
-                # Hero HP fills from right to left
-                start_x = self.width - fill_width
+                # Hero falchion - mirrored S-curve pointing left
                 points = [
-                    (self.width, int(self.height * 0.35)),
-                    (max(start_x, int(self.width * 0.35)), int(self.height * 0.35)),
+                    # Hilt/guard section
+                    (int(self.width), int(self.height * 0.30)),
+                    (int(self.width * 0.88), int(self.height * 0.28)),
+                    # Blade base - starts wide
+                    (int(self.width * 0.80), int(self.height * 0.25)),
+                    (int(self.width * 0.70), int(self.height * 0.22)),
+                    (int(self.width * 0.55), int(self.height * 0.18)),
+                    # Mid-blade with characteristic curve
+                    (int(self.width * 0.40), int(self.height * 0.15)),
+                    (int(self.width * 0.28), int(self.height * 0.20)),
+                    (int(self.width * 0.18), int(self.height * 0.30)),
+                    # Tip section - sharp curved point
+                    (int(self.width * 0.10), int(self.height * 0.42)),
+                    (int(self.width * 0.04), int(self.height * 0.48)),
+                    (0, int(self.height * 0.50)),                      # Sharp tip
+                    (int(self.width * 0.04), int(self.height * 0.52)),
+                    (int(self.width * 0.10), int(self.height * 0.58)),
+                    # Back edge with reverse curve
+                    (int(self.width * 0.18), int(self.height * 0.70)),
+                    (int(self.width * 0.28), int(self.height * 0.80)),
+                    (int(self.width * 0.40), int(self.height * 0.85)),
+                    # Back to base
+                    (int(self.width * 0.55), int(self.height * 0.82)),
+                    (int(self.width * 0.70), int(self.height * 0.78)),
+                    (int(self.width * 0.80), int(self.height * 0.75)),
+                    (int(self.width * 0.88), int(self.height * 0.72)),
+                    (int(self.width), int(self.height * 0.70))
                 ]
 
-                if start_x < int(self.width * 0.35):
-                    remaining_ratio = (int(self.width * 0.35) - start_x) / (int(self.width * 0.35))
-                    points.extend([
-                        (int(self.width * 0.35 - (self.width * 0.10) * remaining_ratio),
-                         int(self.height * (0.35 + 0.05 * remaining_ratio))),
-                        (int(self.width * 0.35 - (self.width * 0.20) * remaining_ratio),
-                         int(self.height * (0.35 + 0.10 * remaining_ratio))),
-                        (int(self.width * 0.35 - (self.width * 0.27) * remaining_ratio),
-                         int(self.height * (0.35 + 0.13 * remaining_ratio))),
-                        (int(self.width * 0.35 - (self.width * 0.33) * remaining_ratio),
-                         int(self.height * (0.35 + 0.15 * remaining_ratio))),
-                    ])
-                    # Mirror for bottom
-                    bottom_points = []
-                    for x, y in reversed(points[1:]):
-                        bottom_y = self.height - y + int(self.height * 0.35)
-                        bottom_points.append((x, bottom_y))
-                    points.extend(bottom_points)
-                else:
-                    points.extend([
-                        (max(start_x, int(self.width * 0.35)), int(self.height * 0.65)),
-                        (self.width, int(self.height * 0.65))
-                    ])
+            # Draw background (dark metallic)
+            canvas.polygon((25, 25, 25), points)
+            # Draw metallic border
+            canvas.polygon((120, 120, 120), points, 2)
 
-            canvas.polygon(color, points)
             return r
 
     class Circle(renpy.Displayable):
