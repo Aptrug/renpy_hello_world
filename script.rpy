@@ -10,8 +10,8 @@ default current_hp = 85
 default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
-default CIRCLE_RADIUS = 72
-default ORB_RADIUS = 12
+default CIRCLE_RADIUS = 70
+default ORB_RADIUS = 14
 
 # ========================
 # ATL Transforms
@@ -30,19 +30,28 @@ transform inactive:
 init python:
     import math
 
-    # Cache orb positions
+    # Cache orb positions and circles
     _orb_cache = {}
+    _circles = {}
 
     def get_orb_positions(num_orbs):
         if num_orbs not in _orb_cache:
             positions = []
-            for i in range(num_orbs):
-                angle = 2 * math.pi * i / num_orbs - math.pi/2
-                x = CIRCLE_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
-                y = CIRCLE_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
-                positions.append((int(x), int(y)))
+            if num_orbs > 0:
+                step = 6.283185307179586 / num_orbs  # 2*pi pre-calculated
+                for i in range(num_orbs):
+                    angle = step * i - 1.5707963267948966  # -pi/2 pre-calculated
+                    x = CIRCLE_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
+                    y = CIRCLE_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
+                    positions.append((int(x), int(y)))
             _orb_cache[num_orbs] = positions
         return _orb_cache[num_orbs]
+
+    def get_circle(radius, color):
+        key = (radius, color)
+        if key not in _circles:
+            _circles[key] = SimpleCircle(radius, color)
+        return _circles[key]
 
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
@@ -87,7 +96,7 @@ screen round_ui():
             ysize circle_size
 
             # Background circle
-            add SimpleCircle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
+            add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -100,11 +109,10 @@ screen round_ui():
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                $ is_active = i < available_ap
-                add SimpleCircle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
+                add get_circle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
                     xpos x
                     ypos y
-                    at (glow if is_active else inactive)
+                    at (glow if i < available_ap else inactive)
 
         # Hero HP bar
         vbox:
