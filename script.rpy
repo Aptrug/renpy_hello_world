@@ -15,8 +15,8 @@ define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
 
 # HP Bar Constants
-define HP_BAR_WIDTH = 420
-define HP_BAR_HEIGHT = 90
+define HP_BAR_WIDTH = 400
+define HP_BAR_HEIGHT = 80
 
 # ========================
 # ATL Transforms
@@ -40,16 +40,16 @@ transform orb_inactive:
     zoom 0.9
 
 transform hp_wave_enemy:
-    xpos -200
+    xpos -180
     alpha 0.0
-    linear 4.0 xpos HP_BAR_WIDTH + 50 alpha 0.8
+    linear 3.0 xpos HP_BAR_WIDTH alpha 0.6
     alpha 0.0
     repeat
 
 transform hp_wave_hero:
-    xpos HP_BAR_WIDTH + 200
+    xpos HP_BAR_WIDTH + 180
     alpha 0.0
-    linear 4.0 xpos -50 alpha 0.8
+    linear 3.0 xpos -180 alpha 0.6
     alpha 0.0
     repeat
 
@@ -93,140 +93,65 @@ init python:
                 c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
             return r
 
-    class FalchionMask(renpy.Displayable):
-        """Creates a white falchion shape on black background for masking"""
-        def __init__(self, width, height, is_enemy=True, **kwargs):
-            super(FalchionMask, self).__init__(**kwargs)
+    class FalchionShape(renpy.Displayable):
+        def __init__(self, width, height, is_enemy=True, fill_color="#cc0000", **kwargs):
+            super(FalchionShape, self).__init__(**kwargs)
             self.width = width
             self.height = height
             self.is_enemy = is_enemy
+            self.fill_color = fill_color
 
         def render(self, width, height, st, at):
             r = renpy.Render(self.width, self.height)
             c = r.canvas()
 
-            # Black background
-            c.rect((0, 0, 0, 255), (0, 0, self.width, self.height))
-
-            # Create smooth falchion curve using multiple points
+            # Create falchion blade shape points
             if self.is_enemy:
-                # Enemy falchion - curves right (blade pointing right)
-                points = []
-                # Top edge - smooth curve
-                for i in range(101):
-                    x = int(self.width * i / 100.0)
-                    if x <= self.width * 0.7:
-                        y = int(self.height * 0.35)  # Straight handle
-                    else:
-                        # Curved blade tip
-                        progress = (x - self.width * 0.7) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.35 + curve * 0.15))
-                    points.append((x, y))
-
-                # Bottom edge - smooth curve (reverse)
-                for i in range(100, -1, -1):
-                    x = int(self.width * i / 100.0)
-                    if x <= self.width * 0.7:
-                        y = int(self.height * 0.65)  # Straight handle
-                    else:
-                        # Curved blade tip
-                        progress = (x - self.width * 0.7) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.65 - curve * 0.15))
-                    points.append((x, y))
+                # Enemy falchion - curves to the right (blade pointing right)
+                points = [
+                    (0, int(self.height * 0.4)),                    # Left start
+                    (int(self.width * 0.7), int(self.height * 0.4)), # Main body top
+                    (int(self.width * 0.8), int(self.height * 0.45)), # Curve start
+                    (int(self.width * 0.85), int(self.height * 0.5)), # Mid curve
+                    (int(self.width * 0.9), int(self.height * 0.55)), # Tip approach
+                    (int(self.width * 0.95), int(self.height * 0.58)), # Near tip
+                    (int(self.width), int(self.height * 0.5)),        # Sharp tip
+                    (int(self.width * 0.95), int(self.height * 0.42)), # Tip back
+                    (int(self.width * 0.9), int(self.height * 0.45)), # Curve back
+                    (int(self.width * 0.85), int(self.height * 0.5)), # Mid back
+                    (int(self.width * 0.8), int(self.height * 0.55)), # Curve back
+                    (int(self.width * 0.7), int(self.height * 0.6)),  # Main body bottom
+                    (0, int(self.height * 0.6))                      # Left end
+                ]
             else:
-                # Hero falchion - curves left (blade pointing left)
-                points = []
-                # Top edge
-                for i in range(101):
-                    x = int(self.width * (100 - i) / 100.0)
-                    if x >= self.width * 0.3:
-                        y = int(self.height * 0.35)  # Straight handle
-                    else:
-                        # Curved blade tip
-                        progress = (self.width * 0.3 - x) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.35 + curve * 0.15))
-                    points.append((x, y))
+                # Hero falchion - curves to the left (blade pointing left)
+                points = [
+                    (int(self.width), int(self.height * 0.4)),        # Right start
+                    (int(self.width * 0.3), int(self.height * 0.4)),  # Main body top
+                    (int(self.width * 0.2), int(self.height * 0.45)), # Curve start
+                    (int(self.width * 0.15), int(self.height * 0.5)), # Mid curve
+                    (int(self.width * 0.1), int(self.height * 0.55)), # Tip approach
+                    (int(self.width * 0.05), int(self.height * 0.58)), # Near tip
+                    (0, int(self.height * 0.5)),                      # Sharp tip
+                    (int(self.width * 0.05), int(self.height * 0.42)), # Tip back
+                    (int(self.width * 0.1), int(self.height * 0.45)), # Curve back
+                    (int(self.width * 0.15), int(self.height * 0.5)), # Mid back
+                    (int(self.width * 0.2), int(self.height * 0.55)), # Curve back
+                    (int(self.width * 0.3), int(self.height * 0.6)),  # Main body bottom
+                    (int(self.width), int(self.height * 0.6))         # Right end
+                ]
 
-                # Bottom edge (reverse)
-                for i in range(100, -1, -1):
-                    x = int(self.width * (100 - i) / 100.0)
-                    if x >= self.width * 0.3:
-                        y = int(self.height * 0.65)  # Straight handle
-                    else:
-                        # Curved blade tip
-                        progress = (self.width * 0.3 - x) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.65 - curve * 0.15))
-                    points.append((x, y))
-
-            # Draw white falchion shape for masking
-            c.polygon((255, 255, 255, 255), points)
-
-            return r
-
-    class FalchionOutline(renpy.Displayable):
-        """Creates the outline border of the falchion"""
-        def __init__(self, width, height, is_enemy=True, **kwargs):
-            super(FalchionOutline, self).__init__(**kwargs)
-            self.width = width
-            self.height = height
-            self.is_enemy = is_enemy
-
-        def render(self, width, height, st, at):
-            r = renpy.Render(self.width, self.height)
-            c = r.canvas()
-
-            # Same shape logic as mask, but just outline
-            if self.is_enemy:
-                points = []
-                for i in range(101):
-                    x = int(self.width * i / 100.0)
-                    if x <= self.width * 0.7:
-                        y = int(self.height * 0.35)
-                    else:
-                        progress = (x - self.width * 0.7) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.35 + curve * 0.15))
-                    points.append((x, y))
-
-                for i in range(100, -1, -1):
-                    x = int(self.width * i / 100.0)
-                    if x <= self.width * 0.7:
-                        y = int(self.height * 0.65)
-                    else:
-                        progress = (x - self.width * 0.7) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.65 - curve * 0.15))
-                    points.append((x, y))
+            # Draw the falchion shape
+            if isinstance(self.fill_color, tuple):
+                c.polygon(self.fill_color, points)
             else:
-                points = []
-                for i in range(101):
-                    x = int(self.width * (100 - i) / 100.0)
-                    if x >= self.width * 0.3:
-                        y = int(self.height * 0.35)
-                    else:
-                        progress = (self.width * 0.3 - x) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.35 + curve * 0.15))
-                    points.append((x, y))
+                # Convert hex color to RGB tuple
+                hex_color = self.fill_color.lstrip('#')
+                rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+                c.polygon(rgb, points)
 
-                for i in range(100, -1, -1):
-                    x = int(self.width * (100 - i) / 100.0)
-                    if x >= self.width * 0.3:
-                        y = int(self.height * 0.65)
-                    else:
-                        progress = (self.width * 0.3 - x) / (self.width * 0.3)
-                        curve = math.sin(progress * math.pi * 0.5)
-                        y = int(self.height * (0.65 - curve * 0.15))
-                    points.append((x, y))
-
-            # Draw dark background shape
-            c.polygon((26, 26, 26, 255), points)
-            # Draw lighter outline
-            c.polygon((80, 80, 80, 255), points, 3)
+            # Add border
+            c.polygon((80, 80, 80), points, 2)
 
             return r
 
@@ -256,73 +181,66 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # ========================
 screen hp_bar_enemy():
     fixed:
-        xpos 80
-        ypos 120
+        xpos 50
+        ypos 150
         xsize HP_BAR_WIDTH
         ysize HP_BAR_HEIGHT
 
-        # Background outline
-        add FalchionOutline(HP_BAR_WIDTH, HP_BAR_HEIGHT, True)
+        # Background falchion shape
+        add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, True, "#1a1a1a")
 
-        # HP Fill using AlphaMask for proper clipping
-        add AlphaMask(
-            child=Fixed(
-                # Main HP fill
-                Solid("#cc0000", xsize=int(HP_BAR_WIDTH * enemy_hp), ysize=HP_BAR_HEIGHT),
-                # Wave effect
-                Solid("#ffffff", xsize=200, ysize=HP_BAR_HEIGHT) at hp_wave_enemy,
-                xsize=HP_BAR_WIDTH,
-                ysize=HP_BAR_HEIGHT
-            ),
-            mask=FalchionMask(HP_BAR_WIDTH, HP_BAR_HEIGHT, True)
-        ):
+        # HP Fill - clipped to current HP
+        fixed:
+            xsize int(HP_BAR_WIDTH * enemy_hp)
+            ysize HP_BAR_HEIGHT
+
             if enemy_hp <= 0.15:
-                at critical_hp_flash
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, True, "#ff4444") at critical_hp_flash
             elif enemy_hp <= 0.30:
-                at low_hp_pulse
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, True, "#cc0000") at low_hp_pulse
+            else:
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, True, "#cc0000")
+
+            # Wave effect
+            add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_enemy
 
         # HP Text
         $ hp_text = format_hp_percent(enemy_hp)
-        text "[hp_text]" color "#ff6666" size 32 bold True outlines [(3, "#000000", 0, 0)]:
-            xpos HP_BAR_WIDTH - 80
-            ypos -60
+        text "[hp_text]" color "#ff6666" size 28 outlines [(3, "#000000", 0, 0)]:
+            xpos HP_BAR_WIDTH - 70
+            ypos -50
 
 screen hp_bar_hero():
     fixed:
-        xpos config.screen_width - HP_BAR_WIDTH - 80
-        ypos 120
+        xpos config.screen_width - HP_BAR_WIDTH - 50
+        ypos 150
         xsize HP_BAR_WIDTH
         ysize HP_BAR_HEIGHT
 
-        # Background outline
-        add FalchionOutline(HP_BAR_WIDTH, HP_BAR_HEIGHT, False)
+        # Background falchion shape
+        add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, False, "#1a1a1a")
 
-        # HP Fill using AlphaMask - right-aligned
-        add AlphaMask(
-            child=Fixed(
-                # Main HP fill (right-aligned)
-                Solid("#003399",
-                    xpos=HP_BAR_WIDTH - int(HP_BAR_WIDTH * hero_hp),
-                    xsize=int(HP_BAR_WIDTH * hero_hp),
-                    ysize=HP_BAR_HEIGHT
-                ),
-                # Wave effect
-                Solid("#ffffff", xsize=200, ysize=HP_BAR_HEIGHT) at hp_wave_hero,
-                xsize=HP_BAR_WIDTH,
-                ysize=HP_BAR_HEIGHT
-            ),
-            mask=FalchionMask(HP_BAR_WIDTH, HP_BAR_HEIGHT, False)
-        ):
+        # HP Fill - right-aligned clipped to current HP
+        fixed:
+            xpos HP_BAR_WIDTH - int(HP_BAR_WIDTH * hero_hp)
+            xsize int(HP_BAR_WIDTH * hero_hp)
+            ysize HP_BAR_HEIGHT
+
             if hero_hp <= 0.15:
-                at critical_hp_flash
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, False, "#4499ff") at critical_hp_flash
             elif hero_hp <= 0.30:
-                at low_hp_pulse
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, False, "#003399") at low_hp_pulse
+            else:
+                add FalchionShape(HP_BAR_WIDTH, HP_BAR_HEIGHT, False, "#003399")
+
+            # Wave effect
+            add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_hero
 
         # HP Text
         $ hp_text = format_hp_percent(hero_hp)
-        text "[hp_text]" color "#66aaff" size 32 bold True outlines [(3, "#000000", 0, 0)]:
-            xpos 80
-            ypos HP_BAR_HEIGHT + 30
+        text "[hp_text]" color "#66aaff" size 28 outlines [(3, "#000000", 0, 0)]:
+            xpos 70
+            ypos HP_BAR_HEIGHT + 25
 
 # ========================
 # VS Circle
@@ -330,18 +248,18 @@ screen hp_bar_hero():
 screen vs_circle():
     fixed:
         xalign 0.5
-        yalign 0.25
+        yalign 0.35
         xsize 100
         ysize 100
 
         # VS background circle with glow
-        add Circle(45, (255, 204, 0), (184, 134, 11), 4) at vs_glow
+        add Circle(40, (255, 204, 0), (184, 134, 11), 4) at vs_glow
 
         # VS text
-        text "VS" color "#000000" size 28 bold True:
+        text "VS" color "#000000" size 24 bold True:
             xalign 0.5
             yalign 0.5
-            outlines [(2, "#ffffff", 0, 0)]
+            outlines [(1, "#ffffff", 0, 0)]
 
 # ========================
 # Round Display
@@ -349,7 +267,7 @@ screen vs_circle():
 screen round_display():
     fixed:
         xalign 0.5
-        yalign 0.5
+        yalign 0.6
         xsize ROUND_RADIUS * 2
         ysize ROUND_RADIUS * 2
 
