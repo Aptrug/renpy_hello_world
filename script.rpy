@@ -64,6 +64,7 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define aura_circle = Circle(ROUND_RADIUS + 20, (255, 215, 0))
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # ========================
@@ -76,8 +77,10 @@ screen round_ui():
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
+        # Golden aura circle behind everything
+        add aura_circle at golden_aura xalign 0.5 yalign 0.5
         # Round circle background with golden aura
-        add round_bg at golden_aura
+        add round_bg
         # Round number in the center
         vbox:
             xalign 0.5
