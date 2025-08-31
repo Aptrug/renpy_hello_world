@@ -26,9 +26,10 @@ transform glow:
 transform inactive:
     alpha 0.4
 
-transform sun_glow:
-    ease 2.0 alpha 0.3
-    ease 2.0 alpha 0.7
+transform sun_aura:
+    blur 3
+    ease 3.0 alpha 0.15
+    ease 3.0 alpha 0.4
     repeat
 
 # ========================
@@ -97,8 +98,10 @@ screen round_ui():
             xsize circle_diameter
             ysize circle_diameter
 
-            # Golden glow effect (larger circle behind)
-            add get_circle(CIRCLE_RADIUS + 8, "#ffd700") align (0.5, 0.5) at sun_glow
+            # Layered golden aura effect
+            add get_circle(CIRCLE_RADIUS + 20, "#ffaa00") align (0.5, 0.5) at sun_aura
+            add get_circle(CIRCLE_RADIUS + 12, "#ffd700") align (0.5, 0.5) at sun_aura
+            add get_circle(CIRCLE_RADIUS + 6, "#ffff88") align (0.5, 0.5) at sun_aura
 
             # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
