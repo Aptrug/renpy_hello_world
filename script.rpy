@@ -21,8 +21,9 @@ transform orb_glow:
     repeat
 
 transform golden_aura:
-    ease 2.0 additive 0.5
-    ease 2.0 additive 0.0
+    alpha 0.3
+    ease 2.0 alpha 0.6
+    ease 2.0 alpha 0.3
     repeat
 
 transform orb_inactive:
@@ -63,7 +64,8 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-define round_bg = Circle(ROUND_RADIUS, (255, 215, 0), (184, 134, 11), 3)
+define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define golden_aura = Circle(ROUND_RADIUS + 15, (255, 215, 0), None, 0)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # ========================
@@ -76,8 +78,10 @@ screen round_ui():
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
-        # Round circle background with golden aura animation
-        add round_bg at golden_aura
+        # Golden aura behind the round circle
+        add golden_aura at golden_aura xalign 0.5 yalign 0.5
+        # Round circle background
+        add round_bg
         # Round number in the center
         vbox:
             xalign 0.5
