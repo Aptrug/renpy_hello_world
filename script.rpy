@@ -40,12 +40,24 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
+    class SimpleCircle(renpy.Displayable):
+        def __init__(self, radius, color, **kwargs):
+            super().__init__(**kwargs)
+            self.radius = radius
+            self.color = color
+        def render(self, w, h, st, at):
+            size = 2 * self.radius
+            r = renpy.Render(size, size)
+            c = r.canvas()
+            c.circle(self.color, (self.radius, self.radius), self.radius)
+            return r
+
 # ========================
 # Simple Displayables
 # ========================
-define round_bg = "#505050"
-define orb_active = "#ffd700"
-define orb_inactive = "#666666"
+define round_bg = SimpleCircle(70, "#505050")
+define orb_active = SimpleCircle(15, "#ffd700")
+define orb_inactive = SimpleCircle(15, "#666666")
 
 # ========================
 # HP Bar Screen
@@ -83,16 +95,12 @@ screen round_ui():
         ysize 280
 
         # Background circle
-        add Solid(round_bg):
-            xsize 140
-            ysize 140
+        add round_bg:
             xpos 70
             ypos 70
 
         # Glow effect
-        add Solid("#ffd700"):
-            xsize 140
-            ysize 140
+        add SimpleCircle(70, "#ffd700"):
             xpos 70
             ypos 70
             alpha 0.3
@@ -108,11 +116,9 @@ screen round_ui():
 
         # AP Orbs
         for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-            add Solid(orb_active if i < available_ap else orb_inactive):
+            add (orb_active if i < available_ap else orb_inactive):
                 xpos x
                 ypos y
-                xsize 30
-                ysize 30
                 at (glow if i < available_ap else inactive)
 
 # ========================
