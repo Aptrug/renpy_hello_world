@@ -119,7 +119,7 @@ screen round_ui():
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
     vbox:
         spacing 5
-        text label size 14 color "#ffffff"
+        text label size gui.label_text_size color "#ffffff"
 
         fixed:
             xsize width + 4
