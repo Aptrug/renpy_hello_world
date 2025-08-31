@@ -97,7 +97,7 @@ screen round_ui():
             ysize circle_diameter
 
             # Golden glow aura (larger circle behind)
-            add get_circle(CIRCLE_RADIUS + 8, "#ffd700") align (0.5, 0.5) at golden_glow
+            add get_circle(glow_radius, "#ffd700") align (0.5, 0.5) at golden_glow
 
             # Main background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
