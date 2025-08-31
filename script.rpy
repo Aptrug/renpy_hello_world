@@ -86,11 +86,12 @@ screen round_ui():
 
             # Round text
             vbox:
-                spacing -5
                 xalign 0.5
-                yalign 0.6
-                text "Round" size 24 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 48 color "#FFFFFF" xalign 0.5
+                yalign 0.5
+                yoffset 10
+                spacing -5
+                text "Round" size 22 color "#FFFFFF" xalign 0.5
+                text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
