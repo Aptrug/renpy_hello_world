@@ -30,7 +30,7 @@ transform inactive:
 init python:
     import math
 
-    # Cache orb positions for different possible orb counts
+    # Cache orb positions for different orb counts
     _orb_positions_cache = {}
 
     def get_orb_positions(num_orbs):
@@ -57,12 +57,17 @@ init python:
             return r
 
 # ========================
-# Precomputed Constants
+# Precomputed Constants & Cached Displayables
 # ========================
 init python:
     available_width = config.screen_width - 200  # Leave 200px total margin
     circle_size = CIRCLE_RADIUS * 2
-    bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
+    bar_width = (available_width - circle_size - 100) // 2
+
+    # Cached circles (reuse instead of re-rendering each frame)
+    round_circle_bg = SimpleCircle(CIRCLE_RADIUS, "#505050")
+    orb_active = SimpleCircle(ORB_RADIUS, "#ffd700")   # gold
+    orb_inactive = SimpleCircle(ORB_RADIUS, "#666666") # gray
 
 # ========================
 # Main UI Screen
@@ -91,8 +96,8 @@ screen round_ui():
             xsize circle_size
             ysize circle_size
 
-            # Background circle
-            add SimpleCircle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
+            # Background circle (cached)
+            add round_circle_bg align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -107,7 +112,7 @@ screen round_ui():
             $ orb_positions = get_orb_positions(max_ap)
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
-                add SimpleCircle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
+                add (orb_active if is_active else orb_inactive):
                     xpos x
                     ypos y
                     at (glow if is_active else inactive)
