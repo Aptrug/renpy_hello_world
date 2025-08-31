@@ -26,11 +26,6 @@ transform glow:
 transform inactive:
     alpha 0.4
 
-transform golden_glow:
-    ease 3.0 alpha 0.1
-    ease 3.0 alpha 0.4
-    repeat
-
 # ========================
 # Python Helpers
 # ========================
@@ -93,16 +88,10 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize (CIRCLE_RADIUS + 12) * 2
-            ysize (CIRCLE_RADIUS + 12) * 2
+            xsize circle_diameter
+            ysize circle_diameter
 
-            # Layered aura effect (simulates blur with multiple circles)
-            add get_circle(CIRCLE_RADIUS + 12, "#ffd700") align (0.5, 0.5) alpha 0.05
-            add get_circle(CIRCLE_RADIUS + 9, "#ffd700") align (0.5, 0.5) alpha 0.08
-            add get_circle(CIRCLE_RADIUS + 6, "#ffd700") align (0.5, 0.5) alpha 0.12
-            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align (0.5, 0.5) alpha 0.15 at golden_glow
-
-            # Main background circle
+            # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
