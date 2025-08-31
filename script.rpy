@@ -15,6 +15,8 @@ default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
+# NOTE: gui.notify_text_size is defined as 24 in gui.rpy
+
 # ========================
 # ATL Transforms
 # ========================
