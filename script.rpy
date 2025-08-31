@@ -1,6 +1,4 @@
-﻿# This code works, but the question is, is the logic sound? Are the calculations correct?
-
-# ========================
+﻿# ========================
 # Game Variables
 # ========================
 default current_round = 59
