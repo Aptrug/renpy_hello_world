@@ -14,9 +14,9 @@ default hero_max_hp = 1.0
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
 
-# HP Bar Constants
-define HP_BAR_WIDTH = 400
-define HP_BAR_HEIGHT = 80
+# HP Bar Constants - Made much thicker and more prominent
+define HP_BAR_WIDTH = 450
+define HP_BAR_HEIGHT = 120
 
 # ========================
 # ATL Transforms
@@ -41,38 +41,40 @@ transform orb_inactive:
 
 # Wave animations for HP bars
 transform hp_wave_enemy(wave_speed=3.0):
-    xpos -180
     alpha 0.0
-    linear wave_speed xpos HP_BAR_WIDTH alpha 0.6
+    xpos -220
+    pause 0.5
+    linear wave_speed xpos HP_BAR_WIDTH + 50 alpha 0.8
     alpha 0.0
     repeat
 
 transform hp_wave_hero(wave_speed=3.0):
-    xpos HP_BAR_WIDTH + 180
     alpha 0.0
-    linear wave_speed xpos -180 alpha 0.6
+    xpos HP_BAR_WIDTH + 220
+    pause 0.5
+    linear wave_speed xpos -50 alpha 0.8
     alpha 0.0
     repeat
 
 # Health state animations
 transform low_hp_pulse:
-    ease 1.5 alpha 0.7 additive 0.2
+    ease 1.5 alpha 0.8 additive 0.2
     ease 1.5 alpha 1.0 additive 0.0
     repeat
 
 transform critical_hp_flash:
-    ease 0.6 alpha 0.8 additive 0.4
+    ease 0.6 alpha 0.7 additive 0.5
     ease 0.6 alpha 1.0 additive 0.0
     repeat
 
 transform critical_hp_text:
     ease 0.8 zoom 1.0 alpha 0.9
-    ease 0.8 zoom 1.1 alpha 1.0
+    ease 0.8 zoom 1.15 alpha 1.0
     repeat
 
 transform low_hp_text:
     ease 1.2 zoom 1.0
-    ease 1.2 zoom 1.05
+    ease 1.2 zoom 1.08
     repeat
 
 # VS Circle glow
@@ -82,7 +84,7 @@ transform vs_glow:
         ease 2.0 alpha 1.0 additive 0.0
     parallel:
         ease 2.0 zoom 1.0
-        ease 2.0 zoom 1.05
+        ease 2.0 zoom 1.08
     repeat
 
 # ========================
@@ -123,44 +125,48 @@ init python:
             r = renpy.Render(self.width, self.height)
             c = r.canvas()
 
-            # Create falchion blade shape points based on CSS clip-path
+            # Create much more dramatic falchion blade shape points
             if self.is_enemy:
-                # Enemy: polygon(0 35%, 65% 35%, 75% 45%, 82% 60%, 88% 75%, 92% 85%, 96% 92%, 100% 95%, 98% 80%, 94% 65%, 88% 50%, 82% 35%, 75% 25%, 65% 18%, 0 18%)
+                # Enemy falchion with more pronounced curve and longer blade tip
                 points = [
-                    (0, int(self.height * 0.35)),
-                    (int(self.width * 0.65), int(self.height * 0.35)),
-                    (int(self.width * 0.75), int(self.height * 0.45)),
-                    (int(self.width * 0.82), int(self.height * 0.60)),
-                    (int(self.width * 0.88), int(self.height * 0.75)),
-                    (int(self.width * 0.92), int(self.height * 0.85)),
-                    (int(self.width * 0.96), int(self.height * 0.92)),
-                    (int(self.width * 1.0), int(self.height * 0.95)),
-                    (int(self.width * 0.98), int(self.height * 0.80)),
-                    (int(self.width * 0.94), int(self.height * 0.65)),
-                    (int(self.width * 0.88), int(self.height * 0.50)),
-                    (int(self.width * 0.82), int(self.height * 0.35)),
-                    (int(self.width * 0.75), int(self.height * 0.25)),
-                    (int(self.width * 0.65), int(self.height * 0.18)),
-                    (0, int(self.height * 0.18))
+                    (0, int(self.height * 0.25)),                     # Top left start
+                    (int(self.width * 0.55), int(self.height * 0.25)), # Main blade top
+                    (int(self.width * 0.65), int(self.height * 0.30)), # Start curve
+                    (int(self.width * 0.72), int(self.height * 0.38)), # Curve progression
+                    (int(self.width * 0.78), int(self.height * 0.45)), # Mid curve
+                    (int(self.width * 0.83), int(self.height * 0.48)), # Tip approach top
+                    (int(self.width * 0.88), int(self.height * 0.49)), # Near tip
+                    (int(self.width * 0.95), int(self.height * 0.495)), # Very near tip
+                    (int(self.width), int(self.height * 0.5)),         # Sharp tip point
+                    (int(self.width * 0.95), int(self.height * 0.505)), # Very near tip bottom
+                    (int(self.width * 0.88), int(self.height * 0.51)), # Near tip bottom
+                    (int(self.width * 0.83), int(self.height * 0.52)), # Tip approach bottom
+                    (int(self.width * 0.78), int(self.height * 0.55)), # Mid curve bottom
+                    (int(self.width * 0.72), int(self.height * 0.62)), # Curve progression bottom
+                    (int(self.width * 0.65), int(self.height * 0.70)), # End curve
+                    (int(self.width * 0.55), int(self.height * 0.75)), # Main blade bottom
+                    (0, int(self.height * 0.75))                      # Bottom left end
                 ]
             else:
-                # Hero: polygon(100% 65%, 35% 65%, 25% 55%, 18% 40%, 12% 25%, 8% 15%, 4% 8%, 0% 5%, 2% 20%, 6% 35%, 12% 50%, 18% 65%, 25% 75%, 35% 82%, 100% 82%)
+                # Hero falchion with dramatic left-pointing blade
                 points = [
-                    (int(self.width * 1.0), int(self.height * 0.65)),
-                    (int(self.width * 0.35), int(self.height * 0.65)),
-                    (int(self.width * 0.25), int(self.height * 0.55)),
-                    (int(self.width * 0.18), int(self.height * 0.40)),
-                    (int(self.width * 0.12), int(self.height * 0.25)),
-                    (int(self.width * 0.08), int(self.height * 0.15)),
-                    (int(self.width * 0.04), int(self.height * 0.08)),
-                    (int(self.width * 0.0), int(self.height * 0.05)),
-                    (int(self.width * 0.02), int(self.height * 0.20)),
-                    (int(self.width * 0.06), int(self.height * 0.35)),
-                    (int(self.width * 0.12), int(self.height * 0.50)),
-                    (int(self.width * 0.18), int(self.height * 0.65)),
-                    (int(self.width * 0.25), int(self.height * 0.75)),
-                    (int(self.width * 0.35), int(self.height * 0.82)),
-                    (int(self.width * 1.0), int(self.height * 0.82))
+                    (int(self.width), int(self.height * 0.25)),        # Top right start
+                    (int(self.width * 0.45), int(self.height * 0.25)), # Main blade top
+                    (int(self.width * 0.35), int(self.height * 0.30)), # Start curve
+                    (int(self.width * 0.28), int(self.height * 0.38)), # Curve progression
+                    (int(self.width * 0.22), int(self.height * 0.45)), # Mid curve
+                    (int(self.width * 0.17), int(self.height * 0.48)), # Tip approach top
+                    (int(self.width * 0.12), int(self.height * 0.49)), # Near tip
+                    (int(self.width * 0.05), int(self.height * 0.495)), # Very near tip
+                    (0, int(self.height * 0.5)),                       # Sharp tip point
+                    (int(self.width * 0.05), int(self.height * 0.505)), # Very near tip bottom
+                    (int(self.width * 0.12), int(self.height * 0.51)), # Near tip bottom
+                    (int(self.width * 0.17), int(self.height * 0.52)), # Tip approach bottom
+                    (int(self.width * 0.22), int(self.height * 0.55)), # Mid curve bottom
+                    (int(self.width * 0.28), int(self.height * 0.62)), # Curve progression bottom
+                    (int(self.width * 0.35), int(self.height * 0.70)), # End curve
+                    (int(self.width * 0.45), int(self.height * 0.75)), # Main blade bottom
+                    (int(self.width), int(self.height * 0.75))         # Bottom right end
                 ]
 
             # Convert hex color to RGB
@@ -170,11 +176,15 @@ init python:
             else:
                 rgb_color = self.bg_color
 
-            # Draw the falchion shape
-            c.polygon(rgb_color, points)
+            # Draw the falchion shape with dark gradient effect
+            c.polygon((26, 26, 26), points)  # Darker base
 
-            # Add subtle border
-            c.polygon((80, 80, 80), points, 2)
+            # Add inner shadow effect
+            inner_points = [(x-2 if i % 2 == 0 else x+2, y+1) for i, (x, y) in enumerate(points)]
+            c.polygon((13, 13, 13), inner_points)
+
+            # Add border
+            c.polygon((120, 120, 120), points, 3)
 
             return r
 
@@ -183,61 +193,68 @@ init python:
             super(FalchionFill, self).__init__(**kwargs)
             self.width = width
             self.height = height
-            self.hp_percent = hp_percent
+            self.hp_percent = max(0.0, min(1.0, hp_percent))
             self.is_enemy = is_enemy
             self.fill_color = fill_color
 
         def render(self, width, height, st, at):
             r = renpy.Render(self.width, self.height)
-            c = r.canvas()
 
-            # Calculate fill width
-            if self.is_enemy:
-                fill_width = int(self.width * self.hp_percent)
-            else:
-                fill_width = int(self.width * self.hp_percent)
-
-            if fill_width <= 0:
+            if self.hp_percent <= 0:
                 return r
 
-            # Create falchion shape points (same as background)
+            c = r.canvas()
+
+            # Create clipping mask based on HP percentage
             if self.is_enemy:
+                # Enemy fills from left to right
+                fill_width = self.width * self.hp_percent
                 points = [
-                    (0, int(self.height * 0.35)),
-                    (int(fill_width * 0.65), int(self.height * 0.35)),
-                    (int(fill_width * 0.75), int(self.height * 0.45)),
-                    (int(fill_width * 0.82), int(self.height * 0.60)),
-                    (int(fill_width * 0.88), int(self.height * 0.75)),
-                    (int(fill_width * 0.92), int(self.height * 0.85)),
-                    (int(fill_width * 0.96), int(self.height * 0.92)),
-                    (int(fill_width * 1.0), int(self.height * 0.95)),
-                    (int(fill_width * 0.98), int(self.height * 0.80)),
-                    (int(fill_width * 0.94), int(self.height * 0.65)),
-                    (int(fill_width * 0.88), int(self.height * 0.50)),
-                    (int(fill_width * 0.82), int(self.height * 0.35)),
-                    (int(fill_width * 0.75), int(self.height * 0.25)),
-                    (int(fill_width * 0.65), int(self.height * 0.18)),
-                    (0, int(self.height * 0.18))
+                    (0, int(self.height * 0.25)),
+                    (min(fill_width, int(self.width * 0.55)), int(self.height * 0.25)),
+                    (min(fill_width, int(self.width * 0.65)), int(self.height * 0.30)),
+                    (min(fill_width, int(self.width * 0.72)), int(self.height * 0.38)),
+                    (min(fill_width, int(self.width * 0.78)), int(self.height * 0.45)),
+                    (min(fill_width, int(self.width * 0.83)), int(self.height * 0.48)),
+                    (min(fill_width, int(self.width * 0.88)), int(self.height * 0.49)),
+                    (min(fill_width, int(self.width * 0.95)), int(self.height * 0.495)),
+                    (min(fill_width, int(self.width)), int(self.height * 0.5)),
+                    (min(fill_width, int(self.width * 0.95)), int(self.height * 0.505)),
+                    (min(fill_width, int(self.width * 0.88)), int(self.height * 0.51)),
+                    (min(fill_width, int(self.width * 0.83)), int(self.height * 0.52)),
+                    (min(fill_width, int(self.width * 0.78)), int(self.height * 0.55)),
+                    (min(fill_width, int(self.width * 0.72)), int(self.height * 0.62)),
+                    (min(fill_width, int(self.width * 0.65)), int(self.height * 0.70)),
+                    (min(fill_width, int(self.width * 0.55)), int(self.height * 0.75)),
+                    (0, int(self.height * 0.75))
                 ]
+
+                # Ensure we don't go beyond the actual fill width
+                points = [(min(x, fill_width), y) for x, y in points]
+
             else:
-                # For hero, we need to clip from the right side
-                offset = self.width - fill_width
+                # Hero fills from right to left
+                fill_width = self.width * self.hp_percent
+                start_x = self.width - fill_width
+
                 points = [
-                    (int(self.width), int(self.height * 0.65)),
-                    (max(offset, int(self.width * 0.35)), int(self.height * 0.65)),
-                    (max(offset, int(self.width * 0.25)), int(self.height * 0.55)),
-                    (max(offset, int(self.width * 0.18)), int(self.height * 0.40)),
-                    (max(offset, int(self.width * 0.12)), int(self.height * 0.25)),
-                    (max(offset, int(self.width * 0.08)), int(self.height * 0.15)),
-                    (max(offset, int(self.width * 0.04)), int(self.height * 0.08)),
-                    (max(offset, int(self.width * 0.0)), int(self.height * 0.05)),
-                    (max(offset, int(self.width * 0.02)), int(self.height * 0.20)),
-                    (max(offset, int(self.width * 0.06)), int(self.height * 0.35)),
-                    (max(offset, int(self.width * 0.12)), int(self.height * 0.50)),
-                    (max(offset, int(self.width * 0.18)), int(self.height * 0.65)),
-                    (max(offset, int(self.width * 0.25)), int(self.height * 0.75)),
-                    (max(offset, int(self.width * 0.35)), int(self.height * 0.82)),
-                    (int(self.width), int(self.height * 0.82))
+                    (int(self.width), int(self.height * 0.25)),
+                    (max(start_x, int(self.width * 0.45)), int(self.height * 0.25)),
+                    (max(start_x, int(self.width * 0.35)), int(self.height * 0.30)),
+                    (max(start_x, int(self.width * 0.28)), int(self.height * 0.38)),
+                    (max(start_x, int(self.width * 0.22)), int(self.height * 0.45)),
+                    (max(start_x, int(self.width * 0.17)), int(self.height * 0.48)),
+                    (max(start_x, int(self.width * 0.12)), int(self.height * 0.49)),
+                    (max(start_x, int(self.width * 0.05)), int(self.height * 0.495)),
+                    (max(start_x, 0), int(self.height * 0.5)),
+                    (max(start_x, int(self.width * 0.05)), int(self.height * 0.505)),
+                    (max(start_x, int(self.width * 0.12)), int(self.height * 0.51)),
+                    (max(start_x, int(self.width * 0.17)), int(self.height * 0.52)),
+                    (max(start_x, int(self.width * 0.22)), int(self.height * 0.55)),
+                    (max(start_x, int(self.width * 0.28)), int(self.height * 0.62)),
+                    (max(start_x, int(self.width * 0.35)), int(self.height * 0.70)),
+                    (max(start_x, int(self.width * 0.45)), int(self.height * 0.75)),
+                    (int(self.width), int(self.height * 0.75))
                 ]
 
             # Convert hex color to RGB
@@ -247,13 +264,24 @@ init python:
             else:
                 rgb_color = self.fill_color
 
-            # Draw the filled falchion shape
+            # Draw gradient fill effect
+            # Base color
             c.polygon(rgb_color, points)
+
+            # Add highlight gradient on top portion
+            highlight_points = points[:len(points)//2]
+            highlight_color = tuple(min(255, int(c * 1.3)) for c in rgb_color)
+            c.polygon(highlight_color, highlight_points)
+
+            # Add subtle inner glow
+            inner_points = [(x-1, y-1) for x, y in points]
+            glow_color = tuple(min(255, int(c * 1.5)) for c in rgb_color)
+            c.polygon(glow_color, inner_points, 2)
 
             return r
 
     class WaveEffect(renpy.Displayable):
-        def __init__(self, width=180, height=80, **kwargs):
+        def __init__(self, width=220, height=120, **kwargs):
             super(WaveEffect, self).__init__(**kwargs)
             self.width = width
             self.height = height
@@ -262,27 +290,36 @@ init python:
             r = renpy.Render(self.width, self.height)
             c = r.canvas()
 
-            # Create a gradient wave effect using multiple rectangles
-            for i in range(self.width):
-                x_ratio = float(i) / self.width
-                # Create wave intensity based on position (bell curve-like)
-                if x_ratio < 0.15:
-                    alpha = int(255 * (x_ratio / 0.15) * 0.1)
-                elif x_ratio < 0.3:
-                    alpha = int(255 * 0.3)
-                elif x_ratio < 0.45:
-                    alpha = int(255 * 0.7)
-                elif x_ratio < 0.55:
-                    alpha = int(255 * 0.9)  # Peak
-                elif x_ratio < 0.7:
-                    alpha = int(255 * 0.7)
-                elif x_ratio < 0.85:
-                    alpha = int(255 * 0.3)
-                else:
-                    alpha = int(255 * ((1.0 - x_ratio) / 0.15) * 0.1)
+            # Create a more dramatic wave gradient
+            segments = 40
+            for i in range(segments):
+                x = int((float(i) / segments) * self.width)
+                x_ratio = float(i) / segments
 
+                # Create smooth wave intensity (bell curve)
+                if x_ratio < 0.1:
+                    intensity = x_ratio * 10 * 0.15
+                elif x_ratio < 0.25:
+                    intensity = 0.15 + (x_ratio - 0.1) / 0.15 * 0.25
+                elif x_ratio < 0.4:
+                    intensity = 0.4 + (x_ratio - 0.25) / 0.15 * 0.35
+                elif x_ratio < 0.5:
+                    intensity = 0.75 + (x_ratio - 0.4) / 0.1 * 0.25  # Peak
+                elif x_ratio < 0.6:
+                    intensity = 1.0 - (x_ratio - 0.5) / 0.1 * 0.25
+                elif x_ratio < 0.75:
+                    intensity = 0.75 - (x_ratio - 0.6) / 0.15 * 0.35
+                elif x_ratio < 0.9:
+                    intensity = 0.4 - (x_ratio - 0.75) / 0.15 * 0.25
+                else:
+                    intensity = 0.15 - (x_ratio - 0.9) / 0.1 * 0.15
+
+                alpha = max(0, min(255, int(255 * intensity)))
+                segment_width = max(1, self.width // segments)
+
+                # Use white with alpha for screen blend mode effect
                 color = (255, 255, 255, alpha)
-                c.rect(color, (i, 0, 1, self.height))
+                c.rect(color, (x, 0, segment_width, self.height))
 
             return r
 
@@ -304,22 +341,22 @@ init python:
         """Get HP fill color based on health level."""
         if is_enemy:
             if hp_percent <= 0.15:
-                return "#ff4444"
+                return "#ff6666"  # Bright red for critical
             elif hp_percent <= 0.30:
-                return "#cc0000"
+                return "#ff4444"  # Medium red for low
             else:
-                return "#cc0000"
+                return "#cc0000"  # Dark red for normal
         else:
             if hp_percent <= 0.15:
-                return "#4499ff"
+                return "#66aaff"  # Bright blue for critical
             elif hp_percent <= 0.30:
-                return "#003399"
+                return "#4499ff"  # Medium blue for low
             else:
-                return "#003399"
+                return "#003399"  # Dark blue for normal
 
     def get_wave_speed(hp_percent):
         """Get wave animation speed based on HP (faster when low)."""
-        return max(0.8, 3.0 * hp_percent)
+        return max(1.2, 3.5 * hp_percent)
 
 # ========================
 # Circle and Shape Definitions
@@ -328,16 +365,16 @@ define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
-# VS Circle with gradient effect
-define vs_circle_bg = Circle(40, (255, 204, 0), (184, 134, 11), 4)
+# Round Circle with gradient effect
+define round_circle_bg = Circle(50, (255, 204, 0), (184, 134, 11), 4)
 
 # ========================
 # HP Bar Screens
 # ========================
 screen hp_bar_enemy():
     fixed:
-        xpos 50
-        ypos 150
+        xpos 80
+        ypos 100
         xsize HP_BAR_WIDTH
         ysize HP_BAR_HEIGHT
 
@@ -353,33 +390,33 @@ screen hp_bar_enemy():
         else:
             add FalchionFill(HP_BAR_WIDTH, HP_BAR_HEIGHT, enemy_hp, True, fill_color)
 
-        # Wave effect (only show if HP > 0)
+        # Wave effect (only show if HP > 0) - more prominent
         if enemy_hp > 0:
             $ wave_speed = get_wave_speed(enemy_hp)
-            add WaveEffect(180, HP_BAR_HEIGHT) at hp_wave_enemy(wave_speed)
+            add WaveEffect(220, HP_BAR_HEIGHT) at hp_wave_enemy(wave_speed)
 
         # HP Text positioned above the bar
         $ hp_text = format_hp_percent(enemy_hp)
         if enemy_hp <= 0.15:
-            text "[hp_text]" color "#ff6666" size 28 bold True at critical_hp_text:
-                xpos HP_BAR_WIDTH - 70
-                ypos -50
+            text "[hp_text]" color "#ff6666" size 32 bold True at critical_hp_text:
+                xpos HP_BAR_WIDTH - 90
+                ypos -60
                 outlines [(3, "#000000", 0, 0)]
         elif enemy_hp <= 0.30:
-            text "[hp_text]" color "#ff6666" size 28 bold True at low_hp_text:
-                xpos HP_BAR_WIDTH - 70
-                ypos -50
+            text "[hp_text]" color "#ff6666" size 32 bold True at low_hp_text:
+                xpos HP_BAR_WIDTH - 90
+                ypos -60
                 outlines [(3, "#000000", 0, 0)]
         else:
-            text "[hp_text]" color "#ff6666" size 28 bold True:
-                xpos HP_BAR_WIDTH - 70
-                ypos -50
+            text "[hp_text]" color "#ff6666" size 32 bold True:
+                xpos HP_BAR_WIDTH - 90
+                ypos -60
                 outlines [(3, "#000000", 0, 0)]
 
 screen hp_bar_hero():
     fixed:
-        xpos config.screen_width - HP_BAR_WIDTH - 50
-        ypos 150
+        xpos config.screen_width - HP_BAR_WIDTH - 80
+        ypos 100
         xsize HP_BAR_WIDTH
         ysize HP_BAR_HEIGHT
 
@@ -395,41 +432,43 @@ screen hp_bar_hero():
         else:
             add FalchionFill(HP_BAR_WIDTH, HP_BAR_HEIGHT, hero_hp, False, fill_color)
 
-        # Wave effect (only show if HP > 0)
+        # Wave effect (only show if HP > 0) - more prominent
         if hero_hp > 0:
             $ wave_speed = get_wave_speed(hero_hp)
-            add WaveEffect(180, HP_BAR_HEIGHT) at hp_wave_hero(wave_speed)
+            add WaveEffect(220, HP_BAR_HEIGHT) at hp_wave_hero(wave_speed)
 
         # HP Text positioned below the bar
         $ hp_text = format_hp_percent(hero_hp)
         if hero_hp <= 0.15:
-            text "[hp_text]" color "#66aaff" size 28 bold True at critical_hp_text:
-                xpos 70
-                ypos HP_BAR_HEIGHT + 25
+            text "[hp_text]" color "#66aaff" size 32 bold True at critical_hp_text:
+                xpos 90
+                ypos HP_BAR_HEIGHT + 30
                 outlines [(3, "#000000", 0, 0)]
         elif hero_hp <= 0.30:
-            text "[hp_text]" color "#66aaff" size 28 bold True at low_hp_text:
-                xpos 70
-                ypos HP_BAR_HEIGHT + 25
+            text "[hp_text]" color "#66aaff" size 32 bold True at low_hp_text:
+                xpos 90
+                ypos HP_BAR_HEIGHT + 30
                 outlines [(3, "#000000", 0, 0)]
         else:
-            text "[hp_text]" color "#66aaff" size 28 bold True:
-                xpos 70
-                ypos HP_BAR_HEIGHT + 25
+            text "[hp_text]" color "#66aaff" size 32 bold True:
+                xpos 90
+                ypos HP_BAR_HEIGHT + 30
                 outlines [(3, "#000000", 0, 0)]
 
 # ========================
-# Round Circle (replacing VS)
+# Round Circle (center of screen)
 # ========================
 screen round_circle():
     fixed:
         xalign 0.5
-        yalign 0.35
+        yalign 0.4
         xsize ROUND_RADIUS * 2
         ysize ROUND_RADIUS * 2
 
         # Round circle background with glow
-        add vs_circle_bg at vs_glow
+        add round_circle_bg at vs_glow:
+            xalign 0.5
+            yalign 0.5
 
         # Round text
         vbox:
@@ -438,17 +477,17 @@ screen round_circle():
             spacing 2
 
             text "Round":
-                size 16
+                size 20
                 color "#000000"
                 xalign 0.5
-                outlines [(1, "#ffffff", 0, 0)]
+                outlines [(2, "#ffffff", 0, 0)]
                 bold True
 
             text "[current_round]":
-                size 32
+                size 36
                 color "#000000"
                 xalign 0.5
-                outlines [(1, "#ffffff", 0, 0)]
+                outlines [(2, "#ffffff", 0, 0)]
                 bold True
 
         # AP Orbs around the circle
@@ -464,8 +503,13 @@ screen round_circle():
 screen battle_ui():
     modal False
 
-    # Dark gradient background for better visual appeal
-    add Solid("#000000")
+    # Rich dark gradient background
+    add "#000000"
+
+    # Add subtle radial gradient effect
+    add Solid("#111111") alpha 0.3:
+        xalign 0.5
+        yalign 0.5
 
     use hp_bar_enemy
     use hp_bar_hero
