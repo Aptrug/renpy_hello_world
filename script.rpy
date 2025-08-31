@@ -8,7 +8,6 @@ default max_ap = 9
 default available_ap = 3
 
 define ROUND_RADIUS = 70
-define AURA_RADIUS = ROUND_RADIUS + 15
 define ORB_RADIUS = 15
 
 # ========================
@@ -23,16 +22,9 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform aura_emit1:
-    zoom 1.0 alpha 0.6 blur 10.0 additive 0.5
-    linear 2.0 zoom 1.2 alpha 0.0 blur 20.0
-    repeat
-
-transform aura_emit2:
-    alpha 0.0
-    pause 1.0
-    alpha 0.6 zoom 1.0 blur 10.0 additive 0.5
-    linear 2.0 alpha 0.0 zoom 1.2 blur 20.0
+transform round_breathe:
+    ease 3.0 zoom 1.05
+    ease 3.0 zoom 1.0
     repeat
 
 transform orb_inactive:
@@ -79,7 +71,6 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define round_aura_img = Circle(AURA_RADIUS, (255, 215, 0), None, 0)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
@@ -88,24 +79,15 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # ========================
 screen round_ui():
     fixed:
+        add Solid("#808080")  # Gray color in hex
+
         xalign 0.5
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Golden aura layers with emitting animation
-        add round_aura_img:
-            xpos (ROUND_RADIUS - AURA_RADIUS)
-            ypos (ROUND_RADIUS - AURA_RADIUS)
-            at aura_emit1
-
-        add round_aura_img:
-            xpos (ROUND_RADIUS - AURA_RADIUS)
-            ypos (ROUND_RADIUS - AURA_RADIUS)
-            at aura_emit2
-
-        # Round circle background (no animation)
-        add round_bg
+        # Round circle background with breathing animation
+        add round_bg at round_breathe
 
         # Round number in the center
         vbox:
