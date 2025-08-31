@@ -22,14 +22,19 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform round_breathe:
-    ease 3.0 zoom 1.05
-    ease 3.0 zoom 1.0
-    repeat
-
 transform orb_inactive:
     alpha 0.4
     zoom 0.9
+
+# New golden aura glow transform
+transform round_glow:
+    parallel:
+        ease 1.5 alpha 0.2
+        ease 1.5 alpha 0.6
+    parallel:
+        ease 1.5 zoom 1.1
+        ease 1.5 zoom 1.0
+    repeat
 
 # ========================
 # Python Helpers
@@ -74,39 +79,41 @@ define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
+# Golden aura layer (bigger & transparent)
+define round_aura = Circle(ROUND_RADIUS + 20, (255, 215, 0, 50))
+
 # ========================
 # Main UI Screen
 # ========================
 screen round_ui():
-    add Solid("#808080")  # Gray color in hex
+    add Solid("#808080")  # Gray background
     fixed:
         xalign 0.5
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Round circle background with breathing animation
-        add round_bg at round_breathe
+        # Golden aura glow behind main circle
+        add round_aura at round_glow
+        add round_bg
 
-        # Round number in the center
+        # Round number in center
         vbox:
             xalign 0.5
             yalign 0.5
             spacing 2
-
             text "Round":
                 size 22
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
-
             text "[current_round]":
                 size 56
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
-        # Orbs arranged around the circle
+        # Orbs around the circle
         for i, (x, y) in enumerate(get_orb_positions(max_ap)):
             add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
