@@ -1,4 +1,6 @@
-﻿# ========================
+﻿# This code works, but the question is, is the logic sound? Are the calculations correct?
+
+# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -20,13 +22,9 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform round_glow:
-    parallel:
-        ease 1.0 alpha 0.8
-        ease 1.0 alpha 1.0
-    parallel:
-        linear 0.1 additive 0.3
-        linear 0.1 additive 0.0
+transform round_breathe:
+    ease 3.0 zoom 1.05
+    ease 3.0 zoom 1.0
     repeat
 
 transform orb_inactive:
@@ -87,7 +85,7 @@ screen round_ui():
         ysize ROUND_RADIUS*2
 
         # Round circle background with breathing animation
-        add round_bg at round_glow
+        add round_bg at round_breathe
 
         # Round number in the center
         vbox:
