@@ -1,18 +1,22 @@
-﻿# script.rpy
-# Falchion HP Bars + Round Orb UI - robust import version with diagnostics
-
-# ========================
+﻿# ========================
 # Game Variables
 # ========================
-default current_round = 59
-default max_ap = 9
-default available_ap = 3
+default current_round = 18
+default max_ap = 6
+default available_ap = 4
 
+# HP Variables
 default enemy_hp = 0.75
-default hero_hp  = 0.50
+default enemy_max_hp = 1.0
+default hero_hp = 0.50
+default hero_max_hp = 1.0
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
+
+# HP Bar Constants
+define HP_BAR_WIDTH = 380
+define HP_BAR_HEIGHT = 65
 
 # ========================
 # ATL Transforms
@@ -35,100 +39,125 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
+# HP Bar Transforms
+transform hp_wave_right:
+    xpos -180
+    alpha 0.0
+    linear 3.0 xpos HP_BAR_WIDTH alpha 1.0
+    alpha 0.0
+    repeat
+
+transform hp_wave_left:
+    xpos HP_BAR_WIDTH + 180
+    alpha 0.0
+    linear 3.0 xpos -180 alpha 1.0
+    alpha 0.0
+    repeat
+
+transform hp_bar_fill_update:
+    linear 0.8 truecenter
+
+transform low_hp_pulse:
+    ease 1.5 alpha 0.7
+    ease 1.5 alpha 1.0
+    repeat
+
+transform critical_hp_flash:
+    ease 0.6 alpha 0.8
+    ease 0.6 alpha 1.0
+    repeat
+
+transform hp_text_pulse:
+    ease 1.2 zoom 1.0
+    ease 1.2 zoom 1.05
+    repeat
+
+transform critical_text_flash:
+    ease 0.8 zoom 1.0 alpha 0.9
+    ease 0.8 zoom 1.1 alpha 1.0
+    repeat
+
 # ========================
-# Python Helpers & Displayables (with robust imports + diagnostics)
+# Python Helpers
 # ========================
 init python:
-    import math, sys, os
+    import math
 
-    # Diagnostic: tell us which renpy module file is being used (if available).
-    try:
-        import renpy
-        try:
-            # renpy.__file__ is present if a plain module file is imported (helpful to debug shadowing).
-            renpy_path = getattr(renpy, "__file__", None)
-            renpy.log("DEBUG: renpy module file: " + repr(renpy_path))
-        except Exception:
-            # Best-effort log
-            try:
-                renpy.log("DEBUG: renpy module detected (no __file__ available).")
-            except Exception:
-                pass
-    except Exception as e:
-        # If import renpy fails entirely (very unlikely when running inside Ren'Py),
-        # raise a clear exception.
-        raise Exception("Could not import renpy module: " + repr(e))
+    class Circle(renpy.Displayable):
+        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
+            super().__init__(**kwargs)
+            self.radius, self.color = radius, color
+            self.border_color, self.border_width = border_color, border_width
 
-    # Try to resolve Displayable in a robust way.
-    Displayable = None
-    try:
-        # Preferred: top-level convenience alias (Ren'Py docs show renpy.Displayable).
-        Displayable = renpy.Displayable
-    except Exception:
-        try:
-            # Fallback: import from renpy.display.core (actual implementation location).
-            from renpy.display.core import Displayable
-            renpy.log("DEBUG: Imported Displayable from renpy.display.core")
-        except Exception:
-            # Give a helpful error (likely shadowing)
-            msg = [
-                "ERROR: Could not find renpy.Displayable.",
-                "This commonly happens when there is a file or folder named 'renpy' or 'renpy.py' inside your game folder",
-                "which shadows the engine's renpy package.",
-                "",
-                "Please check your game directory for any files/folders named 'renpy' and rename/remove them.",
-                "As a diagnostic, check the REN'PY module path printed in the logs above."
-            ]
-            # Try to log the error via renpy.log if available, then raise.
-            try:
-                renpy.log("\\n".join(msg))
-            except Exception:
-                pass
-            raise Exception("\n".join(msg))
-
-    # For Render, use the top-level renpy.Render (docs describe this).
-    try:
-        Render = renpy.Render
-    except Exception:
-        # fallback import (should not be necessary on normal Ren'Py)
-        try:
-            from renpy.display.core import Render
-        except Exception:
-            raise Exception("Could not find renpy.Render - Ren'Py environment may be broken or shadowed.")
-
-    # --- circle displayable and helpers ---
-    class Circle(Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, **properties):
-            super(Circle, self).__init__(**properties)
-            self.radius = int(radius)
-            self.color = color
-            self.border_color = border_color
-            self.border_width = int(border_width)
-
-        def render(self, width, height, st, at):
+        def render(self, w, h, st, at):
             size = self.radius * 2
-            r = Render(size, size)
+            r = renpy.Render(size, size)
             c = r.canvas()
-            # Try to use circle; fall back to polygon approximation if not available.
-            try:
+
+            if self.color:
                 c.circle(self.color, (self.radius, self.radius), self.radius)
-            except Exception:
-                steps = 32
-                pts = []
-                for i in range(steps):
-                    ang = 2.0 * math.pi * i / steps
-                    pts.append((self.radius + int(math.cos(ang)*self.radius),
-                                self.radius + int(math.sin(ang)*self.radius)))
-                c.polygon(self.color, pts)
-            if self.border_color and self.border_width > 0:
-                try:
-                    c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
-                except Exception:
-                    # fallback border
-                    c.polygon(self.border_color, [(0,0),(size,0),(size,size),(0,size)], width=self.border_width)
+            if self.border_color:
+                c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
+            return r
+
+    class FalchionHPBar(renpy.Displayable):
+        def __init__(self, width, height, is_enemy=True, **kwargs):
+            super().__init__(**kwargs)
+            self.width, self.height = width, height
+            self.is_enemy = is_enemy
+
+        def render(self, w, h, st, at):
+            r = renpy.Render(self.width, self.height)
+            c = r.canvas()
+
+            # Create falchion shape points
+            if self.is_enemy:
+                # Enemy falchion (left-pointing)
+                points = [
+                    (0, self.height * 0.35),
+                    (self.width * 0.65, self.height * 0.35),
+                    (self.width * 0.75, self.height * 0.45),
+                    (self.width * 0.82, self.height * 0.60),
+                    (self.width * 0.88, self.height * 0.75),
+                    (self.width * 0.92, self.height * 0.85),
+                    (self.width * 0.96, self.height * 0.92),
+                    (self.width, self.height * 0.95),
+                    (self.width * 0.98, self.height * 0.80),
+                    (self.width * 0.94, self.height * 0.65),
+                    (self.width * 0.88, self.height * 0.50),
+                    (self.width * 0.82, self.height * 0.35),
+                    (self.width * 0.75, self.height * 0.25),
+                    (self.width * 0.65, self.height * 0.18),
+                    (0, self.height * 0.18)
+                ]
+            else:
+                # Hero falchion (right-pointing)
+                points = [
+                    (self.width, self.height * 0.65),
+                    (self.width * 0.35, self.height * 0.65),
+                    (self.width * 0.25, self.height * 0.55),
+                    (self.width * 0.18, self.height * 0.40),
+                    (self.width * 0.12, self.height * 0.25),
+                    (self.width * 0.08, self.height * 0.15),
+                    (self.width * 0.04, self.height * 0.08),
+                    (0, self.height * 0.05),
+                    (self.width * 0.02, self.height * 0.20),
+                    (self.width * 0.06, self.height * 0.35),
+                    (self.width * 0.12, self.height * 0.50),
+                    (self.width * 0.18, self.height * 0.65),
+                    (self.width * 0.25, self.height * 0.75),
+                    (self.width * 0.35, self.height * 0.82),
+                    (self.width, self.height * 0.82)
+                ]
+
+            # Draw the falchion shape
+            c.polygon((30, 30, 30), points)
+            c.polygon((80, 80, 80), points, 2)  # Border
+
             return r
 
     def get_orb_positions(num_orbs):
+        """Returns orb positions arranged evenly in a circle around ROUND_RADIUS."""
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
@@ -137,213 +166,216 @@ init python:
             positions.append((int(x), int(y)))
         return positions
 
-# define round/orb Displayables (outside init python so screen language can use them)
+    def get_hp_transform(hp_ratio):
+        """Returns appropriate transform for HP state"""
+        if hp_ratio <= 0.15:
+            return "critical_hp_flash"
+        elif hp_ratio <= 0.30:
+            return "low_hp_pulse"
+        return None
+
+    def get_hp_text_transform(hp_ratio):
+        """Returns appropriate text transform for HP state"""
+        if hp_ratio <= 0.15:
+            return "critical_text_flash"
+        elif hp_ratio <= 0.30:
+            return "hp_text_pulse"
+        return None
+
+# ========================
+# Circle and HP Bar Definitions
+# ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
-# ========================
-# HPBar Displayable (falchion-like) - robust
-# ========================
-init python:
-    # simple lerp helpers
-    def lerp(a, b, t):
-        return a + (b - a) * t
-
-    def lerp_color(c1, c2, t):
-        return (int(lerp(c1[0], c2[0], t)),
-                int(lerp(c1[1], c2[1], t)),
-                int(lerp(c1[2], c2[2], t)))
-
-    class HPBar(Displayable):
-        def __init__(self, width=360, height=68, get_hp=lambda:1.0,
-                     color_from=(204,0,0), color_to=(255,102,102),
-                     bg_color=(18,18,18), border_color=(60,60,60),
-                     side='left', **properties):
-            super(HPBar, self).__init__(**properties)
-            self.width = int(width)
-            self.height = int(height)
-            self.get_hp = get_hp
-            self.color_from = color_from
-            self.color_to = color_to
-            self.bg_color = bg_color
-            self.border_color = border_color
-            self.side = side
-            self.wave_width = int(self.width * 0.18)
-            self.strip_count = 28
-
-        def render(self, width, height, st, at):
-            w = self.width
-            h = self.height
-            r = Render(w, h)
-            c = r.canvas()
-
-            try:
-                hp = float(self.get_hp())
-            except Exception:
-                hp = 0.0
-            hp = max(0.0, min(1.0, hp))
-
-            # base background
-            try:
-                c.rect(self.bg_color, (0,0), (w,h))
-            except Exception:
-                c.polygon(self.bg_color, [(0,0),(w,0),(w,h),(0,h)])
-
-            # border
-            try:
-                c.polygon(self.border_color, [(0,0),(w,0),(w,h),(0,h)], width=2)
-            except Exception:
-                pass
-
-            fill_w = int(w * hp)
-
-            if fill_w > 0:
-                for i in range(self.strip_count):
-                    x0 = int(i * fill_w / self.strip_count)
-                    x1 = int((i + 1) * fill_w / self.strip_count)
-                    t = (i + 0.5) / max(1, self.strip_count)
-                    color = lerp_color(self.color_from, self.color_to, t)
-                    try:
-                        c.rect(color, (x0, 0), (x1 - x0, h))
-                    except Exception:
-                        c.polygon(color, [(x0,0),(x1,0),(x1,h),(x0,h)])
-
-                # top highlight
-                highlight_h = int(h * 0.18)
-                try:
-                    c.rect((255,255,255,30), (0,0), (fill_w, highlight_h))
-                except Exception:
-                    pass
-
-            # angled tail
-            slash_width = int(h * 0.6)
-            try:
-                if self.side == 'left':
-                    if fill_w > 0:
-                        poly = [(fill_w, 0), (min(w, fill_w + slash_width), int(h / 2)), (fill_w, h)]
-                        c.polygon((255,255,255,30), poly)
-                else:
-                    if fill_w > 0:
-                        poly = [(w - fill_w, 0), (max(0, w - fill_w - slash_width), int(h / 2)), (w - fill_w, h)]
-                        c.polygon((255,255,255,30), poly)
-            except Exception:
-                pass
-
-            # wave
-            if fill_w > 0:
-                speed = max(30.0, 80.0 * (0.4 + hp))
-                wave_total = fill_w + self.wave_width + 8
-                wave_x = int(((st * speed) % (wave_total)) - self.wave_width)
-                band_w = self.wave_width
-                if wave_x < fill_w:
-                    band_w_eff = min(band_w, max(0, fill_w - max(0, wave_x)))
-                    if band_w_eff > 0:
-                        try:
-                            c.rect((255,255,255,60), (max(0, wave_x), 0), (band_w_eff, h))
-                        except Exception:
-                            pass
-
-            # low/critical overlay
-            try:
-                if hp <= 0.15:
-                    pulse = 0.4 + 0.6 * (0.5 + 0.5 * math.sin(st * 10.0))
-                    glow_color = (255, 80, 80, int(120 * pulse))
-                    c.polygon(glow_color, [(0,0),(w,0),(w,h),(0,h)])
-                elif hp <= 0.30:
-                    pulse = 0.6 + 0.4 * (0.5 + 0.5 * math.sin(st * 3.0))
-                    glow_color = (255, 140, 140, int(80 * pulse))
-                    c.polygon(glow_color, [(0,0),(w,0),(w,h),(0,h)])
-            except Exception:
-                pass
-
-            return r
-
-    # wrappers for screen usage
-    def get_enemy_hp():
-        return enemy_hp
-
-    def get_hero_hp():
-        return hero_hp
+define enemy_hp_bar_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, True)
+define hero_hp_bar_bg = FalchionHPBar(HP_BAR_WIDTH, HP_BAR_HEIGHT, False)
 
 # ========================
-# Round UI Screen (center orb, left/right HP bars)
+# HP Bar Screen Components
 # ========================
-screen round_ui():
+screen hp_bar_enemy():
+    fixed:
+        xpos 50
+        ypos 100
+        xsize HP_BAR_WIDTH
+        ysize HP_BAR_HEIGHT
+
+        # Background shape
+        add enemy_hp_bar_bg
+
+        # HP fill with clipping
+        fixed:
+            xsize int(HP_BAR_WIDTH * enemy_hp)
+            ysize HP_BAR_HEIGHT
+
+            $ hp_transform = get_hp_transform(enemy_hp)
+            if hp_transform:
+                add "#cc0000" at eval(hp_transform)
+            else:
+                add "#cc0000"
+
+            # Wave effect
+            add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_right
+
+        # HP Text
+        $ text_transform = get_hp_text_transform(enemy_hp)
+        if text_transform:
+            text "{color=#ff6666}[enemy_hp:.0%]{/color}" at eval(text_transform):
+                xpos HP_BAR_WIDTH - 80
+                ypos -50
+                size 22
+                outlines [(2, "#000000", 0, 0)]
+        else:
+            text "{color=#ff6666}[enemy_hp:.0%]{/color}":
+                xpos HP_BAR_WIDTH - 80
+                ypos -50
+                size 22
+                outlines [(2, "#000000", 0, 0)]
+
+screen hp_bar_hero():
+    fixed:
+        xpos config.screen_width - HP_BAR_WIDTH - 50
+        ypos 100
+        xsize HP_BAR_WIDTH
+        ysize HP_BAR_HEIGHT
+
+        # Background shape
+        add hero_hp_bar_bg
+
+        # HP fill with clipping (right-aligned)
+        fixed:
+            xpos HP_BAR_WIDTH - int(HP_BAR_WIDTH * hero_hp)
+            xsize int(HP_BAR_WIDTH * hero_hp)
+            ysize HP_BAR_HEIGHT
+
+            $ hp_transform = get_hp_transform(hero_hp)
+            if hp_transform:
+                add "#003399" at eval(hp_transform)
+            else:
+                add "#003399"
+
+            # Wave effect
+            add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_left
+
+        # HP Text
+        $ text_transform = get_hp_text_transform(hero_hp)
+        if text_transform:
+            text "{color=#66aaff}[hero_hp:.0%]{/color}" at eval(text_transform):
+                xpos 80
+                ypos HP_BAR_HEIGHT + 20
+                size 22
+                outlines [(2, "#000000", 0, 0)]
+        else:
+            text "{color=#66aaff}[hero_hp:.0%]{/color}":
+                xpos 80
+                ypos HP_BAR_HEIGHT + 20
+                size 22
+                outlines [(2, "#000000", 0, 0)]
+
+# ========================
+# Main Battle UI Screen
+# ========================
+screen battle_ui():
+    # HP Bars
+    use hp_bar_enemy
+    use hp_bar_hero
+
+    # Round Circle (center)
     fixed:
         xalign 0.5
-        yalign 0.5
+        yalign 0.25
+        xsize ROUND_RADIUS * 2
+        ysize ROUND_RADIUS * 2
 
-        hbox:
-            spacing 24
+        # Round circle background with breathing animation
+        add round_bg at round_breathe
+
+        # Round number in the center
+        vbox:
             xalign 0.5
             yalign 0.5
+            spacing 2
 
-            add HPBar(width=360, height=68, get_hp=get_enemy_hp,
-                    color_from=(204,0,0), color_to=(255,102,102),
-                    bg_color=(16,16,16), border_color=(50,50,50), side='left')
+            text "Round":
+                size 22
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-            frame:
-                xsize ROUND_RADIUS*2
-                ysize ROUND_RADIUS*2
-                background None
+            text "[current_round]":
+                size 56
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
 
-                add round_bg at round_breathe
-
-                vbox:
-                    xalign 0.5
-                    yalign 0.5
-                    spacing 2
-
-                    text "Round":
-                        size 22
-                        color "#FFFFFF"
-                        xalign 0.5
-                        outlines [(2, "#000000", 0, 0)]
-
-                    text "[current_round]":
-                        size 56
-                        color "#FFFFFF"
-                        xalign 0.5
-                        outlines [(2, "#000000", 0, 0)]
-
-                for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                    if i < available_ap:
-                        add orb_active at orb_glow xpos x ypos y
-                    else:
-                        add orb_inactive_img at orb_inactive xpos x ypos y
-
-            add HPBar(width=360, height=68, get_hp=get_hero_hp,
-                    color_from=(0,51,153), color_to=(102,170,255),
-                    bg_color=(16,16,16), border_color=(50,50,50), side='right')
+        # AP Orbs arranged around the circle
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+            add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
 # ========================
-# Demo label / Start
+# Combat Actions
+# ========================
+init python:
+    def damage_enemy(amount):
+        global enemy_hp
+        enemy_hp = max(0.0, enemy_hp - amount)
+        renpy.restart_interaction()
+
+    def damage_hero(amount):
+        global hero_hp
+        hero_hp = max(0.0, hero_hp - amount)
+        renpy.restart_interaction()
+
+    def heal_enemy(amount):
+        global enemy_hp
+        enemy_hp = min(enemy_max_hp, enemy_hp + amount)
+        renpy.restart_interaction()
+
+    def heal_hero(amount):
+        global hero_hp
+        hero_hp = min(hero_max_hp, hero_hp + amount)
+        renpy.restart_interaction()
+
+    def next_round():
+        global current_round, available_ap
+        current_round += 1
+        available_ap = max_ap
+        renpy.restart_interaction()
+
+# ========================
+# Demo Label
 # ========================
 label start:
-    show screen round_ui
+    show screen battle_ui
 
-    "Round UI Demo — Round [current_round], AP [available_ap]/[max_ap]."
+    "Battle UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
+    "Enemy HP: [enemy_hp:.0%] | Hero HP: [hero_hp:.0%]"
 
     menu:
-        "Damage enemy":
-            $ enemy_hp = max(0.0, enemy_hp - 0.12)
-            jump start
-
-        "Heal enemy":
-            $ enemy_hp = min(1.0, enemy_hp + 0.12)
-            jump start
-
-        "Damage hero":
-            $ hero_hp = max(0.0, hero_hp - 0.12)
-            jump start
-
-        "Heal hero":
-            $ hero_hp = min(1.0, hero_hp + 0.12)
-            jump start
-
-        "Spend AP" if available_ap > 0:
+        "Attack Enemy" if available_ap > 0:
             $ available_ap -= 1
+            $ damage_enemy(0.15)
+            "You deal damage to the enemy!"
+            jump start
+
+        "Attack Hero" if available_ap > 0:
+            $ available_ap -= 1
+            $ damage_hero(0.10)
+            "The enemy attacks you!"
+            jump start
+
+        "Heal Enemy" if available_ap > 0:
+            $ available_ap += 1
+            $ heal_enemy(0.10)
+            "Enemy heals slightly."
+            jump start
+
+        "Heal Hero" if available_ap > 0:
+            $ available_ap += 1
+            $ heal_hero(0.10)
+            "You heal slightly."
             jump start
 
         "Gain AP" if available_ap < max_ap:
@@ -351,10 +383,88 @@ label start:
             jump start
 
         "Next Round":
-            $ current_round += 1
-            $ available_ap = max_ap
+            $ next_round()
+            jump start
+
+        "Reset HP":
+            $ enemy_hp = 0.75
+            $ hero_hp = 0.50
             jump start
 
         "Exit":
-            hide screen round_ui
             return
+
+# ========================
+# Alternative Simplified Version (if the above is too complex)
+# ========================
+
+# Simple HP bar using built-in Bar displayable
+screen simple_battle_ui():
+    # Enemy HP (left side)
+    vbox:
+        xpos 50
+        ypos 100
+        spacing 10
+
+        text "Enemy HP":
+            color "#ff6666"
+            size 20
+            outlines [(2, "#000000", 0, 0)]
+
+        bar:
+            value AnimatedValue(enemy_hp, enemy_max_hp, 0.8)
+            range enemy_max_hp
+            xsize HP_BAR_WIDTH
+            ysize 30
+            left_bar Frame("gui/bar/left.png", 6, 6)
+            right_bar Frame("gui/bar/right.png", 6, 6)
+            thumb None
+
+    # Hero HP (right side)
+    vbox:
+        xpos config.screen_width - HP_BAR_WIDTH - 50
+        ypos 100
+        spacing 10
+
+        text "Hero HP":
+            color "#66aaff"
+            size 20
+            outlines [(2, "#000000", 0, 0)]
+
+        bar:
+            value AnimatedValue(hero_hp, hero_max_hp, 0.8)
+            range hero_max_hp
+            xsize HP_BAR_WIDTH
+            ysize 30
+            left_bar Frame("gui/bar/left.png", 6, 6)
+            right_bar Frame("gui/bar/right.png", 6, 6)
+            thumb None
+
+    # Round UI (center) - same as before
+    fixed:
+        xalign 0.5
+        yalign 0.25
+        xsize ROUND_RADIUS * 2
+        ysize ROUND_RADIUS * 2
+
+        add round_bg at round_breathe
+
+        vbox:
+            xalign 0.5
+            yalign 0.5
+            spacing 2
+
+            text "Round":
+                size 22
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
+
+            text "[current_round]":
+                size 56
+                color "#FFFFFF"
+                xalign 0.5
+                outlines [(2, "#000000", 0, 0)]
+
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+            add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
