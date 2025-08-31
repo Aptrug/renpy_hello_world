@@ -11,7 +11,7 @@ default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
 default CIRCLE_RADIUS = 70
-default ORB_RADIUS = 70 // 5
+default ORB_RADIUS = 14
 
 # ========================
 # ATL Transforms
@@ -30,14 +30,19 @@ transform inactive:
 init python:
     import math
 
+    # Cache orb positions
+    _orb_cache = {}
+
     def get_orb_positions(num_orbs):
-        positions = []
-        for i in range(num_orbs):
-            angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = CIRCLE_RADIUS + CIRCLE_RADIUS * math.cos(angle) - ORB_RADIUS
-            y = CIRCLE_RADIUS + CIRCLE_RADIUS * math.sin(angle) - ORB_RADIUS
-            positions.append((int(x), int(y)))
-        return positions
+        if num_orbs not in _orb_cache:
+            positions = []
+            for i in range(num_orbs):
+                angle = 2 * math.pi * i / num_orbs - math.pi/2
+                x = CIRCLE_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
+                y = CIRCLE_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
+                positions.append((int(x), int(y)))
+            _orb_cache[num_orbs] = positions
+        return _orb_cache[num_orbs]
 
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
@@ -52,19 +57,13 @@ init python:
             return r
 
 # ========================
-# Simple Displayables
-# ========================
-define round_bg = None  # Will be created dynamically
-
-# ========================
 # Main UI Screen
 # ========================
 screen round_ui():
     add "#808080"
 
-    $ available_width = config.screen_width - 200  # Leave 200px total margin
+    $ bar_width = (config.screen_width - 340) // 2
     $ circle_size = CIRCLE_RADIUS * 2
-    $ bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
 
     hbox:
         xalign 0.5
