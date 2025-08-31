@@ -9,9 +9,6 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-define AURA_PADDING = 50
-define AURA_BLUR = 20
-define AURA_BORDER_WIDTH = 4
 
 # ========================
 # ATL Transforms
@@ -25,9 +22,9 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform aura_glow:
-    ease 3.0 zoom 1.05 alpha 0.4
-    ease 3.0 zoom 1.0 alpha 0.6
+transform round_breathe:
+    ease 3.0 zoom 1.05
+    ease 3.0 zoom 1.0
     repeat
 
 transform orb_inactive:
@@ -41,35 +38,32 @@ init python:
     import math
 
     class Circle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, padding=0, **kwargs):
+        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
             super().__init__(**kwargs)
             self.radius, self.color = radius, color
             self.border_color, self.border_width = border_color, border_width
-            self.padding = padding
 
         def render(self, w, h, st, at):
-            size = 2 * (self.radius + self.padding)
+            size = self.radius * 2
             r = renpy.Render(size, size)
             c = r.canvas()
 
-            center = self.radius + self.padding
             if self.color:
-                c.circle(self.color, (center, center), self.radius)
+                c.circle(self.color, (self.radius, self.radius), self.radius)
             if self.border_color:
-                c.circle(self.border_color, (center, center), self.radius, self.border_width)
+                c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
             return r
 
-    def get_orb_positions(num_orbs, center_x, center_y, orbit_radius):
+    def get_orb_positions(num_orbs):
         """
-        Returns orb top-left positions arranged evenly in a circle around the center.
+        Returns orb positions arranged evenly in a circle around ROUND_RADIUS.
+        Offsets by ORB_RADIUS so they align properly.
         """
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            orb_center_x = center_x + orbit_radius * math.cos(angle)
-            orb_center_y = center_y + orbit_radius * math.sin(angle)
-            x = orb_center_x - ORB_RADIUS
-            y = orb_center_y - ORB_RADIUS
+            x = ROUND_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
+            y = ROUND_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
             positions.append((int(x), int(y)))
         return positions
 
@@ -77,7 +71,6 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define glow_source = Circle(ROUND_RADIUS, None, "#ffffff", AURA_BORDER_WIDTH, padding=AURA_PADDING)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
@@ -89,19 +82,11 @@ screen round_ui():
     fixed:
         xalign 0.5
         yalign 0.75
-        xsize 2 * (ROUND_RADIUS + AURA_PADDING)
-        ysize 2 * (ROUND_RADIUS + AURA_PADDING)
+        xsize ROUND_RADIUS*2
+        ysize ROUND_RADIUS*2
 
-        # Golden aura
-        add glow_source:
-            align (0.5, 0.5)
-            matrixcolor TintMatrix("#ffd700")
-            blur AURA_BLUR
-            additive 1.0
-            at aura_glow
-
-        # Round circle background (static)
-        add round_bg align (0.5, 0.5)
+        # Round circle background with breathing animation
+        add round_bg at round_breathe
 
         # Round number in the center
         vbox:
@@ -122,8 +107,7 @@ screen round_ui():
                 outlines [(2, "#000000", 0, 0)]
 
         # Orbs arranged around the circle
-        $ center = ROUND_RADIUS + AURA_PADDING
-        for i, (x, y) in enumerate(get_orb_positions(max_ap, center, center, ROUND_RADIUS)):
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
             add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
 # ========================
