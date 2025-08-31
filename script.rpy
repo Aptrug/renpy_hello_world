@@ -1,7 +1,5 @@
 ﻿# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead
 
-# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead
-
 # ========================
 # Game Variables
 # ========================
@@ -11,7 +9,9 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-define AURA_PADDING = 30
+define AURA_PADDING = 50
+define AURA_BLUR = 20
+define AURA_BORDER_WIDTH = 3
 
 # ========================
 # ATL Transforms
@@ -77,7 +77,7 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define glow_source = Circle(ROUND_RADIUS, "#ffffff", padding=AURA_PADDING)
+define glow_source = Circle(ROUND_RADIUS, None, "#ffffff", AURA_BORDER_WIDTH, padding=AURA_PADDING)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
@@ -96,7 +96,7 @@ screen round_ui():
         add glow_source:
             align (0.5, 0.5)
             matrixcolor TintMatrix("#ffd700")
-            blur 20
+            blur AURA_BLUR
             additive 1.0
             at aura_glow
 
