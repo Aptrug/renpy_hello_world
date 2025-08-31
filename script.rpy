@@ -22,19 +22,14 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
+transform aura_glow:
+    ease 3.0 zoom 1.05 alpha 0.4
+    ease 3.0 zoom 1.0 alpha 0.6
+    repeat
+
 transform orb_inactive:
     alpha 0.4
     zoom 0.9
-
-# New golden aura glow transform
-transform round_glow:
-    parallel:
-        ease 1.5 alpha 0.2
-        ease 1.5 alpha 0.6
-    parallel:
-        ease 1.5 zoom 1.1
-        ease 1.5 zoom 1.0
-    repeat
 
 # ========================
 # Python Helpers
@@ -76,44 +71,46 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define golden_aura = Circle(ROUND_RADIUS + 20, (255, 215, 0, 128))
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
-
-# Golden aura layer (bigger & transparent)
-define round_aura = Circle(ROUND_RADIUS + 20, (255, 215, 0, 50))
 
 # ========================
 # Main UI Screen
 # ========================
 screen round_ui():
-    add Solid("#808080")  # Gray background
+    add Solid("#808080")  # Gray color in hex
     fixed:
         xalign 0.5
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Golden aura glow behind main circle
-        add round_aura at round_glow
-        add round_bg
+        # Golden aura with glow animation
+        add golden_aura align (0.5, 0.5) at aura_glow
 
-        # Round number in center
+        # Round circle background (static)
+        add round_bg align (0.5, 0.5)
+
+        # Round number in the center
         vbox:
             xalign 0.5
             yalign 0.5
             spacing 2
+
             text "Round":
                 size 22
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
+
             text "[current_round]":
                 size 56
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
 
-        # Orbs around the circle
+        # Orbs arranged around the circle
         for i, (x, y) in enumerate(get_orb_positions(max_ap)):
             add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
