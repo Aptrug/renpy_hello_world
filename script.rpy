@@ -34,13 +34,18 @@ init python:
     def get_enemy_hp_percent():
         return enemy_hp / float(enemy_max_hp)
 
-    def get_orb_positions(num_orbs, radius=50):
+    def get_orb_positions(num_orbs, radius=70):
         positions = []
         center = 70  # Center of the 140x140 container
+        orb_radius = 15
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = center + radius * math.cos(angle) - 15  # 15 = orb radius
-            y = center + radius * math.sin(angle) - 15
+            # Calculate the center position of the orb on the circumference
+            orb_center_x = center + radius * math.cos(angle)
+            orb_center_y = center + radius * math.sin(angle)
+            # Convert to top-left corner for positioning (subtract orb radius)
+            x = orb_center_x - orb_radius
+            y = orb_center_y - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
