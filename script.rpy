@@ -47,7 +47,7 @@ init python:
                     y = CIRCLE_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
                     positions.append((int(x), int(y)))
             _orb_cache[num_orbs] = positions
-        return _orb_cache[num_orb]
+        return _orb_cache[num_orbs]
 
     def get_circle(radius, color):
         key = (radius, color)
