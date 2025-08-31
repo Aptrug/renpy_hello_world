@@ -26,6 +26,11 @@ transform glow:
 transform inactive:
     alpha 0.4
 
+transform golden_glow:
+    ease 2.0 alpha 0.3
+    ease 2.0 alpha 0.8
+    repeat
+
 # ========================
 # Python Helpers
 # ========================
@@ -91,7 +96,10 @@ screen round_ui():
             xsize circle_diameter
             ysize circle_diameter
 
-            # Cached background circle
+            # Golden glow aura (larger circle behind)
+            add get_circle(CIRCLE_RADIUS + 8, "#ffd700") align (0.5, 0.5) at golden_glow
+
+            # Main background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
