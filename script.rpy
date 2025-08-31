@@ -1,4 +1,4 @@
-﻿# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead
+﻿# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead (beware of makeing the aura a square)
 
 # ========================
 # Game Variables
@@ -6,10 +6,8 @@
 default current_round = 59
 default max_ap = 9
 default available_ap = 3
-
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-
 # ========================
 # ATL Transforms
 # ========================
@@ -22,32 +20,28 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform round_breathe:
-    ease 3.0 zoom 1.05
-    ease 3.0 zoom 1.0
+transform golden_aura:
+    ease 2.0 additive 0.5
+    ease 2.0 additive 0.0
     repeat
 
 transform orb_inactive:
     alpha 0.4
     zoom 0.9
-
 # ========================
 # Python Helpers
 # ========================
 init python:
     import math
-
     class Circle(renpy.Displayable):
         def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
             super().__init__(**kwargs)
             self.radius, self.color = radius, color
             self.border_color, self.border_width = border_color, border_width
-
         def render(self, w, h, st, at):
             size = self.radius * 2
             r = renpy.Render(size, size)
             c = r.canvas()
-
             if self.color:
                 c.circle(self.color, (self.radius, self.radius), self.radius)
             if self.border_color:
@@ -66,14 +60,12 @@ init python:
             y = ROUND_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
             positions.append((int(x), int(y)))
         return positions
-
 # ========================
 # Circle Definitions
 # ========================
-define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define round_bg = Circle(ROUND_RADIUS, (255, 215, 0), (184, 134, 11), 3)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
-
 # ========================
 # Main UI Screen
 # ========================
@@ -84,53 +76,42 @@ screen round_ui():
         yalign 0.75
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
-
-        # Round circle background with breathing animation
-        add round_bg at round_breathe
-
+        # Round circle background with golden aura animation
+        add round_bg at golden_aura
         # Round number in the center
         vbox:
             xalign 0.5
             yalign 0.5
             spacing 2
-
             text "Round":
                 size 22
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
-
             text "[current_round]":
                 size 56
                 color "#FFFFFF"
                 xalign 0.5
                 outlines [(2, "#000000", 0, 0)]
-
         # Orbs arranged around the circle
         for i, (x, y) in enumerate(get_orb_positions(max_ap)):
             add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
-
 # ========================
 # Demo Label
 # ========================
 label start:
     show screen round_ui
-
     "Round UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
-
     menu:
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
             jump start
-
         "Gain AP" if available_ap < max_ap:
             $ available_ap += 1
             jump start
-
         "Next Round":
             $ current_round += 1
             $ available_ap = max_ap
             jump start
-
         "Exit":
             return
