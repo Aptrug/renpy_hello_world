@@ -1,5 +1,7 @@
 ﻿# I want you to add an HP bar to the top left and make it look exactly like Witcher 3 HP bar
 
+# Simplified Game UI with Witcher 3 HP Bar
+
 # ========================
 # Game Variables
 # ========================
@@ -8,93 +10,42 @@ default max_ap = 9
 default available_ap = 3
 default current_hp = 85
 default max_hp = 100
-define ROUND_RADIUS = 70
-define ORB_RADIUS = 15
-define AURA_PADDING = 50
-define AURA_BLUR = 20
-define AURA_BORDER_WIDTH = 4
-define UI_SIZE = 2 * (ROUND_RADIUS + AURA_PADDING)
-
-# HP Bar defines
-define HP_BAR_WIDTH = 200
-define HP_BAR_HEIGHT = 12
 
 # ========================
 # ATL Transforms
 # ========================
-transform orb_glow:
-    parallel:
-        ease 1.0 alpha 0.8
-        ease 1.0 alpha 1.0
-    parallel:
-        linear 0.1 additive 0.3
-        linear 0.1 additive 0.0
+transform glow:
+    ease 1.5 alpha 0.6 zoom 1.05
+    ease 1.5 alpha 1.0 zoom 1.0
     repeat
-transform aura_glow:
-    ease 3.0 zoom 1.05 alpha 0.4
-    ease 3.0 zoom 1.0 alpha 0.6
-    repeat
-transform orb_inactive:
+
+transform inactive:
     alpha 0.4
     zoom 0.9
-
-transform hp_pulse:
-    on show:
-        alpha 0.0
-        linear 0.3 alpha 1.0
-    on hide:
-        linear 0.3 alpha 0.0
 
 # ========================
 # Python Helpers
 # ========================
 init python:
     import math
-    class Circle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, padding=0, **kwargs):
-            super().__init__(**kwargs)
-            self.radius, self.color = radius, color
-            self.border_color, self.border_width = border_color, border_width
-            self.padding = padding
-        def render(self, w, h, st, at):
-            size = 2 * (self.radius + self.padding)
-            r = renpy.Render(size, size)
-            c = r.canvas()
-            center = self.radius + self.padding
-            if self.color:
-                c.circle(self.color, (center, center), self.radius)
-            if self.border_color:
-                c.circle(self.border_color, (center, center), self.radius, self.border_width)
-            return r
-
     def get_hp_percent():
         return current_hp / float(max_hp)
 
-    def get_orb_positions(num_orbs, center_x, center_y, orbit_radius):
-        """
-        Returns orb top-left positions arranged evenly in a circle around the center.
-        """
+    def get_orb_positions(num_orbs, radius=70):
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            orb_center_x = center_x + orbit_radius * math.cos(angle)
-            orb_center_y = center_y + orbit_radius * math.sin(angle)
-            x = orb_center_x - ORB_RADIUS
-            y = orb_center_y - ORB_RADIUS
+            x = 140 + radius * math.cos(angle) - 15  # 140 = center, 15 = orb radius
+            y = 140 + radius * math.sin(angle) - 15
             positions.append((int(x), int(y)))
         return positions
 
 # ========================
-# Circle Definitions
+# Simple Displayables
 # ========================
-define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define glow_source = Circle(ROUND_RADIUS, None, "#ffffff", AURA_BORDER_WIDTH, padding=AURA_PADDING)
-define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
-define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
-
-# HP Bar
-define hp_bar_bg = Solid("#000000")
-define hp_bar_fill = Solid("#c41e3a")
+define round_bg = "#505050"
+define orb_active = "#ffd700"
+define orb_inactive = "#666666"
 
 # ========================
 # HP Bar Screen
@@ -104,13 +55,13 @@ screen hp_bar():
         xpos 30
         ypos 30
         # Background
-        add hp_bar_bg xsize HP_BAR_WIDTH ysize HP_BAR_HEIGHT
+        add Solid("#000000") xsize 200 ysize 12
         # Red fill
-        $ fill_width = int(HP_BAR_WIDTH * get_hp_percent())
-        add hp_bar_fill xsize fill_width ysize HP_BAR_HEIGHT
-        # HP percentage text
+        $ fill_width = int(200 * get_hp_percent())
+        add Solid("#c41e3a") xsize fill_width ysize 12
+        # HP percentage
         text "[current_hp]%":
-            xpos HP_BAR_WIDTH + 10
+            xpos 210
             ypos -2
             size 16
             color "#ffffff"
@@ -119,51 +70,57 @@ screen hp_bar():
 # Main UI Screen
 # ========================
 screen round_ui():
-    add Solid("#808080")  # Gray color in hex
+    add Solid("#808080")
 
-    # Show HP bar
+    # HP bar
     use hp_bar
 
+    # Round UI
     fixed:
         xalign 0.5
         yalign 0.75
-        xsize UI_SIZE
-        ysize UI_SIZE
-        # Golden aura
-        add glow_source:
-            align (0.5, 0.5)
-            matrixcolor TintMatrix("#ffd700")
-            blur AURA_BLUR
-            additive 1.0
-            at aura_glow
-        # Round circle background (static)
-        add round_bg align (0.5, 0.5)
-        # Round number in the center
+        xsize 280
+        ysize 280
+
+        # Background circle
+        add Solid(round_bg):
+            xsize 140
+            ysize 140
+            xpos 70
+            ypos 70
+
+        # Glow effect
+        add Solid("#ffd700"):
+            xsize 140
+            ysize 140
+            xpos 70
+            ypos 70
+            alpha 0.3
+            blur 15
+            at glow
+
+        # Round text
         vbox:
             xalign 0.5
             yalign 0.5
-            spacing 2
-            text "Round":
-                size 22
-                color "#FFFFFF"
-                xalign 0.5
-                outlines [(2, "#000000", 0, 0)]
-            text "[current_round]":
-                size 56
-                color "#FFFFFF"
-                xalign 0.5
-                outlines [(2, "#000000", 0, 0)]
-        # Orbs arranged around the circle
-        $ center = UI_SIZE / 2
-        for i, (x, y) in enumerate(get_orb_positions(max_ap, center, center, ROUND_RADIUS)):
-            add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
+            text "Round" size 22 color "#FFFFFF" xalign 0.5
+            text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
+
+        # AP Orbs
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+            add Solid(orb_active if i < available_ap else orb_inactive):
+                xpos x
+                ypos y
+                xsize 30
+                ysize 30
+                at (glow if i < available_ap else inactive)
 
 # ========================
 # Demo Label
 # ========================
 label start:
     show screen round_ui
-    "Round UI Demo: Round [current_round], AP [available_ap]/[max_ap], HP [current_hp]/[max_hp]"
+    "Round [current_round], AP [available_ap]/[max_ap], HP [current_hp]/[max_hp]"
     menu:
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
