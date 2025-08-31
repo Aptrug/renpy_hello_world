@@ -30,13 +30,10 @@ init python:
 
     def get_orb_positions(num_orbs):
         positions = []
-        center = 70
-        radius = 70
-        orb_radius = 15
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = center + radius * math.cos(angle) - orb_radius
-            y = center + radius * math.sin(angle) - orb_radius
+            x = 70 + 70 * math.cos(angle) - 15
+            y = 70 + 70 * math.sin(angle) - 15
             positions.append((int(x), int(y)))
         return positions
 
