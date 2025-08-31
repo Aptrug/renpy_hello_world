@@ -26,6 +26,11 @@ transform glow:
 transform inactive:
     alpha 0.4
 
+transform sun_glow:
+    ease 2.0 alpha 0.3
+    ease 2.0 alpha 0.7
+    repeat
+
 # ========================
 # Python Helpers
 # ========================
@@ -75,6 +80,7 @@ init python:
 screen round_ui():
     # Cache bar width calculation
     $ bar_width = (config.screen_width - 340) // 2
+    $ circle_diameter = CIRCLE_RADIUS * 2
 
     add "#808080"
 
@@ -90,6 +96,9 @@ screen round_ui():
         fixed:
             xsize circle_diameter
             ysize circle_diameter
+
+            # Golden glow effect (larger circle behind)
+            add get_circle(CIRCLE_RADIUS + 8, "#ffd700") align (0.5, 0.5) at sun_glow
 
             # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
