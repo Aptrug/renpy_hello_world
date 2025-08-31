@@ -29,20 +29,22 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
+# Wave motion for bars
 transform hp_wave_left:
     xalign 0.0
-    linear 1.5 xoffset 30
+    linear 1.5 xoffset 40
     linear 1.5 xoffset 0
     repeat
 
 transform hp_wave_right:
     xalign 1.0
-    linear 1.5 xoffset -30
+    linear 1.5 xoffset -40
     linear 1.5 xoffset 0
     repeat
 
+# Low HP pulse
 transform low_hp:
-    ease 0.6 alpha 0.5
+    ease 0.6 alpha 0.6
     ease 0.6 alpha 1.0
     repeat
 
@@ -82,14 +84,14 @@ define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
-# Gradient Bar Helper
+# Gradient Bar Screen
 # ========================
 screen gradient_bar(width, height, color1, color2):
     fixed:
         xsize width
         ysize height
-        add Solid(color1) xysize (width, height//2)
-        add Solid(color2) xysize (width, height//2) ypos height//2
+        # For now: flat color, can replace with real gradient image later
+        add Solid(color1) xsize width ysize height
 
 # ========================
 # Main UI Screen
@@ -100,18 +102,18 @@ screen round_ui():
         yalign 0.75
         spacing 80
 
-        # --- Hero HP Bar (Left) ---
+        # --- Left HP Bar (Hero) ---
         fixed:
             xsize BAR_WIDTH
             ysize BAR_HEIGHT
-            add Screen("gradient_bar", BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp*BAR_WIDTH) at hp_wave_left
+            use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp * BAR_WIDTH) at hp_wave_left
             if hero_hp <= 0.3:
-                add Screen("gradient_bar", BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp*BAR_WIDTH) at low_hp
+                use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp * BAR_WIDTH) at low_hp
 
-        # --- Round Circle ---
+        # --- Round Circle in the middle ---
         fixed:
-            xsize ROUND_RADIUS*2
-            ysize ROUND_RADIUS*2
+            xsize ROUND_RADIUS * 2
+            ysize ROUND_RADIUS * 2
             add round_bg
 
             vbox:
@@ -129,19 +131,20 @@ screen round_ui():
                     xalign 0.5
                     outlines [(2, "#000000", 0, 0)]
 
+            # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
-        # --- Enemy HP Bar (Right) ---
+        # --- Right HP Bar (Enemy) ---
         fixed:
             xsize BAR_WIDTH
             ysize BAR_HEIGHT
-            add Screen("gradient_bar", BAR_WIDTH, BAR_HEIGHT, "#FF5050", "#C81E1E") xpos (BAR_WIDTH - int(enemy_hp*BAR_WIDTH)) xsize int(enemy_hp*BAR_WIDTH) at hp_wave_right
+            use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#FF3333", "#AA0000") xpos (BAR_WIDTH - int(enemy_hp * BAR_WIDTH)) xsize int(enemy_hp * BAR_WIDTH) at hp_wave_right
             if enemy_hp <= 0.3:
-                add Screen("gradient_bar", BAR_WIDTH, BAR_HEIGHT, "#FF5050", "#C81E1E") xpos (BAR_WIDTH - int(enemy_hp*BAR_WIDTH)) xsize int(enemy_hp*BAR_WIDTH) at low_hp
+                use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#FF3333", "#AA0000") xpos (BAR_WIDTH - int(enemy_hp * BAR_WIDTH)) xsize int(enemy_hp * BAR_WIDTH) at low_hp
 
 # ========================
-# Demo
+# Demo Label
 # ========================
 label start:
     show screen round_ui
