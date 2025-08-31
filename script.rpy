@@ -188,7 +188,6 @@ screen witcher_hp_bar():
             xpos HP_BAR_WIDTH + 15
             ypos 18
             outlines [(1, "#000000", 0, 0)]
-            font "gui/font/DejaVuSans.ttf"
 
         # HP Icon (simple red cross/heart symbol)
         text "♥":
