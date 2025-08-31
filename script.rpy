@@ -89,13 +89,11 @@ screen round_ui():
 
         # Round circle (center)
         fixed:
-            xsize 180
-            ysize 180
+            xsize 140
+            ysize 140
 
             # Background circle
-            add round_bg:
-                xpos 55
-                ypos 55
+            add round_bg align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -107,8 +105,8 @@ screen round_ui():
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 add (orb_active if i < available_ap else orb_inactive):
-                    xpos x + 55 - 70  # Adjust for new container
-                    ypos y + 55 - 70
+                    xpos x
+                    ypos y
                     at (glow if i < available_ap else inactive)
 
         # Hero HP bar (right) - Blue
