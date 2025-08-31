@@ -10,7 +10,8 @@ default current_hp = 85
 default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
-default circle_radius = 50
+default circle_radius = 70
+default orb_radius = 70 // 5
 
 # ========================
 # ATL Transforms
@@ -33,8 +34,8 @@ init python:
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = circle_radius + circle_radius * math.cos(angle) - 15
-            y = circle_radius + circle_radius * math.sin(angle) - 15
+            x = circle_radius + circle_radius * math.cos(angle) - orb_radius
+            y = circle_radius + circle_radius * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
@@ -101,7 +102,7 @@ screen round_ui():
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 $ is_active = i < available_ap
-                add SimpleCircle(15, "#ffd700" if is_active else "#666666"):
+                add SimpleCircle(orb_radius, "#ffd700" if is_active else "#666666"):
                     xpos x
                     ypos y
                     at (glow if is_active else inactive)
