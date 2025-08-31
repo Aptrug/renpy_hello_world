@@ -1,4 +1,4 @@
-﻿# I want you to optimize the code for least CPU usage possible (remove calculation duplication, use cache etc)
+﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Less is more.
 
 # ========================
 # Game Variables
