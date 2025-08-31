@@ -10,8 +10,6 @@ default enemy_hp = 0.7      # 70%
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
-define BAR_WIDTH = 300
-define BAR_HEIGHT = 40
 
 # ========================
 # ATL Transforms
@@ -84,16 +82,6 @@ define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
-# Gradient Bar Screen
-# ========================
-screen gradient_bar(width, height, color1, color2):
-    fixed:
-        xsize width
-        ysize height
-        # For now: flat color, can replace with real gradient image later
-        add Solid(color1) xsize width ysize height
-
-# ========================
 # Main UI Screen
 # ========================
 screen round_ui():
@@ -104,16 +92,16 @@ screen round_ui():
 
         # --- Left HP Bar (Hero) ---
         fixed:
-            xsize BAR_WIDTH
-            ysize BAR_HEIGHT
-            use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp * BAR_WIDTH) at hp_wave_left
+            xsize 300
+            ysize 40
+            add Solid("#2255FF") xsize int(hero_hp*300) ysize 40 at hp_wave_left
             if hero_hp <= 0.3:
-                use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8") xsize int(hero_hp * BAR_WIDTH) at low_hp
+                add Solid("#2255FF") xsize int(hero_hp*300) ysize 40 at low_hp
 
         # --- Round Circle in the middle ---
         fixed:
-            xsize ROUND_RADIUS * 2
-            ysize ROUND_RADIUS * 2
+            xsize ROUND_RADIUS*2
+            ysize ROUND_RADIUS*2
             add round_bg
 
             vbox:
@@ -137,11 +125,11 @@ screen round_ui():
 
         # --- Right HP Bar (Enemy) ---
         fixed:
-            xsize BAR_WIDTH
-            ysize BAR_HEIGHT
-            use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#FF3333", "#AA0000") xpos (BAR_WIDTH - int(enemy_hp * BAR_WIDTH)) xsize int(enemy_hp * BAR_WIDTH) at hp_wave_right
+            xsize 300
+            ysize 40
+            add Solid("#FF3333") xpos (300 - int(enemy_hp*300)) xsize int(enemy_hp*300) ysize 40 at hp_wave_right
             if enemy_hp <= 0.3:
-                use gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#FF3333", "#AA0000") xpos (BAR_WIDTH - int(enemy_hp * BAR_WIDTH)) xsize int(enemy_hp * BAR_WIDTH) at low_hp
+                add Solid("#FF3333") xpos (300 - int(enemy_hp*300)) xsize int(enemy_hp*300) ysize 40 at low_hp
 
 # ========================
 # Demo Label
