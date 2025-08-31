@@ -1,5 +1,7 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
+# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
+
 # ========================
 # Game Variables
 # ========================
@@ -84,10 +86,21 @@ screen round_ui():
             spacing 5
             text "Enemy" size 14 color "#ffffff"
             fixed:
-                xsize bar_width
-                ysize 12
-                add "#000000" xsize bar_width ysize 12
-                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12
+                xsize bar_width + 4
+                ysize 16
+
+                # Outer frame (dark border)
+                add "#333333" xsize bar_width + 4 ysize 16
+
+                # Inner background
+                add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
+
+                # HP fill
+                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12 xpos 2 ypos 2
+
+                # Inner highlight (top edge)
+                add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
+
             text "[enemy_hp]%" size 16 color "#ffffff"
 
         # Round circle
@@ -119,10 +132,21 @@ screen round_ui():
             spacing 5
             text "Hero" size 14 color "#ffffff"
             fixed:
-                xsize bar_width
-                ysize 12
-                add "#000000" xsize bar_width ysize 12
-                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12
+                xsize bar_width + 4
+                ysize 16
+
+                # Outer frame (dark border)
+                add "#333333" xsize bar_width + 4 ysize 16
+
+                # Inner background
+                add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
+
+                # HP fill
+                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12 xpos 2 ypos 2
+
+                # Inner highlight (top edge)
+                add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
+
             text "[current_hp]%" size 16 color "#ffffff"
 
 # ========================
