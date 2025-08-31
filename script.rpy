@@ -13,8 +13,8 @@ default max_hp = 100
 # ATL Transforms
 # ========================
 transform glow:
-    ease 1.5 alpha 0.6 zoom 1.05
-    ease 1.5 alpha 1.0 zoom 1.0
+    ease 1.5 alpha 0.7
+    ease 1.5 alpha 1.0
     repeat
 
 transform inactive:
