@@ -27,9 +27,9 @@ transform inactive:
     alpha 0.4
 
 transform sun_aura:
-    blur 3
-    ease 3.0 alpha 0.15
-    ease 3.0 alpha 0.4
+    blur 2
+    ease 4.0 alpha 0.05
+    ease 4.0 alpha 0.15
     repeat
 
 # ========================
@@ -98,10 +98,8 @@ screen round_ui():
             xsize circle_diameter
             ysize circle_diameter
 
-            # Layered golden aura effect
-            add get_circle(CIRCLE_RADIUS + 20, "#ffaa00") align (0.5, 0.5) at sun_aura
-            add get_circle(CIRCLE_RADIUS + 12, "#ffd700") align (0.5, 0.5) at sun_aura
-            add get_circle(CIRCLE_RADIUS + 6, "#ffff88") align (0.5, 0.5) at sun_aura
+            # Subtle golden aura (stays within orb boundary)
+            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align (0.5, 0.5) at sun_aura
 
             # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
