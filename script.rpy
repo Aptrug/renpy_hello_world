@@ -23,6 +23,11 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
+transform round_breathe:
+    ease 3.0 zoom 1.05
+    ease 3.0 zoom 1.0
+    repeat
+
 transform orb_inactive:
     alpha 0.4
     zoom 0.9
@@ -102,7 +107,7 @@ screen round_ui():
         fixed:
             xsize ROUND_RADIUS*2
             ysize ROUND_RADIUS*2
-            add round_bg
+            add round_bg at round_breathe
 
             vbox:
                 xalign 0.5
