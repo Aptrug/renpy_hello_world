@@ -1,5 +1,7 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
+# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
+
 # ========================
 # Game Variables
 # ========================
@@ -25,10 +27,7 @@ transform inactive:
     alpha 0.4
 
 transform hp_smooth:
-    ease 0.8 xsize int(bar_width * current_hp / max_hp)
-
-transform enemy_hp_smooth:
-    ease 0.8 xsize int(bar_width * enemy_hp / enemy_max_hp)
+    ease 0.8
 
 # ========================
 # Python Helpers
@@ -101,7 +100,7 @@ screen round_ui():
 
                 # HP fill
                 add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12 xpos 2 ypos 2:
-                    at enemy_hp_smooth
+                    at hp_smooth
 
                 # Inner highlight (top edge)
                 add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
