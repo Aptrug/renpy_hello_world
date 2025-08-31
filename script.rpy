@@ -70,57 +70,57 @@ define orb_inactive = SimpleCircle(15, "#666666")
 screen round_ui():
     add Solid("#808080")
 
-    # HP bars and Round circle layout using hbox
-    hbox:
+    # Enemy HP bar (left of center)
+    fixed:
+        xpos 50
+        ypos 200
+        add Solid("#000000") xsize 200 ysize 12
+        $ fill_width = int(200 * get_enemy_hp_percent())
+        add Solid("#c41e3a") xsize fill_width ysize 12
+        text "[enemy_hp]%":
+            xpos 210
+            ypos -2
+            size 16
+            color "#ffffff"
+
+    # Round circle (center)
+    fixed:
         xalign 0.5
-        yalign 0.3
-        spacing 30
+        yalign 0.5
+        xsize 280
+        ysize 280
 
-        # Enemy HP bar (left) - Red
-        fixed:
-            add Solid("#000000") xsize 200 ysize 12
-            $ fill_width = int(200 * get_enemy_hp_percent())
-            add Solid("#c41e3a") xsize fill_width ysize 12
-            text "[enemy_hp]%":
-                xpos 210
-                ypos -2
-                size 16
-                color "#ffffff"
+        # Background circle
+        add round_bg:
+            xpos 70
+            ypos 70
 
-        # Round circle (center)
-        fixed:
-            xsize 280
-            ysize 280
+        # Round text
+        vbox:
+            xalign 0.5
+            yalign 0.5
+            text "Round" size 22 color "#FFFFFF" xalign 0.5
+            text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
-            # Background circle
-            add round_bg:
-                xpos 70
-                ypos 70
+        # AP Orbs
+        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+            add (orb_active if i < available_ap else orb_inactive):
+                xpos x
+                ypos y
+                at (glow if i < available_ap else inactive)
 
-            # Round text
-            vbox:
-                xalign 0.5
-                yalign 0.5
-                text "Round" size 22 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
-
-            # AP Orbs
-            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add (orb_active if i < available_ap else orb_inactive):
-                    xpos x
-                    ypos y
-                    at (glow if i < available_ap else inactive)
-
-        # Hero HP bar (right) - Blue
-        fixed:
-            add Solid("#000000") xsize 200 ysize 12
-            $ fill_width = int(200 * get_hp_percent())
-            add Solid("#4169e1") xsize fill_width ysize 12
-            text "[current_hp]%":
-                xpos 210
-                ypos -2
-                size 16
-                color "#ffffff"
+    # Hero HP bar (right of center)
+    fixed:
+        xpos 1100
+        ypos 200
+        add Solid("#000000") xsize 200 ysize 12
+        $ fill_width = int(200 * get_hp_percent())
+        add Solid("#4169e1") xsize fill_width ysize 12
+        text "[current_hp]%":
+            xpos 210
+            ypos -2
+            size 16
+            color "#ffffff"
 
 # ========================
 # Demo Label
