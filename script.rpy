@@ -112,47 +112,47 @@ init python:
 
             # Create falchion shape points
             if self.is_enemy:
-                # Enemy falchion (left-pointing)
+                # Enemy falchion (left-pointing blade tip)
                 points = [
-                    (0, self.height * 0.35),
-                    (self.width * 0.65, self.height * 0.35),
-                    (self.width * 0.75, self.height * 0.45),
-                    (self.width * 0.82, self.height * 0.60),
-                    (self.width * 0.88, self.height * 0.75),
-                    (self.width * 0.92, self.height * 0.85),
-                    (self.width * 0.96, self.height * 0.92),
-                    (self.width, self.height * 0.95),
-                    (self.width * 0.98, self.height * 0.80),
-                    (self.width * 0.94, self.height * 0.65),
-                    (self.width * 0.88, self.height * 0.50),
-                    (self.width * 0.82, self.height * 0.35),
-                    (self.width * 0.75, self.height * 0.25),
-                    (self.width * 0.65, self.height * 0.18),
-                    (0, self.height * 0.18)
+                    (0, int(self.height * 0.35)),
+                    (int(self.width * 0.65), int(self.height * 0.35)),
+                    (int(self.width * 0.75), int(self.height * 0.45)),
+                    (int(self.width * 0.82), int(self.height * 0.60)),
+                    (int(self.width * 0.88), int(self.height * 0.75)),
+                    (int(self.width * 0.92), int(self.height * 0.85)),
+                    (int(self.width * 0.96), int(self.height * 0.92)),
+                    (int(self.width), int(self.height * 0.95)),
+                    (int(self.width * 0.98), int(self.height * 0.80)),
+                    (int(self.width * 0.94), int(self.height * 0.65)),
+                    (int(self.width * 0.88), int(self.height * 0.50)),
+                    (int(self.width * 0.82), int(self.height * 0.35)),
+                    (int(self.width * 0.75), int(self.height * 0.25)),
+                    (int(self.width * 0.65), int(self.height * 0.18)),
+                    (0, int(self.height * 0.18))
                 ]
             else:
-                # Hero falchion (right-pointing)
+                # Hero falchion (right-pointing blade tip)
                 points = [
-                    (self.width, self.height * 0.65),
-                    (self.width * 0.35, self.height * 0.65),
-                    (self.width * 0.25, self.height * 0.55),
-                    (self.width * 0.18, self.height * 0.40),
-                    (self.width * 0.12, self.height * 0.25),
-                    (self.width * 0.08, self.height * 0.15),
-                    (self.width * 0.04, self.height * 0.08),
-                    (0, self.height * 0.05),
-                    (self.width * 0.02, self.height * 0.20),
-                    (self.width * 0.06, self.height * 0.35),
-                    (self.width * 0.12, self.height * 0.50),
-                    (self.width * 0.18, self.height * 0.65),
-                    (self.width * 0.25, self.height * 0.75),
-                    (self.width * 0.35, self.height * 0.82),
-                    (self.width, self.height * 0.82)
+                    (int(self.width), int(self.height * 0.65)),
+                    (int(self.width * 0.35), int(self.height * 0.65)),
+                    (int(self.width * 0.25), int(self.height * 0.55)),
+                    (int(self.width * 0.18), int(self.height * 0.40)),
+                    (int(self.width * 0.12), int(self.height * 0.25)),
+                    (int(self.width * 0.08), int(self.height * 0.15)),
+                    (int(self.width * 0.04), int(self.height * 0.08)),
+                    (0, int(self.height * 0.05)),
+                    (int(self.width * 0.02), int(self.height * 0.20)),
+                    (int(self.width * 0.06), int(self.height * 0.35)),
+                    (int(self.width * 0.12), int(self.height * 0.50)),
+                    (int(self.width * 0.18), int(self.height * 0.65)),
+                    (int(self.width * 0.25), int(self.height * 0.75)),
+                    (int(self.width * 0.35), int(self.height * 0.82)),
+                    (int(self.width), int(self.height * 0.82))
                 ]
 
-            # Draw the falchion shape
-            c.polygon((30, 30, 30), points)
-            c.polygon((80, 80, 80), points, 2)  # Border
+            # Draw background with gradient effect
+            c.polygon((26, 26, 26), points)  # Dark background
+            c.polygon((80, 80, 80, 128), points, 2)  # Light border
 
             return r
 
@@ -220,15 +220,16 @@ screen hp_bar_enemy():
             add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_right
 
         # HP Text
+        $ hp_percent = int(enemy_hp * 100)
         $ text_transform = get_hp_text_transform(enemy_hp)
         if text_transform:
-            text "{color=#ff6666}[enemy_hp:.0%]{/color}" at eval(text_transform):
+            text "{color=#ff6666}[hp_percent]%{/color}" at eval(text_transform):
                 xpos HP_BAR_WIDTH - 80
                 ypos -50
                 size 22
                 outlines [(2, "#000000", 0, 0)]
         else:
-            text "{color=#ff6666}[enemy_hp:.0%]{/color}":
+            text "{color=#ff6666}[hp_percent]%{/color}":
                 xpos HP_BAR_WIDTH - 80
                 ypos -50
                 size 22
@@ -260,15 +261,16 @@ screen hp_bar_hero():
             add Solid("#ffffff", xsize=180, ysize=HP_BAR_HEIGHT) alpha 0.3 at hp_wave_left
 
         # HP Text
+        $ hp_percent = int(hero_hp * 100)
         $ text_transform = get_hp_text_transform(hero_hp)
         if text_transform:
-            text "{color=#66aaff}[hero_hp:.0%]{/color}" at eval(text_transform):
+            text "{color=#66aaff}[hp_percent]%{/color}" at eval(text_transform):
                 xpos 80
                 ypos HP_BAR_HEIGHT + 20
                 size 22
                 outlines [(2, "#000000", 0, 0)]
         else:
-            text "{color=#66aaff}[hero_hp:.0%]{/color}":
+            text "{color=#66aaff}[hp_percent]%{/color}":
                 xpos 80
                 ypos HP_BAR_HEIGHT + 20
                 size 22
@@ -351,7 +353,7 @@ label start:
     show screen battle_ui
 
     "Battle UI Demo: Round [current_round], AP [available_ap]/[max_ap]"
-    "Enemy HP: [enemy_hp:.0%] | Hero HP: [hero_hp:.0%]"
+    "Enemy HP: %(enemy_hp).0%% | Hero HP: %(hero_hp).0%%" % {"enemy_hp": enemy_hp * 100, "hero_hp": hero_hp * 100}
 
     menu:
         "Attack Enemy" if available_ap > 0:
