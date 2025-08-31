@@ -1,5 +1,7 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
+# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
+
 # ========================
 # Game Variables
 # ========================
@@ -12,8 +14,6 @@ default enemy_hp = 60
 default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
-
-# NOTE: gui.notify_text_size is defined as 24 in gui.rpy
 
 # ========================
 # ATL Transforms
@@ -88,8 +88,8 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize CIRCLE_RADIUS * 2
-            ysize CIRCLE_RADIUS * 2
+            xsize circle_diameter
+            ysize circle_diameter
 
             # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
@@ -100,8 +100,8 @@ screen round_ui():
                 yalign 0.5
                 yoffset 10
                 spacing -5
-                text "Round" size 20 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
+                text "Round" size 22 color "#FFFFFF" xalign 0.5
+                text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
             # Cached AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
@@ -119,7 +119,7 @@ screen round_ui():
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
     vbox:
         spacing 5
-        text label size gui.notify_text_size color "#ffffff"
+        text label size 14 color "#ffffff"
 
         fixed:
             xsize width + 4
@@ -143,7 +143,7 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
             # Highlight
             add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
-        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+        text "[hp_value]%" size 16 color "#ffffff"
 
 # ========================
 # Demo Label
