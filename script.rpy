@@ -112,8 +112,8 @@ screen round_ui():
                 yalign 0.5
                 yoffset 10
                 spacing -5
-                text "Round" size 22 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
+                text "Round" size 20 color "#FFFFFF" xalign 0.5
+                text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
             # Cached AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
