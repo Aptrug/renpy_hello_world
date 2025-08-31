@@ -100,9 +100,10 @@ screen round_ui():
             ypos 70
 
         # Glow effect
-        add SimpleCircle(70, "#ffd700"):
+        add round_bg:
             xpos 70
             ypos 70
+            matrixcolor TintMatrix("#ffd700")
             alpha 0.3
             blur 15
             at glow
