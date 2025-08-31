@@ -1,4 +1,4 @@
-﻿# This code works, but instead of round_breathe I want the round to emit nice looking Golden aura around it instead
+﻿# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead
 
 # ========================
 # Game Variables
@@ -80,7 +80,6 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 screen round_ui():
     add Solid("#808080")  # Gray color in hex
     fixed:
-
         xalign 0.5
         yalign 0.75
         xsize ROUND_RADIUS*2
