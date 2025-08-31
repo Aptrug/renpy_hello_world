@@ -11,7 +11,7 @@ define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
 define AURA_PADDING = 50
 define AURA_BLUR = 20
-define AURA_BORDER_WIDTH = 3
+define AURA_BORDER_WIDTH = 7
 
 # ========================
 # ATL Transforms
