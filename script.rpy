@@ -10,6 +10,8 @@ default enemy_hp = 0.7      # 70%
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
+define BAR_WIDTH = 300
+define BAR_HEIGHT = 40
 
 # ========================
 # ATL Transforms
@@ -27,22 +29,22 @@ transform orb_inactive:
     alpha 0.4
     zoom 0.9
 
-# Wave motion for bars
+# Liquid wave motion
 transform hp_wave_left:
     xalign 0.0
-    linear 1.5 xoffset 40
+    linear 1.5 xoffset 30
     linear 1.5 xoffset 0
     repeat
 
 transform hp_wave_right:
     xalign 1.0
-    linear 1.5 xoffset -40
+    linear 1.5 xoffset -30
     linear 1.5 xoffset 0
     repeat
 
 # Low HP pulse
 transform low_hp:
-    ease 0.6 alpha 0.6
+    ease 0.6 alpha 0.5
     ease 0.6 alpha 1.0
     repeat
 
@@ -82,6 +84,24 @@ define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
+# HP Bar Gradient Generator
+# ========================
+init python:
+    def gradient_bar(width, height, color1, color2):
+        import pygame
+        surf = pygame.Surface((width, height))
+        for i in range(height):
+            ratio = i / float(height)
+            r = int(color1[0]*(1-ratio) + color2[0]*ratio)
+            g = int(color1[1]*(1-ratio) + color2[1]*ratio)
+            b = int(color1[2]*(1-ratio) + color2[2]*ratio)
+            pygame.draw.line(surf, (r,g,b), (0,i), (width,i))
+        return renpy.display.im.Image(surf)
+
+    hero_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, (50,130,255), (20,60,200))
+    enemy_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, (255,80,80), (200,30,30))
+
+# ========================
 # Main UI Screen
 # ========================
 screen round_ui():
@@ -90,13 +110,13 @@ screen round_ui():
         yalign 0.75
         spacing 80
 
-        # --- Left HP Bar (Hero) ---
+        # --- Hero HP Bar (Left) ---
         fixed:
-            xsize 300
-            ysize 40
-            add Solid("#2255FF") xsize int(hero_hp*300) ysize 40 at hp_wave_left
+            xsize BAR_WIDTH
+            ysize BAR_HEIGHT
+            add hero_bar_img xsize int(hero_hp*BAR_WIDTH) at hp_wave_left
             if hero_hp <= 0.3:
-                add Solid("#2255FF") xsize int(hero_hp*300) ysize 40 at low_hp
+                add hero_bar_img xsize int(hero_hp*BAR_WIDTH) at low_hp
 
         # --- Round Circle in the middle ---
         fixed:
@@ -123,13 +143,13 @@ screen round_ui():
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
-        # --- Right HP Bar (Enemy) ---
+        # --- Enemy HP Bar (Right) ---
         fixed:
-            xsize 300
-            ysize 40
-            add Solid("#FF3333") xpos (300 - int(enemy_hp*300)) xsize int(enemy_hp*300) ysize 40 at hp_wave_right
+            xsize BAR_WIDTH
+            ysize BAR_HEIGHT
+            add enemy_bar_img xpos (BAR_WIDTH - int(enemy_hp*BAR_WIDTH)) xsize int(enemy_hp*BAR_WIDTH) at hp_wave_right
             if enemy_hp <= 0.3:
-                add Solid("#FF3333") xpos (300 - int(enemy_hp*300)) xsize int(enemy_hp*300) ysize 40 at low_hp
+                add enemy_bar_img xpos (BAR_WIDTH - int(enemy_hp*BAR_WIDTH)) xsize int(enemy_hp*BAR_WIDTH) at low_hp
 
 # ========================
 # Demo Label
