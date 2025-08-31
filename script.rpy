@@ -119,7 +119,7 @@ screen round_ui():
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
     vbox:
         spacing 5
-        text label size gui.label_text_size color "#ffffff"
+        text label size gui.notify_text_size color "#ffffff"
 
         fixed:
             xsize width + 4
@@ -143,7 +143,7 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
             # Highlight
             add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
-        text "[hp_value]%" size gui.label_text_size color "#ffffff"
+        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
 # ========================
 # Demo Label
