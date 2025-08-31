@@ -27,8 +27,8 @@ transform inactive:
     alpha 0.4
 
 transform golden_glow:
-    ease 2.0 alpha 0.3
-    ease 2.0 alpha 0.8
+    ease 3.0 alpha 0.1
+    ease 3.0 alpha 0.4
     repeat
 
 # ========================
@@ -93,11 +93,11 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize (CIRCLE_RADIUS + 8) * 2
-            ysize (CIRCLE_RADIUS + 8) * 2
+            xsize (CIRCLE_RADIUS + 3) * 2
+            ysize (CIRCLE_RADIUS + 3) * 2
 
-            # Golden glow aura (larger circle behind)
-            add get_circle(CIRCLE_RADIUS + 8, "#ffd700") align (0.5, 0.5) at golden_glow
+            # Subtle golden glimmer (just slightly larger)
+            add get_circle(CIRCLE_RADIUS + 3, "#ffd700") align (0.5, 0.5) at golden_glow
 
             # Main background circle
             add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
