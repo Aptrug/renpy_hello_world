@@ -70,32 +70,7 @@ define glow_circle = SimpleCircle(70, None, "#ffffff", 4, padding=30)
 define orb_active = SimpleCircle(15, "#ffd700")
 define orb_inactive = SimpleCircle(15, "#666666")
 
-# ========================
-# HP Bar Screen
-# ========================
-screen hero_hp_bar():
-    fixed:
-        # Blue HP bar for hero
-        add Solid("#000000") xsize 200 ysize 12
-        $ fill_width = int(200 * get_hp_percent())
-        add Solid("#4169e1") xsize fill_width ysize 12  # Royal blue
-        text "[current_hp]%":
-            xpos 210
-            ypos -2
-            size 16
-            color "#ffffff"
 
-screen enemy_hp_bar():
-    fixed:
-        # Red HP bar for enemy
-        add Solid("#000000") xsize 200 ysize 12
-        $ fill_width = int(200 * get_enemy_hp_percent())
-        add Solid("#c41e3a") xsize fill_width ysize 12  # Red
-        text "[enemy_hp]%":
-            xpos 210
-            ypos -2
-            size 16
-            color "#ffffff"
 
 # ========================
 # Main UI Screen
