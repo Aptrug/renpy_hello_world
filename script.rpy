@@ -1,7 +1,5 @@
 ﻿# I want you to add an HP bar to the top left and make it look exactly like Witcher 3 HP bar
 
-# Simplified Game UI with Witcher 3 HP Bar
-
 # ========================
 # Game Variables
 # ========================
@@ -41,8 +39,8 @@ init python:
         return positions
 
     class SimpleCircle(renpy.Displayable):
-        def __init__(self, radius, color, **kwargs):
-            super().__init__(**kwargs)
+        def __init__(self, radius, color):
+            super().__init__()
             self.radius = radius
             self.color = color
         def render(self, w, h, st, at):
