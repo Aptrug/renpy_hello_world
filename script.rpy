@@ -89,8 +89,8 @@ screen round_ui():
                 spacing -10
                 xalign 0.5
                 yalign 0.7
-                text "Round" size gui.notify_text_size color "#FFFFFF" xalign 0.5
-                text "[current_round]" size gui.name_text_size color "#FFFFFF" xalign 0.5
+                text "Round" size 24 color "#FFFFFF" xalign 0.5
+                text "[current_round]" 48 color "#FFFFFF" xalign 0.5
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
