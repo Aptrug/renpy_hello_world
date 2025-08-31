@@ -32,8 +32,9 @@ transform inactive:
 init python:
     import math
 
-    # Cache orb positions for lower CPU usage
+    # Cache orb positions and circles for lower CPU usage
     _orb_cache = {}
+    _circle_cache = {}
 
     def get_orb_positions(num_orbs):
         if num_orbs not in _orb_cache:
@@ -47,6 +48,12 @@ init python:
                     positions.append((int(x), int(y)))
             _orb_cache[num_orbs] = positions
         return _orb_cache[num_orbs]
+
+    def get_circle(radius, color):
+        key = (radius, color)
+        if key not in _circle_cache:
+            _circle_cache[key] = SimpleCircle(radius, color)
+        return _circle_cache[key]
 
     # CRITICAL: SimpleCircle class is required for proper circular rendering
     # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
@@ -62,16 +69,14 @@ init python:
             c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
 
-
-
 # ========================
 # Main UI Screen
 # ========================
 screen round_ui():
-    add "#808080"
-
+    # Cache bar width calculation
     $ bar_width = (config.screen_width - 340) // 2
-    $ circle_size = CIRCLE_RADIUS * 2
+
+    add "#808080"
 
     hbox:
         xalign 0.5
@@ -79,21 +84,15 @@ screen round_ui():
         spacing 50
 
         # Enemy HP bar
-        vbox:
-            spacing 5
-            text "Enemy" size 14 color "#ffffff"
-
-            use hp_bar_display(enemy_hp, enemy_max_hp, "#c41e3a", bar_width)
-
-            text "[enemy_hp]%" size 16 color "#ffffff"
+        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)
 
         # Round circle
         fixed:
-            xsize circle_size
-            ysize circle_size
+            xsize CIRCLE_RADIUS * 2
+            ysize CIRCLE_RADIUS * 2
 
-            # Background circle
-            add SimpleCircle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
+            # Cached background circle
+            add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -104,47 +103,47 @@ screen round_ui():
                 text "Round" size 22 color "#FFFFFF" xalign 0.5
                 text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
-            # AP Orbs
+            # Cached AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add SimpleCircle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
+                add get_circle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
                     xpos x
                     ypos y
                     at (glow if i < available_ap else inactive)
 
         # Hero HP bar
-        vbox:
-            spacing 5
-            text "Hero" size 14 color "#ffffff"
-
-            use hp_bar_display(current_hp, max_hp, "#4169e1", bar_width)
-
-            text "[current_hp]%" size 16 color "#ffffff"
+        use hp_bar_section("Hero", current_hp, max_hp, "#4169e1", bar_width)
 
 # ========================
 # Reusable HP Bar Component
 # ========================
-screen hp_bar_display(hp_value, max_hp_value, color, width):
-    fixed:
-        xsize width + 4
-        ysize 16
+screen hp_bar_section(label, hp_value, max_hp_value, color, width):
+    vbox:
+        spacing 5
+        text label size 14 color "#ffffff"
 
-        # Frame and background
-        add "#333333" xsize width + 4 ysize 16
-        add "#000000" xsize width ysize 12 xpos 2 ypos 2
+        fixed:
+            xsize width + 4
+            ysize 16
 
-        # Animated HP bar
-        bar:
-            value AnimatedValue(hp_value, max_hp_value, 0.8)
-            range max_hp_value
-            xsize width
-            ysize 12
-            xpos 2
-            ypos 2
-            left_bar color
-            right_bar "#000000"
+            # Frame and background
+            add "#333333" xsize width + 4 ysize 16
+            add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
-        # Highlight
-        add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+            # Animated HP bar
+            bar:
+                value AnimatedValue(hp_value, max_hp_value, 0.8)
+                range max_hp_value
+                xsize width
+                ysize 12
+                xpos 2
+                ypos 2
+                left_bar color
+                right_bar "#000000"
+
+            # Highlight
+            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+
+        text "[hp_value]%" size 16 color "#ffffff"
 
 # ========================
 # Demo Label
