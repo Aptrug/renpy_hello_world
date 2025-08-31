@@ -372,8 +372,8 @@ screen round_ui():
         spacing 50
 
         # Enemy HP bar - UNCOMMENT THE ONE YOU WANT!
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Original
-        # use hp_bar_rounded("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Rounded
+        # use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Original
+        use hp_bar_rounded("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Rounded
         # use hp_bar_segmented("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Segmented
         # use hp_bar_wave("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Wave
         # use hp_bar_hex("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)  # Hexagonal
