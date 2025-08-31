@@ -60,6 +60,9 @@ define round_bg = SimpleCircle(70, "#505050")
 screen round_ui():
     add "#808080"
 
+    $ available_width = config.screen_width - 200  # Leave 200px total margin
+    $ bar_width = (available_width - 140 - 100) // 2  # Subtract circle and spacing
+
     hbox:
         xalign 0.5
         yalign 0.5
@@ -70,10 +73,10 @@ screen round_ui():
             spacing 5
             text "Enemy" size 14 color "#ffffff"
             fixed:
-                xsize 200
+                xsize bar_width
                 ysize 12
-                add "#000000" xsize 200 ysize 12
-                add "#c41e3a" xsize int(200 * enemy_hp / enemy_max_hp) ysize 12
+                add "#000000" xsize bar_width ysize 12
+                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12
             text "[enemy_hp]%" size 16 color "#ffffff"
 
         # Round circle
@@ -106,10 +109,10 @@ screen round_ui():
             spacing 5
             text "Hero" size 14 color "#ffffff"
             fixed:
-                xsize 200
+                xsize bar_width
                 ysize 12
-                add "#000000" xsize 200 ysize 12
-                add "#4169e1" xsize int(200 * current_hp / max_hp) ysize 12
+                add "#000000" xsize bar_width ysize 12
+                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12
             text "[current_hp]%" size 16 color "#ffffff"
 
 # ========================
