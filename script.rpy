@@ -1,4 +1,4 @@
-﻿# Simplified Game UI with HP Bars
+﻿# I want you to optimize the code for least CPU usage possible
 
 # ========================
 # Game Variables
