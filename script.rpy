@@ -32,40 +32,31 @@ transform inactive:
 init python:
     import math
 
-    # Cache orb positions and circles for lower CPU usage
+    # Cache orb positions for lower CPU usage
     _orb_cache = {}
-    _circles = {}
 
     def get_orb_positions(num_orbs):
         if num_orbs not in _orb_cache:
             positions = []
             if num_orbs > 0:
-                step = 6.283185307179586 / num_orbs  # 2*pi pre-calculated
+                step = 6.283185307179586 / num_orbs  # 2*pi
                 for i in range(num_orbs):
-                    angle = step * i - 1.5707963267948966  # -pi/2 pre-calculated
+                    angle = step * i - 1.5707963267948966  # -pi/2
                     x = CIRCLE_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
                     y = CIRCLE_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
                     positions.append((int(x), int(y)))
             _orb_cache[num_orbs] = positions
         return _orb_cache[num_orbs]
 
-    def get_circle(radius, color):
-        key = (radius, color)
-        if key not in _circles:
-            _circles[key] = SimpleCircle(radius, color)
-        return _circles[key]
+# ========================
+# Reusable HP Bar Style
+# ========================
+style hp_bar is bar:
+    bar_invert False
+    thumb None
 
-    class SimpleCircle(renpy.Displayable):
-        def __init__(self, radius, color):
-            super().__init__()
-            self.radius = radius
-            self.color = color
-        def render(self, w, h, st, at):
-            size = 2 * self.radius
-            r = renpy.Render(size, size)
-            c = r.canvas()
-            c.circle(self.color, (self.radius, self.radius), self.radius)
-            return r
+style hp_frame is fixed:
+    xysize (bar_width + 4, 16)
 
 # ========================
 # Main UI Screen
@@ -85,29 +76,8 @@ screen round_ui():
         vbox:
             spacing 5
             text "Enemy" size 14 color "#ffffff"
-            fixed:
-                xsize bar_width + 4
-                ysize 16
 
-                # Outer frame (dark border)
-                add "#333333" xsize bar_width + 4 ysize 16
-
-                # Inner background
-                add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
-
-                # HP bar using Ren'Py's built-in bar with AnimatedValue
-                bar:
-                    value AnimatedValue(enemy_hp, enemy_max_hp, 0.8)
-                    range enemy_max_hp
-                    xsize bar_width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    left_bar "#c41e3a"
-                    right_bar "#000000"
-
-                # Inner highlight (top edge)
-                add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
+            use hp_bar_display(enemy_hp, enemy_max_hp, "#c41e3a", bar_width)
 
             text "[enemy_hp]%" size 16 color "#ffffff"
 
@@ -117,7 +87,8 @@ screen round_ui():
             ysize circle_size
 
             # Background circle
-            add get_circle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
+            add Solid("#505050", xysize=(circle_size, circle_size)) at transform:
+                fit "contain"
 
             # Round text
             vbox:
@@ -130,40 +101,47 @@ screen round_ui():
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add get_circle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
+                add Solid("#ffd700" if i < available_ap else "#666666", xysize=(ORB_RADIUS*2, ORB_RADIUS*2)):
                     xpos x
                     ypos y
+                    at transform:
+                        fit "contain"
                     at (glow if i < available_ap else inactive)
 
         # Hero HP bar
         vbox:
             spacing 5
             text "Hero" size 14 color "#ffffff"
-            fixed:
-                xsize bar_width + 4
-                ysize 16
 
-                # Outer frame (dark border)
-                add "#333333" xsize bar_width + 4 ysize 16
-
-                # Inner background
-                add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
-
-                # HP bar using Ren'Py's built-in bar with AnimatedValue
-                bar:
-                    value AnimatedValue(current_hp, max_hp, 0.8)
-                    range max_hp
-                    xsize bar_width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    left_bar "#4169e1"
-                    right_bar "#000000"
-
-                # Inner highlight (top edge)
-                add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
+            use hp_bar_display(current_hp, max_hp, "#4169e1", bar_width)
 
             text "[current_hp]%" size 16 color "#ffffff"
+
+# ========================
+# Reusable HP Bar Component
+# ========================
+screen hp_bar_display(hp_value, max_hp_value, color, width):
+    fixed:
+        xsize width + 4
+        ysize 16
+
+        # Frame and background
+        add "#333333" xsize width + 4 ysize 16
+        add "#000000" xsize width ysize 12 xpos 2 ypos 2
+
+        # Animated HP bar
+        bar:
+            value AnimatedValue(hp_value, max_hp_value, 0.8)
+            range max_hp_value
+            xsize width
+            ysize 12
+            xpos 2
+            ypos 2
+            left_bar color
+            right_bar "#000000"
+
+        # Highlight
+        add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
 # ========================
 # Demo Label
