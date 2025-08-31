@@ -1,4 +1,6 @@
-﻿# ========================
+﻿# This code works, but the question is, is the logic sound? Are the calculations correct?
+
+# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -11,7 +13,6 @@ define ORB_RADIUS = 15
 # ========================
 # ATL Transforms
 # ========================
-# Orb glow (for active AP orbs)
 transform orb_glow:
     parallel:
         ease 1.0 alpha 0.8
@@ -21,16 +22,18 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-# Orb inactive
+transform round_glow:
+    parallel:
+        ease 1.0 alpha 0.8
+        ease 1.0 alpha 1.0
+    parallel:
+        linear 0.5 additive 0.3
+        linear 0.5 additive 0.0
+    repeat
+
 transform orb_inactive:
     alpha 0.4
     zoom 0.9
-
-# Round circle glow
-transform round_glow:
-    ease 1.0 alpha 0.3
-    ease 1.0 alpha 0.8
-    repeat
 
 # ========================
 # Python Helpers
@@ -50,11 +53,7 @@ init python:
             c = r.canvas()
 
             if self.color:
-                if len(self.color) == 4:
-                    # RGBA tuple
-                    c.circle(self.color, (self.radius, self.radius), self.radius)
-                else:
-                    c.circle(self.color, (self.radius, self.radius), self.radius)
+                c.circle(self.color, (self.radius, self.radius), self.radius)
             if self.border_color:
                 c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
             return r
@@ -75,13 +74,7 @@ init python:
 # ========================
 # Circle Definitions
 # ========================
-# Main round circle
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-
-# Glowing halo behind the round circle
-define round_glow_circle = Circle(ROUND_RADIUS + 10, (255, 215, 0, 80), None, 0)
-
-# Orbs
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
@@ -95,11 +88,8 @@ screen round_ui():
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Glow halo behind the circle
-        add round_glow_circle at round_glow
-
-        # Main round circle
-        add round_bg
+        # Round circle background with breathing animation
+        add round_bg at round_breathe
 
         # Round number in the center
         vbox:
