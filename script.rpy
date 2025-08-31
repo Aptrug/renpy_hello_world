@@ -1,4 +1,6 @@
-﻿# ========================
+﻿# This code works, but instead of round_breathe I want the round to emit nice looking Golden aura around it instead
+
+# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -6,6 +8,7 @@ default max_ap = 9
 default available_ap = 3
 
 define ROUND_RADIUS = 70
+define AURA_RADIUS = ROUND_RADIUS + 15
 define ORB_RADIUS = 15
 
 # ========================
@@ -20,38 +23,17 @@ transform orb_glow:
         linear 0.1 additive 0.0
     repeat
 
-transform golden_aura_small:
-    alpha 0.6
-    parallel:
-        ease 2.0 alpha 0.8 zoom 1.05
-        ease 2.0 alpha 0.4 zoom 1.0
-        repeat
-    parallel:
-        rotate 0
-        linear 15.0 rotate 360
-        repeat
+transform aura_emit1:
+    zoom 1.0 alpha 0.6 blur 10.0 additive 0.5
+    linear 2.0 zoom 1.2 alpha 0.0 blur 20.0
+    repeat
 
-transform golden_aura_medium:
-    alpha 0.4
-    parallel:
-        ease 3.0 alpha 0.6 zoom 1.1
-        ease 3.0 alpha 0.3 zoom 1.0
-        repeat
-    parallel:
-        rotate 0
-        linear 25.0 rotate -360
-        repeat
-
-transform golden_aura_large:
-    alpha 0.25
-    parallel:
-        ease 4.0 alpha 0.4 zoom 1.15
-        ease 4.0 alpha 0.2 zoom 1.0
-        repeat
-    parallel:
-        rotate 0
-        linear 35.0 rotate 360
-        repeat
+transform aura_emit2:
+    alpha 0.0
+    pause 1.0
+    alpha 0.6 zoom 1.0 blur 10.0 additive 0.5
+    linear 2.0 alpha 0.0 zoom 1.2 blur 20.0
+    repeat
 
 transform orb_inactive:
     alpha 0.4
@@ -97,13 +79,9 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
+define round_aura_img = Circle(AURA_RADIUS, (255, 215, 0), None, 0)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
-
-# Golden aura layers (different sizes for a glowing halo)
-define aura_glow_small = Circle(ROUND_RADIUS+15, (255, 223, 100), (255, 215, 0), 2)
-define aura_glow_medium = Circle(ROUND_RADIUS+30, (255, 215, 0), (255, 200, 0), 2)
-define aura_glow_large = Circle(ROUND_RADIUS+50, (255, 200, 0), (180, 120, 0), 2)
 
 # ========================
 # Main UI Screen
@@ -115,12 +93,18 @@ screen round_ui():
         xsize ROUND_RADIUS*2
         ysize ROUND_RADIUS*2
 
-        # Multi-layer golden aura
-        add aura_glow_large at golden_aura_large
-        add aura_glow_medium at golden_aura_medium
-        add aura_glow_small at golden_aura_small
+        # Golden aura layers with emitting animation
+        add round_aura_img:
+            xpos (ROUND_RADIUS - AURA_RADIUS)
+            ypos (ROUND_RADIUS - AURA_RADIUS)
+            at aura_emit1
 
-        # Round circle background
+        add round_aura_img:
+            xpos (ROUND_RADIUS - AURA_RADIUS)
+            ypos (ROUND_RADIUS - AURA_RADIUS)
+            at aura_emit2
+
+        # Round circle background (no animation)
         add round_bg
 
         # Round number in the center
