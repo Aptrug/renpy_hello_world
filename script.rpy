@@ -1,6 +1,4 @@
-﻿# This code works, but instead of round_breathe I want the round to emit Golden aura around it instead (beware of makeing the aura a square)
-
-# ========================
+﻿# ========================
 # Game Variables
 # ========================
 default current_round = 59
@@ -21,10 +19,9 @@ transform orb_glow:
     repeat
 
 transform golden_aura:
-    alpha 0.6
-    blur 15
-    ease 2.0 alpha 0.3
-    ease 2.0 alpha 0.6
+    alpha 0.4
+    ease 2.0 alpha 0.2
+    ease 2.0 alpha 0.4
     repeat
 
 transform orb_inactive:
@@ -66,7 +63,9 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define aura_circle = Circle(ROUND_RADIUS + 10, (255, 215, 0), (255, 215, 0), 8)
+define aura_circle = Circle(ROUND_RADIUS + 15, (255, 215, 0))
+define aura_circle2 = Circle(ROUND_RADIUS + 25, (255, 215, 0))
+define aura_circle3 = Circle(ROUND_RADIUS + 35, (255, 215, 0))
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # ========================
