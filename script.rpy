@@ -1,4 +1,4 @@
-﻿# I want you to add an HP bar to the top left and make it look exactly like Witcher 3 HP bar
+﻿# Simplified Game UI with Witcher 3 HP Bar
 
 # ========================
 # Game Variables
@@ -8,13 +8,15 @@ default max_ap = 9
 default available_ap = 3
 default current_hp = 85
 default max_hp = 100
+default enemy_hp = 60
+default enemy_max_hp = 80
 
 # ========================
 # ATL Transforms
 # ========================
 transform glow:
-    ease 1.5 alpha 0.7
-    ease 1.5 alpha 1.0
+    ease 1.5 alpha 0.6 zoom 1.05
+    ease 1.5 alpha 1.0 zoom 1.0
     repeat
 
 transform inactive:
@@ -29,48 +31,67 @@ init python:
     def get_hp_percent():
         return current_hp / float(max_hp)
 
-    def get_orb_positions(num_orbs, center=140, radius=70, orb_radius=15):
+    def get_enemy_hp_percent():
+        return enemy_hp / float(enemy_max_hp)
+
+    def get_orb_positions(num_orbs, radius=70):
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = center + radius * math.cos(angle) - orb_radius
-            y = center + radius * math.sin(angle) - orb_radius
+            x = 140 + radius * math.cos(angle) - 15  # 140 = center, 15 = orb radius
+            y = 140 + radius * math.sin(angle) - 15
             positions.append((int(x), int(y)))
         return positions
 
     class SimpleCircle(renpy.Displayable):
-        def __init__(self, radius, color):
-            super().__init__()
+        def __init__(self, radius, color, border_color=None, border_width=2, padding=0, **kwargs):
+            super().__init__(**kwargs)
             self.radius = radius
             self.color = color
+            self.border_color = border_color
+            self.border_width = border_width
+            self.padding = padding
         def render(self, w, h, st, at):
-            size = 2 * self.radius
+            size = 2 * (self.radius + self.padding)
             r = renpy.Render(size, size)
             c = r.canvas()
-            c.circle(self.color, (self.radius, self.radius), self.radius)
+            center = self.radius + self.padding
+            if self.color:
+                c.circle(self.color, (center, center), self.radius)
+            if self.border_color:
+                c.circle(self.border_color, (center, center), self.radius, self.border_width)
             return r
 
 # ========================
 # Simple Displayables
 # ========================
 define round_bg = SimpleCircle(70, "#505050")
+define glow_circle = SimpleCircle(70, None, "#ffffff", 4, padding=30)
 define orb_active = SimpleCircle(15, "#ffd700")
 define orb_inactive = SimpleCircle(15, "#666666")
 
 # ========================
 # HP Bar Screen
 # ========================
-screen hp_bar():
+screen hero_hp_bar():
     fixed:
-        xpos 30
-        ypos 30
-        # Background
+        # Blue HP bar for hero
         add Solid("#000000") xsize 200 ysize 12
-        # Red fill
         $ fill_width = int(200 * get_hp_percent())
-        add Solid("#c41e3a") xsize fill_width ysize 12
-        # HP percentage
+        add Solid("#4169e1") xsize fill_width ysize 12  # Royal blue
         text "[current_hp]%":
+            xpos 210
+            ypos -2
+            size 16
+            color "#ffffff"
+
+screen enemy_hp_bar():
+    fixed:
+        # Red HP bar for enemy
+        add Solid("#000000") xsize 200 ysize 12
+        $ fill_width = int(200 * get_enemy_hp_percent())
+        add Solid("#c41e3a") xsize fill_width ysize 12  # Red
+        text "[enemy_hp]%":
             xpos 210
             ypos -2
             size 16
@@ -94,16 +115,15 @@ screen round_ui():
 
         # Background circle
         add round_bg:
-            xpos 70
-            ypos 70
+            align (0.5, 0.5)
 
-        # # Glow effect
-        # add SimpleCircle(70, "#ffd700"):
-        #     xpos 70
-        #     ypos 70
-        #     alpha 0.3
-        #     blur 15
-        #     at glow
+        # Glow effect (circular)
+        add glow_circle:
+            align (0.5, 0.5)
+            matrixcolor TintMatrix("#ffd700")
+            blur 20
+            additive 1.0
+            at glow
 
         # Round text
         vbox:
@@ -124,7 +144,7 @@ screen round_ui():
 # ========================
 label start:
     show screen round_ui
-    "Round [current_round], AP [available_ap]/[max_ap], HP [current_hp]/[max_hp]"
+    "Round [current_round], AP [available_ap]/[max_ap], Hero HP [current_hp]/[max_hp], Enemy HP [enemy_hp]/[enemy_max_hp]"
     menu:
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
@@ -137,6 +157,12 @@ label start:
             jump start
         "Heal" if current_hp < max_hp:
             $ current_hp = min(max_hp, current_hp + 20)
+            jump start
+        "Damage Enemy" if enemy_hp > 0:
+            $ enemy_hp = max(0, enemy_hp - 20)
+            jump start
+        "Enemy Heals" if enemy_hp < enemy_max_hp:
+            $ enemy_hp = min(enemy_max_hp, enemy_hp + 15)
             jump start
         "Next Round":
             $ current_round += 1
