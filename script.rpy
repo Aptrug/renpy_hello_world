@@ -41,29 +41,21 @@ init python:
         return positions
 
     class SimpleCircle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, padding=0, **kwargs):
+        def __init__(self, radius, color, **kwargs):
             super().__init__(**kwargs)
             self.radius = radius
             self.color = color
-            self.border_color = border_color
-            self.border_width = border_width
-            self.padding = padding
         def render(self, w, h, st, at):
-            size = 2 * (self.radius + self.padding)
+            size = 2 * self.radius
             r = renpy.Render(size, size)
             c = r.canvas()
-            center = self.radius + self.padding
-            if self.color:
-                c.circle(self.color, (center, center), self.radius)
-            if self.border_color:
-                c.circle(self.border_color, (center, center), self.radius, self.border_width)
+            c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
 
 # ========================
 # Simple Displayables
 # ========================
 define round_bg = SimpleCircle(70, "#505050")
-define glow_circle = SimpleCircle(70, None, "#ffffff", 4, padding=30)
 define orb_active = SimpleCircle(15, "#ffd700")
 define orb_inactive = SimpleCircle(15, "#666666")
 
@@ -104,15 +96,16 @@ screen round_ui():
 
         # Background circle
         add round_bg:
-            align (0.5, 0.5)
+            xpos 70
+            ypos 70
 
-        # Glow effect (circular)
-        add glow_circle:
-            align (0.5, 0.5)
-            matrixcolor TintMatrix("#ffd700")
-            blur 20
-            additive 1.0
-            at glow
+        # # Glow effect
+        # add SimpleCircle(70, "#ffd700"):
+        #     xpos 70
+        #     ypos 70
+        #     alpha 0.3
+        #     blur 15
+        #     at glow
 
         # Round text
         vbox:
