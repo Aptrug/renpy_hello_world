@@ -1,4 +1,4 @@
-﻿# I want you to optimize the code for least CPU usage possible
+﻿# I want you to optimize the code for least CPU usage possible (remove calculation duplication, use cache etc)
 
 # ========================
 # Game Variables
@@ -30,19 +30,14 @@ transform inactive:
 init python:
     import math
 
-    # Cache orb positions for different possible orb counts
-    _orb_positions_cache = {}
-
     def get_orb_positions(num_orbs):
-        if num_orbs not in _orb_positions_cache:
-            positions = []
-            for i in range(num_orbs):
-                angle = 2 * math.pi * i / num_orbs - math.pi/2
-                x = CIRCLE_RADIUS + CIRCLE_RADIUS * math.cos(angle) - ORB_RADIUS
-                y = CIRCLE_RADIUS + CIRCLE_RADIUS * math.sin(angle) - ORB_RADIUS
-                positions.append((int(x), int(y)))
-            _orb_positions_cache[num_orbs] = positions
-        return _orb_positions_cache[num_orbs]
+        positions = []
+        for i in range(num_orbs):
+            angle = 2 * math.pi * i / num_orbs - math.pi/2
+            x = CIRCLE_RADIUS + CIRCLE_RADIUS * math.cos(angle) - ORB_RADIUS
+            y = CIRCLE_RADIUS + CIRCLE_RADIUS * math.sin(angle) - ORB_RADIUS
+            positions.append((int(x), int(y)))
+        return positions
 
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
@@ -57,18 +52,19 @@ init python:
             return r
 
 # ========================
-# Precomputed Constants
+# Simple Displayables
 # ========================
-init python:
-    available_width = config.screen_width - 200  # Leave 200px total margin
-    circle_size = CIRCLE_RADIUS * 2
-    bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
+define round_bg = None  # Will be created dynamically
 
 # ========================
 # Main UI Screen
 # ========================
 screen round_ui():
     add "#808080"
+
+    $ available_width = config.screen_width - 200  # Leave 200px total margin
+    $ circle_size = CIRCLE_RADIUS * 2
+    $ bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
 
     hbox:
         xalign 0.5
@@ -104,8 +100,7 @@ screen round_ui():
                 text "[current_round]" size 56 color "#FFFFFF" xalign 0.5
 
             # AP Orbs
-            $ orb_positions = get_orb_positions(max_ap)
-            for i, (x, y) in enumerate(orb_positions):
+            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 $ is_active = i < available_ap
                 add SimpleCircle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
                     xpos x
