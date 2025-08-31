@@ -556,7 +556,7 @@ screen preferences():
                         label _("Auto-Forward Time (%d/30 cps)") % preferences.afm_time
                         bar value Preference("auto-forward time")
 
-                        label _("Text Outline (%d/6)") % persistent.text_outline_size
+                        label _("Text Outline (%d/4)") % persistent.text_outline_size
                         bar value FieldValue(persistent, "text_outline_size", range=4, style="slider", action=Function(gui.rebuild))
 
 
