@@ -10,8 +10,8 @@ default current_hp = 85
 default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
-default circle_radius = 70
-default orb_radius = 70 // 5
+default CIRCLE_RADIUS = 70
+default ORB_RADIUS = 70 // 5
 
 # ========================
 # ATL Transforms
@@ -34,8 +34,8 @@ init python:
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = circle_radius + circle_radius * math.cos(angle) - orb_radius
-            y = circle_radius + circle_radius * math.sin(angle) - orb_radius
+            x = CIRCLE_RADIUS + CIRCLE_RADIUS * math.cos(angle) - ORB_RADIUS
+            y = CIRCLE_RADIUS + CIRCLE_RADIUS * math.sin(angle) - ORB_RADIUS
             positions.append((int(x), int(y)))
         return positions
 
@@ -63,7 +63,7 @@ screen round_ui():
     add "#808080"
 
     $ available_width = config.screen_width - 200  # Leave 200px total margin
-    $ circle_size = circle_radius * 2
+    $ circle_size = CIRCLE_RADIUS * 2
     $ bar_width = (available_width - circle_size - 100) // 2  # Subtract circle and spacing
 
     hbox:
@@ -88,7 +88,7 @@ screen round_ui():
             ysize circle_size
 
             # Background circle
-            add SimpleCircle(circle_radius, "#505050") align (0.5, 0.5)
+            add SimpleCircle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -102,7 +102,7 @@ screen round_ui():
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
                 $ is_active = i < available_ap
-                add SimpleCircle(orb_radius, "#ffd700" if is_active else "#666666"):
+                add SimpleCircle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
                     xpos x
                     ypos y
                     at (glow if is_active else inactive)
