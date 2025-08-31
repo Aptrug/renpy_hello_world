@@ -15,6 +15,10 @@ default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
+# Animation variables for smooth HP bars
+default hero_display_hp = 85
+default enemy_display_hp = 60
+
 # ========================
 # ATL Transforms
 # ========================
@@ -25,9 +29,6 @@ transform glow:
 
 transform inactive:
     alpha 0.4
-
-transform hp_smooth:
-    ease 0.8
 
 # ========================
 # Python Helpers
@@ -70,6 +71,29 @@ init python:
             c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
 
+    class AnimatedHPBar(renpy.Displayable):
+        def __init__(self, width, target_hp, max_hp, color, **kwargs):
+            super().__init__(**kwargs)
+            self.width = width
+            self.target_hp = target_hp
+            self.max_hp = max_hp
+            self.color = color
+            self.current_hp = target_hp
+
+        def render(self, width, height, st, at):
+            # Smooth interpolation towards target
+            diff = self.target_hp - self.current_hp
+            if abs(diff) > 0.5:
+                self.current_hp += diff * min(st * 2.5, 1.0)  # Smooth animation
+                renpy.redraw(self, 0.02)  # Continue animating
+            else:
+                self.current_hp = self.target_hp
+
+            fill_width = int(self.width * self.current_hp / self.max_hp)
+            r = renpy.Render(fill_width, 12)
+            r.fill(self.color)
+            return r
+
 # ========================
 # Main UI Screen
 # ========================
@@ -99,8 +123,7 @@ screen round_ui():
                 add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
 
                 # HP fill
-                add "#c41e3a" xsize int(bar_width * enemy_hp / enemy_max_hp) ysize 12 xpos 2 ypos 2:
-                    at hp_smooth
+                add AnimatedHPBar(bar_width, enemy_hp, enemy_max_hp, "#c41e3a") xpos 2 ypos 2
 
                 # Inner highlight (top edge)
                 add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
@@ -146,8 +169,7 @@ screen round_ui():
                 add "#000000" xsize bar_width ysize 12 xpos 2 ypos 2
 
                 # HP fill
-                add "#4169e1" xsize int(bar_width * current_hp / max_hp) ysize 12 xpos 2 ypos 2:
-                    at hp_smooth
+                add AnimatedHPBar(bar_width, current_hp, max_hp, "#4169e1") xpos 2 ypos 2
 
                 # Inner highlight (top edge)
                 add "#ffffff" xsize bar_width ysize 1 xpos 2 ypos 2 alpha 0.3
