@@ -29,12 +29,12 @@ init python:
     def get_hp_percent():
         return current_hp / float(max_hp)
 
-    def get_orb_positions(num_orbs, radius=70):
+    def get_orb_positions(num_orbs, center=140, radius=70, orb_radius=15):
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = 140 + radius * math.cos(angle) - 15  # 140 = center, 15 = orb radius
-            y = 140 + radius * math.sin(angle) - 15
+            x = center + radius * math.cos(angle) - orb_radius
+            y = center + radius * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
 
