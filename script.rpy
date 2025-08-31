@@ -11,6 +11,7 @@ default available_ap = 3
 
 define ROUND_RADIUS = 70
 define ORB_RADIUS = 15
+define AURA_PADDING = 30
 
 # ========================
 # ATL Transforms
@@ -40,32 +41,35 @@ init python:
     import math
 
     class Circle(renpy.Displayable):
-        def __init__(self, radius, color, border_color=None, border_width=2, **kwargs):
+        def __init__(self, radius, color, border_color=None, border_width=2, padding=0, **kwargs):
             super().__init__(**kwargs)
             self.radius, self.color = radius, color
             self.border_color, self.border_width = border_color, border_width
+            self.padding = padding
 
         def render(self, w, h, st, at):
-            size = self.radius * 2
+            size = 2 * (self.radius + self.padding)
             r = renpy.Render(size, size)
             c = r.canvas()
 
+            center = self.radius + self.padding
             if self.color:
-                c.circle(self.color, (self.radius, self.radius), self.radius)
+                c.circle(self.color, (center, center), self.radius)
             if self.border_color:
-                c.circle(self.border_color, (self.radius, self.radius), self.radius, self.border_width)
+                c.circle(self.border_color, (center, center), self.radius, self.border_width)
             return r
 
-    def get_orb_positions(num_orbs):
+    def get_orb_positions(num_orbs, center_x, center_y, orbit_radius):
         """
-        Returns orb positions arranged evenly in a circle around ROUND_RADIUS.
-        Offsets by ORB_RADIUS so they align properly.
+        Returns orb top-left positions arranged evenly in a circle around the center.
         """
         positions = []
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            x = ROUND_RADIUS * (1 + math.cos(angle)) - ORB_RADIUS
-            y = ROUND_RADIUS * (1 + math.sin(angle)) - ORB_RADIUS
+            orb_center_x = center_x + orbit_radius * math.cos(angle)
+            orb_center_y = center_y + orbit_radius * math.sin(angle)
+            x = orb_center_x - ORB_RADIUS
+            y = orb_center_y - ORB_RADIUS
             positions.append((int(x), int(y)))
         return positions
 
@@ -73,7 +77,7 @@ init python:
 # Circle Definitions
 # ========================
 define round_bg = Circle(ROUND_RADIUS, (80, 80, 80), (50, 50, 50), 3)
-define glow_source = Circle(ROUND_RADIUS, "#ffffff", None, 0)
+define glow_source = Circle(ROUND_RADIUS, "#ffffff", padding=AURA_PADDING)
 define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
@@ -85,8 +89,8 @@ screen round_ui():
     fixed:
         xalign 0.5
         yalign 0.75
-        xsize ROUND_RADIUS*2
-        ysize ROUND_RADIUS*2
+        xsize 2 * (ROUND_RADIUS + AURA_PADDING)
+        ysize 2 * (ROUND_RADIUS + AURA_PADDING)
 
         # Golden aura
         add glow_source:
@@ -118,7 +122,8 @@ screen round_ui():
                 outlines [(2, "#000000", 0, 0)]
 
         # Orbs arranged around the circle
-        for i, (x, y) in enumerate(get_orb_positions(max_ap)):
+        $ center = ROUND_RADIUS + AURA_PADDING
+        for i, (x, y) in enumerate(get_orb_positions(max_ap, center, center, ROUND_RADIUS)):
             add (orb_active if i < available_ap else orb_inactive_img) at (orb_glow if i < available_ap else orb_inactive) xpos x ypos y
 
 # ========================
