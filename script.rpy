@@ -84,22 +84,20 @@ define orb_active = Circle(ORB_RADIUS, (255, 215, 0), (184, 134, 11), 2)
 define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 
 # ========================
-# HP Bar Gradient Generator
+# Gradient Bars (No pygame)
 # ========================
 init python:
     def gradient_bar(width, height, color1, color2):
-        import pygame
-        surf = pygame.Surface((width, height))
-        for i in range(height):
-            ratio = i / float(height)
-            r = int(color1[0]*(1-ratio) + color2[0]*ratio)
-            g = int(color1[1]*(1-ratio) + color2[1]*ratio)
-            b = int(color1[2]*(1-ratio) + color2[2]*ratio)
-            pygame.draw.line(surf, (r,g,b), (0,i), (width,i))
-        return renpy.display.im.Image(surf)
+        # Simple vertical gradient: top = color1, bottom = color2
+        from renpy.display.im import LiveComposite
+        return LiveComposite(
+            (width, height),
+            (0, 0), Solid(color1, xysize=(width, height//2)),
+            (0, height//2), Solid(color2, xysize=(width, height//2))
+        )
 
-    hero_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, (50,130,255), (20,60,200))
-    enemy_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, (255,80,80), (200,30,30))
+    hero_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#3282FF", "#143CC8")
+    enemy_bar_img = gradient_bar(BAR_WIDTH, BAR_HEIGHT, "#FF5050", "#C81E1E")
 
 # ========================
 # Main UI Screen
