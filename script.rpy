@@ -27,8 +27,8 @@ transform round_glow:
         ease 1.0 alpha 0.8
         ease 1.0 alpha 1.0
     parallel:
-        linear 0.5 additive 0.3
-        linear 0.5 additive 0.0
+        linear 0.1 additive 0.3
+        linear 0.1 additive 0.0
     repeat
 
 transform orb_inactive:
