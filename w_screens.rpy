@@ -4,7 +4,7 @@ default persistent.quickmenu = True
 
 default persistent.iconic_quickmenu = False
 
-default persistent.text_outline_size = 2
+default persistent.text_outline_size = 3
 define gui.text_outlines = [(persistent.text_outline_size, "#000", 0, 0)]
 
 default persistent.dialogue_box_opacity = 0.0
@@ -556,8 +556,8 @@ screen preferences():
                         label _("Auto-Forward Time (%d/30 cps)") % preferences.afm_time
                         bar value Preference("auto-forward time")
 
-                        label _("Text Outline (%d/4)") % persistent.text_outline_size
-                        bar value FieldValue(persistent, "text_outline_size", range=4, style="slider", action=Function(gui.rebuild))
+                        label _("Text Outline (%d/6)") % persistent.text_outline_size
+                        bar value FieldValue(persistent, "text_outline_size", range=6, style="slider", action=Function(gui.rebuild))
 
 
                         label _("Menu Opacity (%d%%)") % (persistent.game_menu_opacity * 100)
@@ -612,7 +612,7 @@ screen preferences():
                     SetVariable("quickmenu", True),
                     SetVariable("config.hw_video", False),
                     Preference("gl powersave", True),
-                    SetVariable("persistent.text_outline_size", 2),
+                    SetVariable("persistent.text_outline_size", 3),
                     SetVariable("persistent.game_menu_opacity", 0.75),
                     SetVariable("persistent.dialogue_box_opacity", 0.0),
                     SetVariable("persistent.iconic_quickmenu", False),
