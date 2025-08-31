@@ -62,15 +62,7 @@ init python:
             c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
 
-# ========================
-# Reusable HP Bar Style
-# ========================
-style hp_bar is bar:
-    bar_invert False
-    thumb None
 
-style hp_frame is fixed:
-    xysize (bar_width + 4, 16)
 
 # ========================
 # Main UI Screen
