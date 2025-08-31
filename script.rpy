@@ -48,6 +48,20 @@ init python:
             _orb_cache[num_orbs] = positions
         return _orb_cache[num_orbs]
 
+    # CRITICAL: SimpleCircle class is required for proper circular rendering
+    # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
+    class SimpleCircle(renpy.Displayable):
+        def __init__(self, radius, color):
+            super().__init__()
+            self.radius = radius
+            self.color = color
+        def render(self, w, h, st, at):
+            size = 2 * self.radius
+            r = renpy.Render(size, size)
+            c = r.canvas()
+            c.circle(self.color, (self.radius, self.radius), self.radius)
+            return r
+
 # ========================
 # Reusable HP Bar Style
 # ========================
@@ -87,8 +101,7 @@ screen round_ui():
             ysize circle_size
 
             # Background circle
-            add Solid("#505050", xysize=(circle_size, circle_size)) at transform:
-                fit "contain"
+            add SimpleCircle(CIRCLE_RADIUS, "#505050") align (0.5, 0.5)
 
             # Round text
             vbox:
@@ -101,11 +114,9 @@ screen round_ui():
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add Solid("#ffd700" if i < available_ap else "#666666", xysize=(ORB_RADIUS*2, ORB_RADIUS*2)):
+                add SimpleCircle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
                     xpos x
                     ypos y
-                    at transform:
-                        fit "contain"
                     at (glow if i < available_ap else inactive)
 
         # Hero HP bar
