@@ -21,84 +21,55 @@ transform glow:
 
 transform inactive:
     alpha 0.4
-    zoom 0.9
 
 # ========================
 # Python Helpers
 # ========================
 init python:
     import math
-    def get_hp_percent():
-        return current_hp / float(max_hp)
 
-    def get_enemy_hp_percent():
-        return enemy_hp / float(enemy_max_hp)
-
-    def get_orb_positions(num_orbs, radius=70):
+    def get_orb_positions(num_orbs):
         positions = []
-        center = 70  # Center of the 140x140 container
+        center = 70
+        radius = 70
         orb_radius = 15
         for i in range(num_orbs):
             angle = 2 * math.pi * i / num_orbs - math.pi/2
-            # Calculate the center position of the orb on the circumference
-            orb_center_x = center + radius * math.cos(angle)
-            orb_center_y = center + radius * math.sin(angle)
-            # Convert to top-left corner for positioning (subtract orb radius)
-            x = orb_center_x - orb_radius
-            y = orb_center_y - orb_radius
+            x = center + radius * math.cos(angle) - orb_radius
+            y = center + radius * math.sin(angle) - orb_radius
             positions.append((int(x), int(y)))
         return positions
-
-    class SimpleCircle(renpy.Displayable):
-        def __init__(self, radius, color):
-            super().__init__()
-            self.radius = radius
-            self.color = color
-        def render(self, w, h, st, at):
-            size = 2 * self.radius
-            r = renpy.Render(size, size)
-            c = r.canvas()
-            c.circle(self.color, (self.radius, self.radius), self.radius)
-            return r
-
-# ========================
-# Simple Displayables
-# ========================
-define round_bg = SimpleCircle(70, "#505050")
-define orb_active = SimpleCircle(15, "#ffd700")
-define orb_inactive = SimpleCircle(15, "#666666")
 
 # ========================
 # Main UI Screen
 # ========================
 screen round_ui():
-    add Solid("#808080")
+    add "#808080"
 
-    # HP bars and Round circle layout using hbox
     hbox:
         xalign 0.5
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar (left) - Red
+        # Enemy HP bar
         vbox:
             spacing 5
             text "Enemy" size 14 color "#ffffff"
             fixed:
                 xsize 200
                 ysize 12
-                add Solid("#000000") xsize 200 ysize 12
-                $ fill_width = int(200 * get_enemy_hp_percent())
-                add Solid("#c41e3a") xsize fill_width ysize 12
+                add "#000000" xsize 200 ysize 12
+                add "#c41e3a" xsize int(200 * enemy_hp / enemy_max_hp) ysize 12
             text "[enemy_hp]%" size 16 color "#ffffff"
 
-        # Round circle (center)
+        # Round circle
         fixed:
             xsize 140
             ysize 140
 
             # Background circle
-            add round_bg align (0.5, 0.5)
+            add Solid("#505050", xysize=(140, 140)) at transform:
+                around (0.5, 0.5)
 
             # Round text
             vbox:
@@ -109,21 +80,22 @@ screen round_ui():
 
             # AP Orbs
             for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add (orb_active if i < available_ap else orb_inactive):
+                $ is_active = i < available_ap
+                add Solid("#ffd700" if is_active else "#666666", xysize=(30, 30)):
                     xpos x
                     ypos y
-                    at (glow if i < available_ap else inactive)
+                    at (glow if is_active else inactive)
+                    around (0.5, 0.5)
 
-        # Hero HP bar (right) - Blue
+        # Hero HP bar
         vbox:
             spacing 5
             text "Hero" size 14 color "#ffffff"
             fixed:
                 xsize 200
                 ysize 12
-                add Solid("#000000") xsize 200 ysize 12
-                $ fill_width = int(200 * get_hp_percent())
-                add Solid("#4169e1") xsize fill_width ysize 12
+                add "#000000" xsize 200 ysize 12
+                add "#4169e1" xsize int(200 * current_hp / max_hp) ysize 12
             text "[current_hp]%" size 16 color "#ffffff"
 
 # ========================
