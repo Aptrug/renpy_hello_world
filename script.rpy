@@ -85,7 +85,7 @@ define orb_inactive_img = Circle(ORB_RADIUS, (102, 102, 102), (60, 60, 60), 2)
 # Main UI Screen
 # ========================
 screen round_ui():
-    add Solid("#808080")  # Gray color in hex
+    add Solid("#000000")  # Gray color in hex
     fixed:
         xalign 0.5
         yalign 0.75
