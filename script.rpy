@@ -161,12 +161,12 @@ screen battle_ui():
         frame:
             xalign 0.5
             add "boss_bg":
-                zoom 0.4
+                zoom 0.5
                 xalign 0.5
 
-            add "boss" at idle_float:
-                xalign 0.5
-                zoom 0.5
+            # add "boss" at idle_float:
+            #     xalign 0.5
+            #     zoom 0.5
 
         # HP bars and round circle
         hbox:
