@@ -5,11 +5,6 @@
 # Hero HP (Mana): Bright blue that dims to darker blue as it depletes
 # Don't add too much complexity though, less is more as they say
 
-# I want to make the following changes
-# Enemy HP (Blood): Starts bright red, gets darker and more "clotted" as HP decreases
-# Hero HP (Mana): Bright blue that dims to darker blue as it depletes
-# Don't add too much complexity though, less is more as they say
-
 # ========================
 # Game Variables
 # ========================
