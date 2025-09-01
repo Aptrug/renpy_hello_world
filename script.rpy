@@ -230,7 +230,7 @@ label start:
     # Big centered boss image
     # Hbox:
         # 2 HP bars & Circle (Remember that the 2 HP bars are the only HP bars there is, Blue is unified for allies and red is unified for enemies)
-    # Hero party
+    # Hbox: Hero party (5 memebers)
 # PS Don't keep rebundant stuff around, bloating the code for no reason
 
 
