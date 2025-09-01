@@ -5,6 +5,11 @@
 # Hero HP (Mana): Bright blue that dims to darker blue as it depletes
 # Don't add too much complexity though, less is more as they say
 
+# Can you change
+# xalign 0.5
+# yalign 0.5
+# to align (0.5, 0.5)
+
 # ========================
 # Game Variables
 # ========================
