@@ -66,26 +66,33 @@ init python:
             _circle_cache[key] = SimpleCircle(radius, color)
         return _circle_cache[key]
 
+    # HP Color cache to avoid recalculating identical values
+    _hp_color_cache = {}
+
     def get_hp_color(current, maximum, is_enemy=False):
-        """Calculate HP bar color based on current/max ratio"""
-        ratio = float(current) / maximum if maximum > 0 else 0.0
+        """Calculate HP bar color based on current/max ratio - cached for efficiency"""
+        # Create cache key from the parameters that affect color
+        cache_key = (current, maximum, is_enemy)
 
-        if is_enemy:
-            # Enemy HP: Bright red to dark clotted red
-            # High HP: #ff3333 (bright red)
-            # Low HP: #660000 (dark clotted red)
-            r = int(0x66 + (0xff - 0x66) * ratio)
-            g = int(0x00 + (0x33 - 0x00) * ratio)
-            b = int(0x00 + (0x33 - 0x00) * ratio)
-        else:
-            # Hero HP: Bright blue to dark blue
-            # High HP: #4169e1 (bright blue)
-            # Low HP: #1a237e (dark blue)
-            r = int(0x1a + (0x41 - 0x1a) * ratio)
-            g = int(0x23 + (0x69 - 0x23) * ratio)
-            b = int(0x7e + (0xe1 - 0x7e) * ratio)
+        if cache_key not in _hp_color_cache:
+            ratio = float(current) / maximum if maximum > 0 else 0.0
 
-        return "#{:02x}{:02x}{:02x}".format(r, g, b)
+            if is_enemy:
+                # Enemy HP: Bright red to dark clotted red
+                # Pre-calculated constants for speed
+                r = int(102 + 153 * ratio)  # 0x66 + (0xff - 0x66) * ratio
+                g = int(51 * ratio)         # 0x33 * ratio
+                b = int(51 * ratio)         # 0x33 * ratio
+            else:
+                # Hero HP: Bright blue to dark blue
+                # Pre-calculated constants for speed
+                r = int(26 + 39 * ratio)    # 0x1a + (0x41 - 0x1a) * ratio
+                g = int(35 + 70 * ratio)    # 0x23 + (0x69 - 0x23) * ratio
+                b = int(126 + 99 * ratio)   # 0x7e + (0xe1 - 0x7e) * ratio
+
+            _hp_color_cache[cache_key] = "#{:02x}{:02x}{:02x}".format(r, g, b)
+
+        return _hp_color_cache[cache_key]
 
     # CRITICAL: SimpleCircle class is required for proper circular rendering
     # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
