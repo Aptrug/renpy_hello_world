@@ -159,11 +159,11 @@ screen battle_ui():
 
         # Boss image section
         add "boss" at idle_float:
+            zoom 0.5
             xpos 0
             ypos 0
-            xsize config.screen_width
-            ysize 540
-            fit "cover"
+            # xsize config.screen_width
+            # ysize 540
             # fit "cover"
 
         # HP bars and round circle
