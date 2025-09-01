@@ -157,20 +157,17 @@ screen battle_ui():
         xalign 0.5
 
         # Boss image section
-        frame:
-            xsize config.screen_width
-            # ysize config.screen_height * 0.4
-            # ysize config.screen_height * 0.5
-            # xalign 0.5
-            add "boss_bg":
-                zoom 0.45
-                # xsize config.screen_width
-                # ysize config.screen_height * 0.4
-                # xalign 0.5
+        fixed:
+            xysize config.screen_width, config.screen_height * 0.4  # upper 40% of screen
 
-            # add "boss" at idle_float:
-            #     xalign 0.5
-            #     zoom 0.5
+            # Background mosaic to cover left/right margins
+            add "boss_bg" xysize config.screen_width, config.screen_height * 0.4
+
+            # Boss image scaled to full width
+            add "boss":
+                xysize config.screen_width, config.screen_height * 0.4
+                xalign 0.5
+                yalign 0.0  # stick to top
 
         # HP bars and round circle
         hbox:
