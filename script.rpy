@@ -162,7 +162,7 @@ screen battle_ui():
             # xpos 0
             ypos 0
             xalign 0.5
-            zoom 0.5
+            zoom 0.6
 
         # HP bars and round circle
         hbox:
