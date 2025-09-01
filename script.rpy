@@ -13,7 +13,20 @@ default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
+# Battle system variables
+default persistent.qmenu_bak = 0
+
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
+
+# ========================
+# Image Definitions
+# ========================
+image boss = "images/combat_system/boss.webp"
+image kenshin = "images/combat_system/kenshin.webp"
+image magic = "images/combat_system/magic.webp"
+image rance = "images/combat_system/rance.webp"
+image reset = "images/combat_system/reset.webp"
+image suzume = "images/combat_system/suzume.webp"
 
 # ========================
 # ATL Transforms
@@ -31,6 +44,32 @@ transform sun_aura:
     ease 4.0 alpha 0.05
     ease 4.0 alpha 0.15
     repeat
+
+# Battle transforms
+transform idle_float:
+    yoffset 0
+    linear 2.0 yoffset -5
+    linear 2.0 yoffset 0
+    repeat
+
+transform ally_selected_effect:
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
+    repeat
+
+transform ally_hover:
+    zoom 1.0
+    linear 0.25 zoom 1.08
+
+transform gentle_float:
+    yoffset 0
+    linear 4.0 yoffset -8
+    linear 4.0 yoffset 0
+    repeat
+
+transform ally_idle:
+    linear 0.25 zoom 1.0
 
 # ========================
 # Python Helpers
@@ -68,24 +107,18 @@ init python:
             _circle_cache[key] = SimpleCircle(radius, color)
         return _circle_cache[key]
 
-    # HP Color cache to avoid recalculating identical values
-    _hp_color_cache = {}
-
     def get_hp_color(current, maximum, is_enemy=False):
         """Calculate HP bar color based on current/max ratio - cached for efficiency"""
-        # Create cache key from the parameters that affect color
         cache_key = (current, maximum, is_enemy)
 
         if cache_key not in _hp_color_cache:
             ratio = current / maximum if maximum > 0 else 0.0
 
             if is_enemy:
-                # Enemy HP: Use pre-computed constants
                 r = int(ENEMY_COLOR_BASE[0] + ENEMY_COLOR_RANGE[0] * ratio)
                 g = int(ENEMY_COLOR_BASE[1] + ENEMY_COLOR_RANGE[1] * ratio)
                 b = int(ENEMY_COLOR_BASE[2] + ENEMY_COLOR_RANGE[2] * ratio)
             else:
-                # Hero HP: Use pre-computed constants
                 r = int(HERO_COLOR_BASE[0] + HERO_COLOR_RANGE[0] * ratio)
                 g = int(HERO_COLOR_BASE[1] + HERO_COLOR_RANGE[1] * ratio)
                 b = int(HERO_COLOR_BASE[2] + HERO_COLOR_RANGE[2] * ratio)
@@ -94,8 +127,11 @@ init python:
 
         return _hp_color_cache[cache_key]
 
-    # CRITICAL: SimpleCircle class is required for proper circular rendering
-    # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
+    # If quit the game mid battle
+    if persistent.qmenu_bak == 2:
+        persistent.quickmenu = True
+        persistent.qmenu_bak = 0
+
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
             super().__init__()
@@ -109,56 +145,78 @@ init python:
             return r
 
 # ========================
-# Main UI Screen
+# Integrated Battle UI Screen
 # ========================
-screen round_ui():
-    # Cache all calculations at screen level
+screen battle_ui():
+    # Cache calculations
     $ bar_width = (config.screen_width - 340) // 2
     $ circle_diameter = CIRCLE_RADIUS * 2
     $ enemy_color = get_hp_color(enemy_hp, enemy_max_hp, True)
     $ hero_color = get_hp_color(current_hp, max_hp, False)
     $ orb_positions = get_orb_positions(max_ap)
 
-    add "#808080"
+    # Feldgrau background
+    add Solid("#4D5D53")
 
-    hbox:
+    vbox:
         xalign 0.5
         yalign 0.5
-        spacing 50
+        spacing 40
 
-        # Enemy HP bar with cached color
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width)
+        # Boss image section
+        add "boss" at idle_float:
+            xalign 0.5
+            zoom 0.65
 
-        # Round circle
-        fixed:
-            xsize circle_diameter
-            ysize circle_diameter
+        # HP bars and round circle
+        hbox:
+            xalign 0.5
+            spacing 50
 
-            # Subtle golden aura (stays within orb boundary)
-            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
+            # Enemy HP bar (unified red for all enemies)
+            use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width)
 
-            # Cached background circle
-            add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
+            # Round circle with AP orbs
+            fixed:
+                xsize circle_diameter
+                ysize circle_diameter
 
-            # Round text
-            vbox:
-                xalign 0.5
-                yalign 0.5
-                yoffset 10
-                spacing -5
-                text "Round" size 20 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
+                # Subtle golden aura
+                add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
 
-            # Optimized AP Orbs - cache positions and minimize function calls
-            for i, (x, y) in enumerate(orb_positions):
-                $ is_active = i < available_ap
-                add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
-                    xpos x
-                    ypos y
-                    at (glow if is_active else inactive)
+                # Background circle
+                add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
 
-        # Hero HP bar with cached color
-        use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
+                # Round text
+                vbox:
+                    xalign 0.5
+                    yalign 0.5
+                    yoffset 10
+                    spacing -5
+                    text "Round" size 20 color "#FFFFFF" xalign 0.5
+                    text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
+
+                # AP Orbs around the circle
+                for i, (x, y) in enumerate(orb_positions):
+                    $ is_active = i < available_ap
+                    add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
+                        xpos x
+                        ypos y
+                        at (glow if is_active else inactive)
+
+            # Hero HP bar (unified blue for all allies)
+            use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
+
+        # Hero party row
+        hbox:
+            xalign 0.5
+            spacing 20
+
+            add "kenshin" at ally_hover
+            add "magic" at gentle_float
+            add "rance" at ally_selected_effect
+            add "reset" at ally_idle
+            add "suzume" at ally_selected_effect
 
 # ========================
 # Reusable HP Bar Component
@@ -193,12 +251,85 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
         text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
 # ========================
-# Demo Label
+# Battle System Labels
+# ========================
+label start_battle:
+    if persistent.quickmenu:
+        $ persistent.qmenu_bak = 2
+    else:
+        $ persistent.qmenu_bak = 1
+    $ persistent.quickmenu = False
+    $ config.rollback_enabled = False
+
+    show screen battle_ui
+
+    "A wild boss appears!"
+    menu:
+        "Attack" if available_ap > 0:
+            $ available_ap -= 1
+            $ enemy_hp = max(0, enemy_hp - 20)
+            "You attack the boss!"
+            jump battle_loop
+        "Defend":
+            "You defend against the next attack!"
+            jump battle_loop
+        "Use Skill" if available_ap >= 2:
+            $ available_ap -= 2
+            $ enemy_hp = max(0, enemy_hp - 35)
+            "You use a powerful skill!"
+            jump battle_loop
+        "Run Away":
+            "You flee from battle!"
+            jump battle_end
+
+label battle_loop:
+    if enemy_hp <= 0:
+        "The boss is defeated!"
+        jump battle_end
+
+    "Boss attacks!"
+    $ current_hp = max(0, current_hp - 15)
+
+    if current_hp <= 0:
+        "You have been defeated!"
+        jump battle_end
+
+    menu:
+        "Continue Fighting" if available_ap > 0:
+            jump start_battle
+        "Next Round" if available_ap <= 0:
+            $ current_round += 1
+            $ available_ap = max_ap
+            jump start_battle
+        "Retreat":
+            jump battle_end
+
+label battle_end:
+    if persistent.qmenu_bak == 2:
+        $ persistent.quickmenu = True
+    $ persistent.qmenu_bak = 0
+
+    hide screen battle_ui
+    $ renpy.block_rollback()
+    $ config.rollback_enabled = True
+
+    jump after_battle
+
+label after_battle:
+    "The battle is over, and the heroes catch their breath."
+    "Kenshin: That was intense!"
+    "Rance: Let's keep moving."
+    return
+
+# ========================
+# Demo Label (for testing)
 # ========================
 label start:
-    show screen round_ui
+    show screen battle_ui
     "Round [current_round], AP [available_ap]/[max_ap], Hero HP [current_hp]/[max_hp], Enemy HP [enemy_hp]/[enemy_max_hp]"
     menu:
+        "Start Battle":
+            jump start_battle
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
             jump start
@@ -223,182 +354,3 @@ label start:
             jump start
         "Exit":
             return
-
-# I want you to integrate the code below in the code above
-# The battle UI will be like
-# VBox:
-    # Big centered boss image
-    # Hbox:
-        # 2 HP bars & Circle (Remember that the 2 HP bars are the only HP bars there is, Blue is unified for allies and red is unified for enemies)
-    # Hbox: Hero party (5 memebers)
-# PS Don't keep rebundant stuff around, bloating the code for no reason
-
-
-# Preload all images
-image boss = "images/combat_system/boss.webp"
-image kenshin = "images/combat_system/kenshin.webp"
-image magic = "images/combat_system/magic.webp"
-image rance = "images/combat_system/rance.webp"
-image reset = "images/combat_system/reset.webp"
-image suzume = "images/combat_system/suzume.webp"
-
-# 0 all good
-# 1 still all good
-# 2 must re-enable quickmenu later
-default persistent.qmenu_bak = 0
-
-init python:
-    # If quit the game mid battle
-    if persistent.qmenu_bak == 2:
-        persistent.quickmenu = True
-        persistent.qmenu_bak = 0
-
-screen battle_ui():
-    # Feldgrau background
-    add Solid("#4D5D53")
-
-    # Boss image, centered top, 70% height, top margin 30px
-    add "boss" at idle_float:
-        xalign 0.5
-        yalign 0.1
-        zoom 0.65
-
-    # Allies row, bottom center
-    hbox:
-        xalign 0.5
-        yalign 0.95
-        spacing 20
-
-        add "kenshin" at ally_hover
-        add "magic" at gentle_float
-        add "rance" at ally_selected_effect
-        add "reset" at ally_idle
-        add "suzume" at ally_selected_effect
-
-# Bunch of effects, some used, some not
-transform idle_float:
-    yoffset 0
-    linear 2.0 yoffset -5
-    linear 2.0 yoffset 0
-    repeat
-
-transform pulse_glow:
-    alpha 0.5
-    linear 1.0 alpha 0.8
-    linear 1.0 alpha 0.5
-    repeat
-
-transform slow_pulse:
-    alpha 0.9
-    linear 1.5 alpha 1.0
-    linear 1.5 alpha 0.9
-    repeat
-
-transform hit_shake:
-    linear 0.1 xoffset 10
-    linear 0.1 xoffset -10
-    linear 0.1 xoffset 0
-
-transform ally_selected_effect:
-    matrixcolor BrightnessMatrix(0.3)
-    linear 0.8 matrixcolor BrightnessMatrix(0.1)
-    linear 0.8 matrixcolor BrightnessMatrix(0.3)
-    repeat
-
-transform boss_breathe:
-    yoffset 30 zoom 0.7
-    linear 3.0 yoffset 25 zoom 0.72
-    linear 3.0 yoffset 30 zoom 0.7
-    repeat
-
-transform ally_hover_effect:
-    zoom 1.08
-    matrixcolor BrightnessMatrix(0.2)
-
-transform ally_hover:
-    zoom 1.0
-    linear 0.25 zoom 1.08
-
-transform gentle_float:
-    yoffset 0
-    linear 4.0 yoffset -8
-    linear 4.0 yoffset 0
-    repeat
-
-transform ally_idle:
-    linear 0.25 zoom 1.0
-
-# === Extra Effects (High Impact, Low Cost) ===
-
-# Quick "anticipation" zoom before attacks, then reset
-transform attack_zoom:
-    zoom 1.0
-    linear 0.15 zoom 1.1
-    linear 0.15 zoom 1.0
-
-# Simple white flash overlay for hits
-transform hit_flash:
-    alpha 0.0
-    linear 0.05 alpha 0.6
-    linear 0.2 alpha 0.0
-
-# Smooth health bar changes (use on bar images)
-transform smooth_hp:
-    linear 0.5 xzoom 1.0  # You'd adjust size dynamically, this smooths it visually
-
-# Floating damage numbers or text (up and fade out)
-transform damage_float:
-    yoffset 0 alpha 1.0
-    linear 0.8 yoffset -40 alpha 0.0
-
-# Attack "impact shake" (slightly bigger than hit_shake)
-transform impact_shake:
-    linear 0.05 xoffset 15
-    linear 0.05 xoffset -15
-    linear 0.05 xoffset 10
-    linear 0.05 xoffset -10
-    linear 0.05 xoffset 0
-
-# Parallax-like background drift
-transform bg_drift:
-    xpos 0.0
-    linear 20.0 xpos -50.0
-    linear 20.0 xpos 0.0
-    repeat
-
-label start_battle:
-    if persistent.quickmenu:
-        $persistent.qmenu_bak = 2
-    else:
-        $persistent.qmenu_bak = 1
-    $persistent.quickmenu = False
-
-    $config.rollback_enabled = False
-
-    show screen battle_ui
-
-    "A wild boss appears!"
-    "Kenshin attacks!"
-    "Boss retaliates!"
-
-    if persistent.qmenu_bak == 2:
-        $persistent.quickmenu = True
-    $persistent.qmenu_bak = 0
-
-    hide screen battle_ui
-
-    $renpy.block_rollback()
-    $config.rollback_enabled = True
-
-    scene forest with fade
-
-    # Jump back to main story/dialogue
-    jump after_battle
-
-label after_battle:
-    "The battle is over, and the heroes catch their breath."
-    "Kenshin: That was intense!"
-    "Rance: Let's keep moving."
-
-    # Continue with normal story
-    return
