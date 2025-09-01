@@ -34,22 +34,6 @@ transform sun_aura:
     ease 4.0 alpha 0.15
     repeat
 
-# Liquid animation transforms for HP bars
-transform liquid_flow:
-    ease 2.0 alpha 0.7
-    ease 2.0 alpha 1.0
-    repeat
-
-transform liquid_bubble:
-    ease 1.8 alpha 0.8 yoffset -1
-    ease 1.8 alpha 1.0 yoffset 1
-    repeat
-
-transform liquid_shimmer:
-    ease 3.0 alpha 0.6
-    ease 3.0 alpha 0.9
-    repeat
-
 # ========================
 # Python Helpers
 # ========================
@@ -92,23 +76,6 @@ init python:
             c = r.canvas()
             c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
-
-    # Helper functions for liquid color variations
-    def get_liquid_colors(base_color, hp_percentage):
-        if base_color == "#c41e3a":  # Enemy red - blood-like
-            if hp_percentage > 0.6:
-                return ["#c41e3a", "#d42c47", "#b01833"]  # Healthy blood red
-            elif hp_percentage > 0.3:
-                return ["#a01529", "#c41e3a", "#8b1220"]  # Darker, more intense
-            else:
-                return ["#7a0e1a", "#a01529", "#5c0a13"]  # Dark, clotted blood
-        else:  # Hero blue - mana-like
-            if hp_percentage > 0.6:
-                return ["#4169e1", "#5a7ae8", "#2d5bd9"]  # Bright blue mana
-            elif hp_percentage > 0.3:
-                return ["#2d5bd9", "#4169e1", "#1e4bcc"]  # Deeper blue
-            else:
-                return ["#1a3ba3", "#2d5bd9", "#14307a"]  # Dark, fading mana
 
 # ========================
 # Main UI Screen
@@ -159,13 +126,9 @@ screen round_ui():
         use hp_bar_section("Hero", current_hp, max_hp, "#4169e1", bar_width)
 
 # ========================
-# Reusable HP Bar Component with Liquid Effects
+# Reusable HP Bar Component
 # ========================
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
-    $ hp_percentage = float(hp_value) / max_hp_value if max_hp_value > 0 else 0
-    $ liquid_colors = get_liquid_colors(color, hp_percentage)
-    $ bar_fill_width = int(width * hp_percentage)
-
     vbox:
         spacing 5
         text label size gui.notify_text_size color "#ffffff"
@@ -178,31 +141,16 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
             add "#333333" xsize width + 4 ysize 16
             add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
-            # Multi-layered liquid effect (only if there's HP)
-            if hp_value > 0:
-                # Base liquid layer
-                add liquid_colors[0]:
-                    xsize bar_fill_width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    at liquid_flow
-
-                # Flowing liquid layer (slightly different timing)
-                add liquid_colors[1]:
-                    xsize bar_fill_width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    at liquid_bubble
-
-                # Shimmer effect layer
-                add liquid_colors[2]:
-                    xsize bar_fill_width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    at liquid_shimmer
+            # Animated HP bar
+            bar:
+                value AnimatedValue(hp_value, max_hp_value, 0.8)
+                range max_hp_value
+                xsize width
+                ysize 12
+                xpos 2
+                ypos 2
+                left_bar color
+                right_bar "#000000"
 
             # Highlight
             add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
