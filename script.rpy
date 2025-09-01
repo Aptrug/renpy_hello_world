@@ -11,7 +11,7 @@ default max_hp = 100
 default enemy_hp = 60
 default enemy_max_hp = 80
 default CIRCLE_RADIUS = 64
-default ORB_RADIUS = 12
+default ORB_RADIUS = 16
 
 # Battle system variables
 default persistent.qmenu_bak = 0
