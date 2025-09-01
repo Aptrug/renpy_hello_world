@@ -201,7 +201,7 @@ screen battle_ui():
         # Hero party row
         hbox:
             xalign 0.5
-            spacing 20
+            spacing 60
 
             add "kenshin"
             add "magic"
