@@ -143,7 +143,7 @@ screen round_ui():
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align xalign 0.5 yalign 0.5 at sun_aura
 
             # Cached background circle
-            add get_circle(CIRCLE_RADIUS, "#505050") align xalign 0.5 yalign 0.5 (0.5, 0.5)
+            add get_circle(CIRCLE_RADIUS, "#505050") align xalign 0.5 yalign 0.5
 
             # Round text
             vbox:
