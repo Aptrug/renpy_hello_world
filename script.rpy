@@ -158,7 +158,7 @@ screen battle_ui():
         xalign 0.5
 
         # Boss image section
-        fixed:
+        # fixed:
             # xalign 0.5
             # yalign 0.0  # stick to the top of the screen
             # xsize config.screen_width
@@ -166,7 +166,7 @@ screen battle_ui():
 
             # add "boss_bg" zoom 0.5 xalign 0.5 yalign 0.0
             #
-            add "boss" at idle_float zoom 0.5
+        add "boss" at idle_float zoom 0.5
 
         # HP bars and round circle
         hbox:
