@@ -250,53 +250,52 @@ screen round_ui():
         use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width, "hero")
 
 # ========================
-# Reusable HP Bar Component with Damage Numbers
+# Reusable HP Bar Component
 # ========================
 screen hp_bar_section(label, hp_value, max_hp_value, color, width, target_type="enemy"):
-    fixed:
-        # Main HP bar content
-        vbox:
-            spacing 5
-            text label size gui.notify_text_size color "#ffffff"
+    vbox:
+        spacing 5
+        text label size gui.notify_text_size color "#ffffff"
 
-            fixed:
-                xsize width + 4
-                ysize 16
+        fixed:
+            xsize width + 4
+            ysize 16
 
-                # Frame and background
-                add "#333333" xsize width + 4 ysize 16
-                add "#000000" xsize width ysize 12 xpos 2 ypos 2
+            # Frame and background
+            add "#333333" xsize width + 4 ysize 16
+            add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
-                # Animated HP bar with dynamic color
-                bar:
-                    value AnimatedValue(hp_value, max_hp_value, 0.8)
-                    range max_hp_value
-                    xsize width
-                    ysize 12
-                    xpos 2
-                    ypos 2
-                    left_bar color
-                    right_bar "#000000"
+            # Animated HP bar with dynamic color
+            bar:
+                value AnimatedValue(hp_value, max_hp_value, 0.8)
+                range max_hp_value
+                xsize width
+                ysize 12
+                xpos 2
+                ypos 2
+                left_bar color
+                right_bar "#000000"
 
-                # Highlight
-                add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+            # Highlight
+            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
-            text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+            # Floating damage numbers for this target
+            for damage in damage_numbers:
+                if damage['target'] == target_type:
+                    $ damage_size = 36 if damage['is_crit'] else (28 if damage['is_heal'] else 24)
 
-        # Floating damage numbers for this target
-        for damage in damage_numbers:
-            if damage['target'] == target_type:
-                $ damage_size = 36 if damage['is_crit'] else (28 if damage['is_heal'] else 24)
+                    text damage['text']:
+                        size damage_size
+                        color damage['color']
+                        outlines [(2, "#000000", 0, 0)]
+                        bold damage['is_crit']
+                        xalign 0.5
+                        yalign 0.0
+                        yoffset -10
+                        xoffset damage['x_offset']
+                        at (heal_float() if damage['is_heal'] else (damage_float_crit() if damage['is_crit'] else damage_float()))
 
-                text damage['text']:
-                    size damage_size
-                    color damage['color']
-                    outlines [(2, "#000000", 0, 0)]
-                    bold damage['is_crit']
-                    xalign 0.5
-                    yalign 0.3
-                    xoffset damage['x_offset']
-                    at (heal_float() if damage['is_heal'] else (damage_float_crit() if damage['is_crit'] else damage_float()))
+        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
 # ========================
 # Demo Label with Damage Number Integration
