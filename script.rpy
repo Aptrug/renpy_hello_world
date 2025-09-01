@@ -182,7 +182,7 @@ screen battle_ui():
                 vbox:
                     xalign 0.5
                     yalign 0.5
-                    # yoffset 10
+                    yoffset 5
                     spacing -10
                     text "Round" size 20 color "#FFFFFF" xalign 0.5
                     text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
