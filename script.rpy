@@ -5,6 +5,11 @@
 # Hero HP (Mana): Bright blue that dims to darker blue as it depletes
 # Don't add too much complexity though, less is more as they say
 
+# I want to make the following changes
+# Enemy HP (Blood): Starts bright red, gets darker and more "clotted" as HP decreases
+# Hero HP (Mana): Bright blue that dims to darker blue as it depletes
+# Don't add too much complexity though, less is more as they say
+
 # ========================
 # Game Variables
 # ========================
@@ -66,6 +71,25 @@ init python:
             _circle_cache[key] = SimpleCircle(radius, color)
         return _circle_cache[key]
 
+    def get_hp_color(hp_value, max_hp_value, is_enemy=False):
+        """Calculate dynamic HP bar color based on current HP percentage"""
+        hp_percent = float(hp_value) / max_hp_value
+
+        if is_enemy:
+            # Enemy HP: Bright red to dark "clotted" red
+            # Start with bright red (#ff4444), fade to dark red (#660000)
+            r = int(0x66 + (0xff - 0x66) * hp_percent)
+            g = int(0x00 + (0x44 - 0x00) * hp_percent)
+            b = int(0x00 + (0x44 - 0x00) * hp_percent)
+        else:
+            # Hero HP: Bright blue to dim blue
+            # Start with bright blue (#4169e1), fade to dark blue (#1e3a8a)
+            r = int(0x1e + (0x41 - 0x1e) * hp_percent)
+            g = int(0x3a + (0x69 - 0x3a) * hp_percent)
+            b = int(0x8a + (0xe1 - 0x8a) * hp_percent)
+
+        return "#{:02x}{:02x}{:02x}".format(r, g, b)
+
     # CRITICAL: SimpleCircle class is required for proper circular rendering
     # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
     class SimpleCircle(renpy.Displayable):
@@ -95,8 +119,8 @@ screen round_ui():
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)
+        # Enemy HP bar with dynamic blood color
+        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, get_hp_color(enemy_hp, enemy_max_hp, True), bar_width)
 
         # Round circle
         fixed:
@@ -125,8 +149,8 @@ screen round_ui():
                     ypos y
                     at (glow if i < available_ap else inactive)
 
-        # Hero HP bar
-        use hp_bar_section("Hero", current_hp, max_hp, "#4169e1", bar_width)
+        # Hero HP bar with dynamic mana color
+        use hp_bar_section("Hero", current_hp, max_hp, get_hp_color(current_hp, max_hp, False), bar_width)
 
 # ========================
 # Reusable HP Bar Component
@@ -144,7 +168,7 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
             add "#333333" xsize width + 4 ysize 16
             add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
-            # Animated HP bar
+            # Animated HP bar with dynamic color
             bar:
                 value AnimatedValue(hp_value, max_hp_value, 0.8)
                 range max_hp_value
