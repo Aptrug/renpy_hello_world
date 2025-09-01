@@ -1,7 +1,6 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# How to make boss image (1920x1080) take the entire upper screen aka have no margin (above it) and stretch fully by width,
-# but must not interfere with with elements below it
+# How to make boss image (1920x1080) take the entire upper screen and make boss_bg cover the empty left and right margin around it
 
 # ========================
 # Game Variables
