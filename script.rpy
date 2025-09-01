@@ -161,7 +161,6 @@ screen battle_ui():
             xalign 0.0
             yalign 0.0
             xsize config.screen_width
-            yfit True
 
         # HP bars and round circle
         hbox:
