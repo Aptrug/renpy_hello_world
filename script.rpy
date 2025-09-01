@@ -185,18 +185,19 @@ screen round_ui():
     if critical_hp_warning:
         add "#ff0000" alpha 0.1 at critical_pulse
 
+    # ORIGINAL LAYOUT: Centered horizontal layout
     hbox:
         xalign 0.5
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar with shake on damage
+        # Enemy HP bar (LEFT) with shake on damage
         fixed:
             if last_damage_dealt > 0:
                 at damage_shake
             use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width, True)
 
-        # Enhanced Round circle with momentum
+        # Round circle (CENTER) with enhancements
         fixed:
             xsize circle_diameter
             ysize circle_diameter
@@ -208,11 +209,10 @@ screen round_ui():
             # Subtle golden aura (baseline)
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
 
-            # Background circle with momentum tint
-            $ bg_color = "#505050" if abs(combat_momentum) <= 1 else momentum_color
-            add get_circle(CIRCLE_RADIUS, bg_color) xalign 0.5 yalign 0.5 alpha (0.8 if abs(combat_momentum) > 1 else 1.0)
+            # Background circle - keep original color scheme
+            add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
 
-            # Round text with momentum indicator
+            # Round text (same as original)
             vbox:
                 xalign 0.5
                 yalign 0.5
@@ -221,11 +221,7 @@ screen round_ui():
                 text "Round" size 20 color "#FFFFFF" xalign 0.5
                 text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
-                # NEW: Momentum indicator
-                if abs(combat_momentum) > 1:
-                    text ("↑" if combat_momentum > 1 else "↓") size 16 color momentum_color xalign 0.5
-
-            # Enhanced AP Orbs with low-AP warning
+            # Enhanced AP Orbs with low-AP warning (same positions as original)
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
                 $ orb_color = "#ffd700" if is_active else "#666666"
@@ -236,19 +232,19 @@ screen round_ui():
                     ypos y
                     at (critical_pulse if use_warning else (glow if is_active else inactive))
 
-        # Hero HP bar with shake on damage and warning effects
+        # Hero HP bar (RIGHT) with shake on damage
         fixed:
             if last_damage_taken > 0:
                 at damage_shake
             use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width, False)
 
-    # NEW: Floating damage numbers
+    # NEW: Floating damage numbers (positioned over the bars)
     if last_damage_dealt > 0:
-        text "-[last_damage_dealt]" size 36 color "#ff4444" xalign 0.35 yalign 0.3 at floating_damage
+        text "-[last_damage_dealt]" size 36 color "#ff4444" xalign 0.25 yalign 0.4 at floating_damage
     if last_damage_taken > 0:
-        text "-[last_damage_taken]" size 36 color "#ff0000" xalign 0.65 yalign 0.3 at floating_damage
+        text "-[last_damage_taken]" size 36 color "#ff0000" xalign 0.75 yalign 0.4 at floating_damage
 
-    # NEW: Combat status indicators
+    # NEW: Combat status indicators (corner overlay, doesn't break layout)
     vbox:
         xalign 0.02
         yalign 0.02
@@ -261,16 +257,6 @@ screen round_ui():
 
         if available_ap <= 1:
             text "LOW AP" size 18 color "#ffaa00" at glow
-
-    # NEW: Quick status summary
-    vbox:
-        xalign 0.98
-        yalign 0.02
-        spacing 2
-
-        text "Momentum: [combat_momentum]" size 16 color momentum_color
-        if abs(combat_momentum) > 2:
-            text ("ADVANTAGE" if combat_momentum > 0 else "DANGER") size 18 color momentum_color at glow
 
 # ========================
 # Enhanced HP Bar Component
