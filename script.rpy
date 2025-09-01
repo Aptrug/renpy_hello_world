@@ -46,15 +46,19 @@ transform damage_float(is_crit=False):
         ease 0.5 alpha 1.0
         ease 1.5 alpha 0.0
 
-    # Add slight shake for critical hits
-    if is_crit:
-        parallel:
-            ease 0.05 xoffset 2
-            ease 0.05 xoffset -2
-            ease 0.05 xoffset 1
-            ease 0.05 xoffset 0
-
-transform heal_float():
+transform damage_float_crit():
+    alpha 0.0 yoffset 0
+    ease 0.1 alpha 1.0
+    parallel:
+        ease 2.0 yoffset -100
+    parallel:
+        ease 0.5 alpha 1.0
+        ease 1.5 alpha 0.0
+    parallel:
+        ease 0.05 xoffset 2
+        ease 0.05 xoffset -2
+        ease 0.05 xoffset 1
+        ease 0.05 xoffset 0
     alpha 0.0 yoffset 0 zoom 1.0
     ease 0.1 alpha 1.0 zoom 1.2
     parallel:
@@ -283,17 +287,16 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width, target_type="
         for damage in damage_numbers:
             if damage['target'] == target_type:
                 $ damage_size = 36 if damage['is_crit'] else (28 if damage['is_heal'] else 24)
-                $ damage_weight = "bold" if damage['is_crit'] else "normal"
 
                 text damage['text']:
                     size damage_size
                     color damage['color']
                     outlines [(2, "#000000", 0, 0)]
-                    font_weight damage_weight
+                    bold damage['is_crit']
                     xalign 0.5
                     yalign 0.3
                     xoffset damage['x_offset']
-                    at (heal_float() if damage['is_heal'] else damage_float(damage['is_crit']))
+                    at (heal_float() if damage['is_heal'] else (damage_float_crit() if damage['is_crit'] else damage_float()))
 
 # ========================
 # Demo Label with Damage Number Integration
