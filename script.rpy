@@ -154,16 +154,18 @@ screen battle_ui():
 
     vbox:
         spacing 40
+        xalign 0.5
 
         # Boss image section
         add "boss" at idle_float:
-            xalign 0.5
+            # xalign 0.5
             zoom 0.5
 
         # HP bars and round circle
         hbox:
             # xoffset 50
-            xalign 0.6
+            # xalign 0.6
+
             spacing 40
 
             # Enemy HP bar (unified red for all enemies)
