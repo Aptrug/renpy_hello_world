@@ -157,15 +157,9 @@ screen battle_ui():
         xalign 0.5
 
         # Boss image section
-        fixed:
-            xysize config.screen_width, config.screen_height * 0.4  # top 40% container
-
-            add Tile("boss_bg")
-
-            add "boss":
-                xalign 0.5
-                yalign 0.0
-                zoom (config.screen_height * 0.4) / 1080.0  # scale height to fit container (preserves aspect ratio)
+        add "boss" at idle_float:
+            xalign 0.5
+            zoom 0.5
 
         # HP bars and round circle
         hbox:
