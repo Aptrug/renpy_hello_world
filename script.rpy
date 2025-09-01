@@ -1,6 +1,6 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# I wonder, can the HP bar be made into a less boring shape (straight line) without adding too much complexity?
+# I want the HP bar be made into a less amateurish and less boring shape (straight line), I want it shaped like a Kilij, make the hero bar pointed up, while enemies pointed down
 
 # ========================
 # Game Variables
@@ -77,6 +77,141 @@ init python:
             c.circle(self.color, (self.radius, self.radius), self.radius)
             return r
 
+    # Kilij HP Bar Displayable
+    class KilijHPBar(renpy.Displayable):
+        def __init__(self, width, height, current_hp, max_hp, color, upward=True):
+            super().__init__()
+            self.width = width
+            self.height = height
+            self.current_hp = current_hp
+            self.max_hp = max_hp
+            self.color = color
+            self.upward = upward
+
+        def render(self, w, h, st, at):
+            r = renpy.Render(self.width, self.height)
+            c = r.canvas()
+
+            # Calculate HP percentage
+            hp_percent = self.current_hp / float(self.max_hp) if self.max_hp > 0 else 0
+
+            # Kilij blade dimensions
+            blade_width = self.width - 20
+            blade_height = self.height - 25
+            hilt_width = 30
+            hilt_height = 15
+
+            # Starting positions
+            start_x = 10
+            start_y = 10 if self.upward else self.height - 25
+
+            if self.upward:
+                # Hero kilij (pointing up)
+                # Create the kilij shape path - blade pointing upward
+                points = [
+                    # Hilt (bottom)
+                    (start_x + blade_width//2 - hilt_width//2, start_y + blade_height),
+                    (start_x + blade_width//2 + hilt_width//2, start_y + blade_height),
+                    (start_x + blade_width//2 + hilt_width//2, start_y + blade_height + hilt_height),
+                    (start_x + blade_width//2 - hilt_width//2, start_y + blade_height + hilt_height),
+
+                    # Back to hilt connection
+                    (start_x + blade_width//2 - hilt_width//2, start_y + blade_height),
+
+                    # Blade left edge (curved outward)
+                    (start_x + blade_width//2 - 25, start_y + blade_height * 0.7),
+                    (start_x + blade_width//2 - 30, start_y + blade_height * 0.4),
+                    (start_x + blade_width//2 - 25, start_y + blade_height * 0.1),
+
+                    # Tip (pointed)
+                    (start_x + blade_width//2, start_y),
+
+                    # Blade right edge (curved outward)
+                    (start_x + blade_width//2 + 25, start_y + blade_height * 0.1),
+                    (start_x + blade_width//2 + 30, start_y + blade_height * 0.4),
+                    (start_x + blade_width//2 + 25, start_y + blade_height * 0.7),
+
+                    # Back to hilt
+                    (start_x + blade_width//2 + hilt_width//2, start_y + blade_height)
+                ]
+            else:
+                # Enemy kilij (pointing down)
+                points = [
+                    # Hilt (top)
+                    (start_x + blade_width//2 - hilt_width//2, start_y),
+                    (start_x + blade_width//2 + hilt_width//2, start_y),
+                    (start_x + blade_width//2 + hilt_width//2, start_y + hilt_height),
+                    (start_x + blade_width//2 - hilt_width//2, start_y + hilt_height),
+
+                    # Blade connection
+                    (start_x + blade_width//2 - hilt_width//2, start_y + hilt_height),
+
+                    # Blade left edge (curved outward)
+                    (start_x + blade_width//2 - 25, start_y + hilt_height + blade_height * 0.3),
+                    (start_x + blade_width//2 - 30, start_y + hilt_height + blade_height * 0.6),
+                    (start_x + blade_width//2 - 25, start_y + hilt_height + blade_height * 0.9),
+
+                    # Tip (pointed down)
+                    (start_x + blade_width//2, start_y + hilt_height + blade_height),
+
+                    # Blade right edge (curved outward)
+                    (start_x + blade_width//2 + 25, start_y + hilt_height + blade_height * 0.9),
+                    (start_x + blade_width//2 + 30, start_y + hilt_height + blade_height * 0.6),
+                    (start_x + blade_width//2 + 25, start_y + hilt_height + blade_height * 0.3),
+
+                    # Back to hilt
+                    (start_x + blade_width//2 + hilt_width//2, start_y + hilt_height)
+                ]
+
+            # Draw background kilij (dark outline)
+            c.polygon("#333333", points)
+
+            # Calculate filled area based on HP
+            if hp_percent > 0:
+                if self.upward:
+                    # Fill from bottom up for hero
+                    fill_height = blade_height * hp_percent
+                    fill_y = start_y + blade_height - fill_height
+
+                    # Create filled kilij shape
+                    fill_points = []
+                    if hp_percent >= 0.95:  # Almost full - include most of the blade
+                        fill_points = points[4:-1]  # Exclude hilt, include most blade
+                    elif hp_percent >= 0.7:  # Upper portion
+                        mid_point = int(len(points[4:-1]) * (hp_percent - 0.7) / 0.25)
+                        fill_points = [
+                            (start_x + blade_width//2 - hilt_width//2, start_y + blade_height),
+                            (start_x + blade_width//2 + hilt_width//2, start_y + blade_height)
+                        ] + points[4:4+mid_point+1]
+                    else:  # Lower portion (hilt area)
+                        fill_points = [
+                            (start_x + blade_width//2 - hilt_width//2, start_y + blade_height),
+                            (start_x + blade_width//2 + hilt_width//2, start_y + blade_height),
+                            (start_x + blade_width//2 + hilt_width//2, start_y + blade_height + hilt_height * hp_percent/0.7),
+                            (start_x + blade_width//2 - hilt_width//2, start_y + blade_height + hilt_height * hp_percent/0.7)
+                        ]
+                else:
+                    # Fill from top down for enemy
+                    fill_height = (blade_height + hilt_height) * hp_percent
+
+                    if hp_percent >= 0.8:  # Include blade
+                        blade_percent = (hp_percent - 0.2) / 0.8
+                        mid_point = int(len(points[4:-1]) * blade_percent)
+                        fill_points = points[0:4] + points[4:4+mid_point+1]
+                    else:  # Just hilt
+                        hilt_fill = hilt_height * (hp_percent / 0.2)
+                        fill_points = [
+                            (start_x + blade_width//2 - hilt_width//2, start_y),
+                            (start_x + blade_width//2 + hilt_width//2, start_y),
+                            (start_x + blade_width//2 + hilt_width//2, start_y + hilt_fill),
+                            (start_x + blade_width//2 - hilt_width//2, start_y + hilt_fill)
+                        ]
+
+                if fill_points:
+                    c.polygon(self.color, fill_points)
+
+            return r
+
 # ========================
 # Main UI Screen
 # ========================
@@ -92,8 +227,8 @@ screen round_ui():
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width)
+        # Enemy HP bar (kilij pointing down)
+        use kilij_hp_bar_section("Enemy", enemy_hp, enemy_max_hp, "#c41e3a", bar_width, False)
 
         # Round circle
         fixed:
@@ -122,38 +257,19 @@ screen round_ui():
                     ypos y
                     at (glow if i < available_ap else inactive)
 
-        # Hero HP bar
-        use hp_bar_section("Hero", current_hp, max_hp, "#4169e1", bar_width)
+        # Hero HP bar (kilij pointing up)
+        use kilij_hp_bar_section("Hero", current_hp, max_hp, "#4169e1", bar_width, True)
 
 # ========================
-# Reusable HP Bar Component
+# Kilij HP Bar Component
 # ========================
-screen hp_bar_section(label, hp_value, max_hp_value, color, width):
+screen kilij_hp_bar_section(label, hp_value, max_hp_value, color, width, upward):
     vbox:
         spacing 5
         text label size gui.notify_text_size color "#ffffff"
 
-        fixed:
-            xsize width + 4
-            ysize 16
-
-            # Frame and background
-            add "#333333" xsize width + 4 ysize 16
-            add "#000000" xsize width ysize 12 xpos 2 ypos 2
-
-            # Animated HP bar
-            bar:
-                value AnimatedValue(hp_value, max_hp_value, 0.8)
-                range max_hp_value
-                xsize width
-                ysize 12
-                xpos 2
-                ypos 2
-                left_bar color
-                right_bar "#000000"
-
-            # Highlight
-            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+        # Kilij-shaped HP bar
+        add KilijHPBar(width, 80, hp_value, max_hp_value, color, upward)
 
         text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
