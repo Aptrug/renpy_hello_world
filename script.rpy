@@ -43,9 +43,16 @@ transform sun_aura:
 init python:
     import math
 
-    # Cache orb positions and circles for lower CPU usage
+    # Cache orb positions, circles, and colors for lower CPU usage
     _orb_cache = {}
     _circle_cache = {}
+    _hp_color_cache = {}
+
+    # Pre-computed constants for faster color calculations
+    ENEMY_COLOR_BASE = (0x66, 0x00, 0x00)  # Dark clotted red base
+    ENEMY_COLOR_RANGE = (0x99, 0x33, 0x33)  # Range to bright red
+    HERO_COLOR_BASE = (0x1a, 0x23, 0x7e)   # Dark blue base
+    HERO_COLOR_RANGE = (0x27, 0x46, 0x63)  # Range to bright blue
 
     def get_orb_positions(num_orbs):
         if num_orbs not in _orb_cache:
@@ -75,20 +82,18 @@ init python:
         cache_key = (current, maximum, is_enemy)
 
         if cache_key not in _hp_color_cache:
-            ratio = float(current) / maximum if maximum > 0 else 0.0
+            ratio = current / maximum if maximum > 0 else 0.0
 
             if is_enemy:
-                # Enemy HP: Bright red to dark clotted red
-                # Pre-calculated constants for speed
-                r = int(102 + 153 * ratio)  # 0x66 + (0xff - 0x66) * ratio
-                g = int(51 * ratio)         # 0x33 * ratio
-                b = int(51 * ratio)         # 0x33 * ratio
+                # Enemy HP: Use pre-computed constants
+                r = int(ENEMY_COLOR_BASE[0] + ENEMY_COLOR_RANGE[0] * ratio)
+                g = int(ENEMY_COLOR_BASE[1] + ENEMY_COLOR_RANGE[1] * ratio)
+                b = int(ENEMY_COLOR_BASE[2] + ENEMY_COLOR_RANGE[2] * ratio)
             else:
-                # Hero HP: Bright blue to dark blue
-                # Pre-calculated constants for speed
-                r = int(26 + 39 * ratio)    # 0x1a + (0x41 - 0x1a) * ratio
-                g = int(35 + 70 * ratio)    # 0x23 + (0x69 - 0x23) * ratio
-                b = int(126 + 99 * ratio)   # 0x7e + (0xe1 - 0x7e) * ratio
+                # Hero HP: Use pre-computed constants
+                r = int(HERO_COLOR_BASE[0] + HERO_COLOR_RANGE[0] * ratio)
+                g = int(HERO_COLOR_BASE[1] + HERO_COLOR_RANGE[1] * ratio)
+                b = int(HERO_COLOR_BASE[2] + HERO_COLOR_RANGE[2] * ratio)
 
             _hp_color_cache[cache_key] = "#{:02x}{:02x}{:02x}".format(r, g, b)
 
@@ -112,9 +117,12 @@ init python:
 # Main UI Screen
 # ========================
 screen round_ui():
-    # Cache bar width calculation
+    # Cache all calculations at screen level
     $ bar_width = (config.screen_width - 340) // 2
     $ circle_diameter = CIRCLE_RADIUS * 2
+    $ enemy_color = get_hp_color(enemy_hp, enemy_max_hp, True)
+    $ hero_color = get_hp_color(current_hp, max_hp, False)
+    $ orb_positions = get_orb_positions(max_ap)
 
     add "#808080"
 
@@ -123,8 +131,8 @@ screen round_ui():
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar with dynamic color
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, get_hp_color(enemy_hp, enemy_max_hp, True), bar_width)
+        # Enemy HP bar with cached color
+        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width)
 
         # Round circle
         fixed:
@@ -146,15 +154,16 @@ screen round_ui():
                 text "Round" size 20 color "#FFFFFF" xalign 0.5
                 text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
-            # Cached AP Orbs
-            for i, (x, y) in enumerate(get_orb_positions(max_ap)):
-                add get_circle(ORB_RADIUS, "#ffd700" if i < available_ap else "#666666"):
+            # Optimized AP Orbs - cache positions and minimize function calls
+            for i, (x, y) in enumerate(orb_positions):
+                $ is_active = i < available_ap
+                add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
                     xpos x
                     ypos y
-                    at (glow if i < available_ap else inactive)
+                    at (glow if is_active else inactive)
 
-        # Hero HP bar with dynamic color
-        use hp_bar_section("Hero", current_hp, max_hp, get_hp_color(current_hp, max_hp, False), bar_width)
+        # Hero HP bar with cached color
+        use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
 
 # ========================
 # Reusable HP Bar Component
