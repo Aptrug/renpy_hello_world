@@ -1,7 +1,8 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# Enhanced combat experience with floating damage numbers that rise and fade
-# Now includes immersive damage feedback with color-coded numbers
+# I want to make the combat experience feel more engaging & immersive by adding
+# Floating damage numbers that rise and fade.
+# Don't make it too complex & over-engineered. Less is more as they say
 
 # ========================
 # Game Variables
@@ -15,13 +16,6 @@ default enemy_hp = 60
 default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
-
-# Simple damage display system
-default show_damage_text = ""
-default show_damage_color = "#ffaa33"
-default show_damage_pos = (0, 0)
-default show_heal_text = ""
-default show_heal_pos = (0, 0)
 
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
 
@@ -42,45 +36,11 @@ transform sun_aura:
     ease 4.0 alpha 0.15
     repeat
 
-# Simple floating damage animations
-transform float_damage:
-    yoffset 0
-    alpha 1.0
-    parallel:
-        ease 2.0 yoffset -100
-    parallel:
-        ease 0.3 alpha 1.0
-        ease 1.7 alpha 0.0
-
-transform float_heal:
-    yoffset 0
-    alpha 1.0
-    parallel:
-        ease 2.5 yoffset -80
-    parallel:
-        ease 0.3 alpha 1.0
-        ease 2.2 alpha 0.0
-
-transform float_crit:
-    yoffset 0
-    alpha 1.0
-    zoom 1.0
-    parallel:
-        ease 0.2 yoffset -30
-        ease 1.8 yoffset -120
-    parallel:
-        ease 0.2 zoom 1.3
-        ease 0.3 zoom 1.0
-    parallel:
-        ease 0.3 alpha 1.0
-        ease 1.7 alpha 0.0
-
 # ========================
 # Python Helpers
 # ========================
 init python:
     import math
-    import random
 
     # Cache orb positions, circles, and colors for lower CPU usage
     _orb_cache = {}
@@ -113,18 +73,23 @@ init python:
         return _circle_cache[key]
 
     # HP Color cache to avoid recalculating identical values
+    _hp_color_cache = {}
+
     def get_hp_color(current, maximum, is_enemy=False):
         """Calculate HP bar color based on current/max ratio - cached for efficiency"""
+        # Create cache key from the parameters that affect color
         cache_key = (current, maximum, is_enemy)
 
         if cache_key not in _hp_color_cache:
             ratio = current / maximum if maximum > 0 else 0.0
 
             if is_enemy:
+                # Enemy HP: Use pre-computed constants
                 r = int(ENEMY_COLOR_BASE[0] + ENEMY_COLOR_RANGE[0] * ratio)
                 g = int(ENEMY_COLOR_BASE[1] + ENEMY_COLOR_RANGE[1] * ratio)
                 b = int(ENEMY_COLOR_BASE[2] + ENEMY_COLOR_RANGE[2] * ratio)
             else:
+                # Hero HP: Use pre-computed constants
                 r = int(HERO_COLOR_BASE[0] + HERO_COLOR_RANGE[0] * ratio)
                 g = int(HERO_COLOR_BASE[1] + HERO_COLOR_RANGE[1] * ratio)
                 b = int(HERO_COLOR_BASE[2] + HERO_COLOR_RANGE[2] * ratio)
@@ -133,39 +98,8 @@ init python:
 
         return _hp_color_cache[cache_key]
 
-    # Simple damage number system
-    def show_damage(amount, is_enemy=True, is_critical=False, is_heal=False):
-        """Show a floating damage number"""
-        global show_damage_text, show_damage_color, show_damage_pos
-        global show_heal_text, show_heal_pos
-
-        # Calculate position
-        bar_width = (config.screen_width - 340) // 2
-        if is_enemy:
-            x = bar_width // 2
-        else:
-            x = config.screen_width - bar_width // 2
-        y = config.screen_height // 2 - 100
-
-        # Add some randomness
-        x += renpy.random.randint(-30, 30)
-        y += renpy.random.randint(-20, 20)
-
-        if is_heal:
-            show_heal_text = "+{}".format(amount)
-            show_heal_pos = (x, y)
-            renpy.restart_interaction()
-        else:
-            if is_critical:
-                show_damage_text = "-{}".format(amount)
-                show_damage_color = "#ff3366"
-            else:
-                show_damage_text = "-{}".format(amount)
-                show_damage_color = "#ffaa33"
-            show_damage_pos = (x, y)
-            renpy.restart_interaction()
-
     # CRITICAL: SimpleCircle class is required for proper circular rendering
+    # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
             super().__init__()
@@ -179,51 +113,7 @@ init python:
             return r
 
 # ========================
-# Enhanced Action Functions
-# ========================
-init python:
-    def deal_damage_to_enemy(amount, is_critical=False):
-        """Deal damage to enemy and show floating number"""
-        global enemy_hp
-        old_hp = enemy_hp
-        enemy_hp = max(0, enemy_hp - amount)
-        actual_damage = old_hp - enemy_hp
-
-        if actual_damage > 0:
-            show_damage(actual_damage, is_enemy=True, is_critical=is_critical)
-
-    def deal_damage_to_hero(amount):
-        """Deal damage to hero and show floating number"""
-        global current_hp
-        old_hp = current_hp
-        current_hp = max(0, current_hp - amount)
-        actual_damage = old_hp - current_hp
-
-        if actual_damage > 0:
-            show_damage(actual_damage, is_enemy=False)
-
-    def heal_hero(amount):
-        """Heal hero and show floating number"""
-        global current_hp
-        old_hp = current_hp
-        current_hp = min(max_hp, current_hp + amount)
-        actual_heal = current_hp - old_hp
-
-        if actual_heal > 0:
-            show_damage(actual_heal, is_enemy=False, is_heal=True)
-
-    def heal_enemy(amount):
-        """Heal enemy and show floating number"""
-        global enemy_hp
-        old_hp = enemy_hp
-        enemy_hp = min(enemy_max_hp, enemy_hp + amount)
-        actual_heal = enemy_hp - old_hp
-
-        if actual_heal > 0:
-            show_damage(actual_heal, is_enemy=True, is_heal=True)
-
-# ========================
-# Main UI Screen with Floating Damage
+# Main UI Screen
 # ========================
 screen round_ui():
     # Cache all calculations at screen level
@@ -248,10 +138,10 @@ screen round_ui():
             xsize circle_diameter
             ysize circle_diameter
 
-            # Subtle golden aura
+            # Subtle golden aura (stays within orb boundary)
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
 
-            # Background circle
+            # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
 
             # Round text
@@ -263,7 +153,7 @@ screen round_ui():
                 text "Round" size 20 color "#FFFFFF" xalign 0.5
                 text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
-            # AP Orbs
+            # Optimized AP Orbs - cache positions and minimize function calls
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
                 add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
@@ -273,25 +163,6 @@ screen round_ui():
 
         # Hero HP bar with cached color
         use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
-
-    # Simple floating damage display
-    if show_damage_text:
-        text "[show_damage_text]":
-            xpos show_damage_pos[0]
-            ypos show_damage_pos[1]
-            size 36
-            color show_damage_color
-            outlines [(2, "#000000", 0, 0)]
-            at float_damage if show_damage_color == "#ffaa33" else float_crit
-
-    if show_heal_text:
-        text "[show_heal_text]":
-            xpos show_heal_pos[0]
-            ypos show_heal_pos[1]
-            size 32
-            color "#00ff66"
-            outlines [(2, "#000000", 0, 0)]
-            at float_heal
 
 # ========================
 # Reusable HP Bar Component
@@ -326,7 +197,7 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
         text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
 # ========================
-# Enhanced Demo Label
+# Demo Label
 # ========================
 label start:
     show screen round_ui
@@ -338,28 +209,21 @@ label start:
         "Gain AP" if available_ap < max_ap:
             $ available_ap += 1
             jump start
-        "Take Damage":
-            $ deal_damage_to_hero(15)
+        "Take Damage" if current_hp > 0:
+            $ current_hp = max(0, current_hp - 15)
             jump start
-        "Heal":
-            $ heal_hero(20)
+        "Heal" if current_hp < max_hp:
+            $ current_hp = min(max_hp, current_hp + 20)
             jump start
-        "Attack Enemy":
-            $ deal_damage_to_enemy(20)
+        "Damage Enemy" if enemy_hp > 0:
+            $ enemy_hp = max(0, enemy_hp - 20)
             jump start
-        "Critical Hit Enemy!":
-            $ deal_damage_to_enemy(35, True)
-            jump start
-        "Enemy Heals":
-            $ heal_enemy(15)
+        "Enemy Heals" if enemy_hp < enemy_max_hp:
+            $ enemy_hp = min(enemy_max_hp, enemy_hp + 15)
             jump start
         "Next Round":
             $ current_round += 1
             $ available_ap = max_ap
-            jump start
-        "Clear Damage Text":
-            $ show_damage_text = ""
-            $ show_heal_text = ""
             jump start
         "Exit":
             return
