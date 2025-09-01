@@ -8,7 +8,8 @@
 # Can you change
 # xalign 0.5
 # yalign 0.5
-# to align (0.5, 0.5)
+# to align (0.5, 0.5) etc
+# Suggest other changes like this to reduce LOC
 
 # ========================
 # Game Variables
