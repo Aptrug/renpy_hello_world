@@ -167,7 +167,7 @@ screen battle_ui():
             spacing 40
 
             # Enemy HP bar (unified red for all enemies)
-            use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width - 50)
+            use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width - 200)
 
             # Round circle with AP orbs
             fixed:
