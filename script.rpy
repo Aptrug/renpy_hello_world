@@ -159,8 +159,7 @@ screen battle_ui():
 
         # Boss image section
         add "boss" at idle_float:
-            xalign -0.5
-            yalign -0.5
+            yoffset -10
             zoom 0.5
             # xpos 0
             # ypos 0
