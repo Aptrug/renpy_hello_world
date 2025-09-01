@@ -140,7 +140,7 @@ screen round_ui():
             ysize circle_diameter
 
             # Subtle golden aura (stays within orb boundary)
-            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align xalign 0.5 yalign 0.5 at sun_aura
+            add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
 
             # Cached background circle
             add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
