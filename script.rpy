@@ -159,8 +159,8 @@ screen battle_ui():
 
         # Boss image section
         fixed:
-            xalign 0.5
-            yalign 0.0  # stick to the top of the screen
+            # xalign 0.5
+            # yalign 0.0  # stick to the top of the screen
             xsize config.screen_width
             ysize config.screen_height * 0.5  # top half of the screen
 
