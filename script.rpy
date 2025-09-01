@@ -184,8 +184,8 @@ screen battle_ui():
                     yalign 0.5
                     yoffset 6
                     spacing -10
-                    text "Round" size 20 color "#FFFFFF" xalign 0.5
-                    text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
+                    text "Round" size 16 color "#FFFFFF" xalign 0.5
+                    text "[current_round]" size 64 color "#FFFFFF" xalign 0.5
 
                 # AP Orbs around the circle
                 for i, (x, y) in enumerate(orb_positions):
