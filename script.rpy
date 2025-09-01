@@ -164,9 +164,9 @@ screen battle_ui():
             xsize config.screen_width
             ysize config.screen_height * 0.5  # top half of the screen
 
-            add "boss_bg" xalign 0.5 yalign 0.0
+            add "boss_bg" zoom 0.5 xalign 0.5 yalign 0.0
 
-            add "boss" at idle_float xalign 0.5 yalign 0.0
+            add "boss" at idle_float zoom 0.5 xalign 0.5 yalign 0.0
 
         # HP bars and round circle
         hbox:
