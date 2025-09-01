@@ -162,8 +162,8 @@ screen battle_ui():
             xalign -0.5
             yalign -0.5
             zoom 0.5
-            xpos 0
-            ypos 0
+            # xpos 0
+            # ypos 0
             # xsize config.screen_width
             # ysize 540
             # fit "cover"
