@@ -212,11 +212,11 @@ screen battle_ui():
             xalign 0.5
             spacing 20
 
-            add "kenshin" at ally_hover
-            add "magic" at gentle_float
+            add "kenshin"
+            add "magic"
             add "rance" at ally_selected_effect
-            add "reset" at ally_idle
-            add "suzume" at ally_selected_effect
+            add "reset"
+            add "suzume"
 
 # ========================
 # Reusable HP Bar Component
