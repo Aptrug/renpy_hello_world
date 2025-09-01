@@ -162,9 +162,7 @@ screen battle_ui():
 
         # HP bars and round circle
         hbox:
-            # xpos 0.5
-            xoffset 50
-            # xalign 0.5
+            xoffset 40
             spacing 40
 
             # Enemy HP bar (unified red for all enemies)
