@@ -162,7 +162,8 @@ screen battle_ui():
             xpos 0
             ypos 0
             xsize config.screen_width
-            fit "cover"
+            ysize = 540
+            # fit "cover"
 
         # HP bars and round circle
         hbox:
