@@ -162,7 +162,8 @@ screen battle_ui():
 
         # HP bars and round circle
         hbox:
-            xpos 0.5
+            # xpos 0.5
+            xoffset 10
             # xalign 0.5
             spacing 40
 
