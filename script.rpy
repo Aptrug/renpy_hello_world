@@ -36,11 +36,40 @@ transform sun_aura:
     ease 4.0 alpha 0.15
     repeat
 
+# Floating damage number animations
+transform damage_float(is_crit=False):
+    alpha 0.0 yoffset 0
+    ease 0.1 alpha 1.0
+    parallel:
+        ease 2.0 yoffset -100
+    parallel:
+        ease 0.5 alpha 1.0
+        ease 1.5 alpha 0.0
+
+    # Add slight shake for critical hits
+    if is_crit:
+        parallel:
+            ease 0.05 xoffset 2
+            ease 0.05 xoffset -2
+            ease 0.05 xoffset 1
+            ease 0.05 xoffset 0
+
+transform heal_float():
+    alpha 0.0 yoffset 0 zoom 1.0
+    ease 0.1 alpha 1.0 zoom 1.2
+    parallel:
+        ease 2.0 yoffset -80
+    parallel:
+        ease 0.2 zoom 1.0
+        ease 0.5 alpha 1.0
+        ease 1.3 alpha 0.0
+
 # ========================
 # Python Helpers
 # ========================
 init python:
     import math
+    import random
 
     # Cache orb positions, circles, and colors for lower CPU usage
     _orb_cache = {}
@@ -52,6 +81,55 @@ init python:
     ENEMY_COLOR_RANGE = (0x99, 0x33, 0x33)  # Range to bright red
     HERO_COLOR_BASE = (0x1a, 0x23, 0x7e)   # Dark blue base
     HERO_COLOR_RANGE = (0x27, 0x46, 0x63)  # Range to bright blue
+
+    # Floating damage system
+    damage_numbers = []
+    damage_id_counter = 0
+
+    def add_damage_number(amount, is_heal=False, is_crit=False, target="enemy"):
+        """Add a floating damage number to the screen"""
+        global damage_id_counter
+        damage_id_counter += 1
+
+        # Determine color and prefix
+        if is_heal:
+            color = "#00ff88"
+            prefix = "+"
+        elif is_crit:
+            color = "#ff3366"
+            prefix = ""
+        else:
+            color = "#ffaa33"
+            prefix = ""
+
+        # Add some randomness to positioning
+        x_offset = random.randint(-20, 20)
+
+        damage_info = {
+            'id': damage_id_counter,
+            'text': f"{prefix}{amount}",
+            'color': color,
+            'is_crit': is_crit,
+            'is_heal': is_heal,
+            'target': target,
+            'x_offset': x_offset,
+            'timestamp': renpy.get_game_runtime()
+        }
+
+        damage_numbers.append(damage_info)
+
+        # Clean up old damage numbers (keep only last 10)
+        if len(damage_numbers) > 10:
+            damage_numbers.pop(0)
+
+        # Auto-remove after animation completes
+        renpy.restart_interaction()
+
+    def clear_old_damage_numbers():
+        """Remove damage numbers older than 3 seconds"""
+        global damage_numbers
+        current_time = renpy.get_game_runtime()
+        damage_numbers = [d for d in damage_numbers if (current_time - d['timestamp']) < 3.0]
 
     def get_orb_positions(num_orbs):
         if num_orbs not in _orb_cache:
@@ -123,6 +201,9 @@ screen round_ui():
     $ hero_color = get_hp_color(current_hp, max_hp, False)
     $ orb_positions = get_orb_positions(max_ap)
 
+    # Clean up old damage numbers
+    $ clear_old_damage_numbers()
+
     add "#808080"
 
     hbox:
@@ -130,8 +211,8 @@ screen round_ui():
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar with cached color
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width)
+        # Enemy HP bar with cached color + damage numbers
+        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width, "enemy")
 
         # Round circle
         fixed:
@@ -161,43 +242,61 @@ screen round_ui():
                     ypos y
                     at (glow if is_active else inactive)
 
-        # Hero HP bar with cached color
-        use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
+        # Hero HP bar with cached color + damage numbers
+        use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width, "hero")
 
 # ========================
-# Reusable HP Bar Component
+# Reusable HP Bar Component with Damage Numbers
 # ========================
-screen hp_bar_section(label, hp_value, max_hp_value, color, width):
-    vbox:
-        spacing 5
-        text label size gui.notify_text_size color "#ffffff"
+screen hp_bar_section(label, hp_value, max_hp_value, color, width, target_type="enemy"):
+    fixed:
+        # Main HP bar content
+        vbox:
+            spacing 5
+            text label size gui.notify_text_size color "#ffffff"
 
-        fixed:
-            xsize width + 4
-            ysize 16
+            fixed:
+                xsize width + 4
+                ysize 16
 
-            # Frame and background
-            add "#333333" xsize width + 4 ysize 16
-            add "#000000" xsize width ysize 12 xpos 2 ypos 2
+                # Frame and background
+                add "#333333" xsize width + 4 ysize 16
+                add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
-            # Animated HP bar with dynamic color
-            bar:
-                value AnimatedValue(hp_value, max_hp_value, 0.8)
-                range max_hp_value
-                xsize width
-                ysize 12
-                xpos 2
-                ypos 2
-                left_bar color
-                right_bar "#000000"
+                # Animated HP bar with dynamic color
+                bar:
+                    value AnimatedValue(hp_value, max_hp_value, 0.8)
+                    range max_hp_value
+                    xsize width
+                    ysize 12
+                    xpos 2
+                    ypos 2
+                    left_bar color
+                    right_bar "#000000"
 
-            # Highlight
-            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+                # Highlight
+                add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
-        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+            text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+
+        # Floating damage numbers for this target
+        for damage in damage_numbers:
+            if damage['target'] == target_type:
+                $ damage_size = 36 if damage['is_crit'] else (28 if damage['is_heal'] else 24)
+                $ damage_weight = "bold" if damage['is_crit'] else "normal"
+
+                text damage['text']:
+                    size damage_size
+                    color damage['color']
+                    outlines [(2, "#000000", 0, 0)]
+                    font_weight damage_weight
+                    xalign 0.5
+                    yalign 0.3
+                    xoffset damage['x_offset']
+                    at (heal_float() if damage['is_heal'] else damage_float(damage['is_crit']))
 
 # ========================
-# Demo Label
+# Demo Label with Damage Number Integration
 # ========================
 label start:
     show screen round_ui
@@ -210,16 +309,28 @@ label start:
             $ available_ap += 1
             jump start
         "Take Damage" if current_hp > 0:
-            $ current_hp = max(0, current_hp - 15)
+            $ damage_amount = 15
+            $ is_crit = random.randint(1, 5) == 1  # 20% crit chance
+            $ actual_damage = damage_amount * 2 if is_crit else damage_amount
+            $ current_hp = max(0, current_hp - actual_damage)
+            $ add_damage_number(actual_damage, False, is_crit, "hero")
             jump start
         "Heal" if current_hp < max_hp:
-            $ current_hp = min(max_hp, current_hp + 20)
+            $ heal_amount = 20
+            $ current_hp = min(max_hp, current_hp + heal_amount)
+            $ add_damage_number(heal_amount, True, False, "hero")
             jump start
         "Damage Enemy" if enemy_hp > 0:
-            $ enemy_hp = max(0, enemy_hp - 20)
+            $ damage_amount = 20
+            $ is_crit = random.randint(1, 4) == 1  # 25% crit chance
+            $ actual_damage = damage_amount * 2 if is_crit else damage_amount
+            $ enemy_hp = max(0, enemy_hp - actual_damage)
+            $ add_damage_number(actual_damage, False, is_crit, "enemy")
             jump start
         "Enemy Heals" if enemy_hp < enemy_max_hp:
-            $ enemy_hp = min(enemy_max_hp, enemy_hp + 15)
+            $ heal_amount = 15
+            $ enemy_hp = min(enemy_max_hp, enemy_hp + heal_amount)
+            $ add_damage_number(heal_amount, True, False, "enemy")
             jump start
         "Next Round":
             $ current_round += 1
