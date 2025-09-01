@@ -223,3 +223,179 @@ label start:
             jump start
         "Exit":
             return
+
+# I want you to integrate the code below in the code above
+# The battle UI will be like
+# Big centered boss image
+# 2 HP bars & Circle
+# Hero party
+
+
+# Preload all images
+image boss = "images/combat_system/boss.webp"
+image kenshin = "images/combat_system/kenshin.webp"
+image magic = "images/combat_system/magic.webp"
+image rance = "images/combat_system/rance.webp"
+image reset = "images/combat_system/reset.webp"
+image suzume = "images/combat_system/suzume.webp"
+
+# 0 all good
+# 1 still all good
+# 2 must re-enable quickmenu later
+default persistent.qmenu_bak = 0
+
+init python:
+    # If quit the game mid battle
+    if persistent.qmenu_bak == 2:
+        persistent.quickmenu = True
+        persistent.qmenu_bak = 0
+
+screen battle_ui():
+    # Feldgrau background
+    add Solid("#4D5D53")
+
+    # Boss image, centered top, 70% height, top margin 30px
+    add "boss" at idle_float:
+        xalign 0.5
+        yalign 0.1
+        zoom 0.65
+
+    # Allies row, bottom center
+    hbox:
+        xalign 0.5
+        yalign 0.95
+        spacing 20
+
+        add "kenshin" at ally_hover
+        add "magic" at gentle_float
+        add "rance" at ally_selected_effect
+        add "reset" at ally_idle
+        add "suzume" at ally_selected_effect
+
+# Bunch of effects, some used, some not
+transform idle_float:
+    yoffset 0
+    linear 2.0 yoffset -5
+    linear 2.0 yoffset 0
+    repeat
+
+transform pulse_glow:
+    alpha 0.5
+    linear 1.0 alpha 0.8
+    linear 1.0 alpha 0.5
+    repeat
+
+transform slow_pulse:
+    alpha 0.9
+    linear 1.5 alpha 1.0
+    linear 1.5 alpha 0.9
+    repeat
+
+transform hit_shake:
+    linear 0.1 xoffset 10
+    linear 0.1 xoffset -10
+    linear 0.1 xoffset 0
+
+transform ally_selected_effect:
+    matrixcolor BrightnessMatrix(0.3)
+    linear 0.8 matrixcolor BrightnessMatrix(0.1)
+    linear 0.8 matrixcolor BrightnessMatrix(0.3)
+    repeat
+
+transform boss_breathe:
+    yoffset 30 zoom 0.7
+    linear 3.0 yoffset 25 zoom 0.72
+    linear 3.0 yoffset 30 zoom 0.7
+    repeat
+
+transform ally_hover_effect:
+    zoom 1.08
+    matrixcolor BrightnessMatrix(0.2)
+
+transform ally_hover:
+    zoom 1.0
+    linear 0.25 zoom 1.08
+
+transform gentle_float:
+    yoffset 0
+    linear 4.0 yoffset -8
+    linear 4.0 yoffset 0
+    repeat
+
+transform ally_idle:
+    linear 0.25 zoom 1.0
+
+# === Extra Effects (High Impact, Low Cost) ===
+
+# Quick "anticipation" zoom before attacks, then reset
+transform attack_zoom:
+    zoom 1.0
+    linear 0.15 zoom 1.1
+    linear 0.15 zoom 1.0
+
+# Simple white flash overlay for hits
+transform hit_flash:
+    alpha 0.0
+    linear 0.05 alpha 0.6
+    linear 0.2 alpha 0.0
+
+# Smooth health bar changes (use on bar images)
+transform smooth_hp:
+    linear 0.5 xzoom 1.0  # You'd adjust size dynamically, this smooths it visually
+
+# Floating damage numbers or text (up and fade out)
+transform damage_float:
+    yoffset 0 alpha 1.0
+    linear 0.8 yoffset -40 alpha 0.0
+
+# Attack "impact shake" (slightly bigger than hit_shake)
+transform impact_shake:
+    linear 0.05 xoffset 15
+    linear 0.05 xoffset -15
+    linear 0.05 xoffset 10
+    linear 0.05 xoffset -10
+    linear 0.05 xoffset 0
+
+# Parallax-like background drift
+transform bg_drift:
+    xpos 0.0
+    linear 20.0 xpos -50.0
+    linear 20.0 xpos 0.0
+    repeat
+
+label start_battle:
+    if persistent.quickmenu:
+        $persistent.qmenu_bak = 2
+    else:
+        $persistent.qmenu_bak = 1
+    $persistent.quickmenu = False
+
+    $config.rollback_enabled = False
+
+    show screen battle_ui
+
+    "A wild boss appears!"
+    "Kenshin attacks!"
+    "Boss retaliates!"
+
+    if persistent.qmenu_bak == 2:
+        $persistent.quickmenu = True
+    $persistent.qmenu_bak = 0
+
+    hide screen battle_ui
+
+    $renpy.block_rollback()
+    $config.rollback_enabled = True
+
+    scene forest with fade
+
+    # Jump back to main story/dialogue
+    jump after_battle
+
+label after_battle:
+    "The battle is over, and the heroes catch their breath."
+    "Kenshin: That was intense!"
+    "Rance: Let's keep moving."
+
+    # Continue with normal story
+    return
