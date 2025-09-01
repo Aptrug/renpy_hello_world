@@ -1,11 +1,6 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# I want to make the following changes
-# Enemy HP (Blood): Starts bright red, gets darker and more "clotted" as HP decreases
-# Hero HP (Mana): Bright blue that dims to darker blue as it depletes
-# Don't add too much complexity though, less is more as they say
-
-# Can you change xalign/yalign to align, xsize/ysize to xysize, etc Do you get it?
+# Fully Modernized Ren'Py UI Code
 
 # ========================
 # Game Variables
@@ -21,6 +16,24 @@ default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
+
+# ========================
+# Modern Styles
+# ========================
+style game_text:
+    size gui.notify_text_size
+    color "#ffffff"
+
+style round_text:
+    size 20
+    color "#FFFFFF"
+
+style round_number:
+    size 60
+    color "#FFFFFF"
+
+style hp_highlight:
+    alpha 0.3
 
 # ========================
 # ATL Transforms
@@ -148,17 +161,16 @@ screen round_ui():
             # Round text
             vbox:
                 align (0.5, 0.5)
-                yoffset 10
+                offset (0, 10)
                 spacing -5
-                text "Round" size 20 color "#FFFFFF" align (0.5, 0.5)
-                text "[current_round]" size 60 color "#FFFFFF" align (0.5, 0.5)
+                text "Round" style "round_text" align (0.5, 0.5)
+                text "[current_round]" style "round_number" align (0.5, 0.5)
 
             # Optimized AP Orbs - cache positions and minimize function calls
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
                 add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
-                    xpos x
-                    ypos y
+                    pos (x, y)
                     at (glow if is_active else inactive)
 
         # Hero HP bar with cached color
@@ -170,7 +182,7 @@ screen round_ui():
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
     vbox:
         spacing 5
-        text label size gui.notify_text_size color "#ffffff"
+        text label style "game_text"
 
         fixed:
             xysize (width + 4, 16)
@@ -185,13 +197,13 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
                 range max_hp_value
                 xysize (width, 12)
                 pos (2, 2)
-                left_bar color
-                right_bar "#000000"
+                fore_bar color
+                back_bar "#000000"
 
             # Highlight
-            add "#ffffff" xysize (width, 1) pos (2, 2) alpha 0.3
+            add "#ffffff" xysize (width, 1) pos (2, 2) style "hp_highlight"
 
-        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+        text "[hp_value]%" style "game_text"
 
 # ========================
 # Demo Label
