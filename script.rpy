@@ -16,9 +16,12 @@ default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
-# Floating damage system variables
-default damage_numbers = []  # List of active damage number objects
-default damage_id_counter = 0  # Unique ID for each damage number
+# Simple damage display system
+default show_damage_text = ""
+default show_damage_color = "#ffaa33"
+default show_damage_pos = (0, 0)
+default show_heal_text = ""
+default show_heal_pos = (0, 0)
 
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
 
@@ -39,45 +42,38 @@ transform sun_aura:
     ease 4.0 alpha 0.15
     repeat
 
-# Floating damage number animations
-transform float_damage(start_x, start_y):
-    xpos start_x
-    ypos start_y
+# Simple floating damage animations
+transform float_damage:
+    yoffset 0
     alpha 1.0
-    # Rise up and fade out
     parallel:
-        ease 2.0 ypos start_y - 100
+        ease 2.0 yoffset -100
     parallel:
-        ease 0.2 alpha 1.0
-        ease 1.8 alpha 0.0
-    # Auto-remove after animation
-    function lambda **kwargs: damage_numbers.remove(next(d for d in damage_numbers if d["id"] == kwargs["id"])) if any(d["id"] == kwargs["id"] for d in damage_numbers) else None
+        ease 0.3 alpha 1.0
+        ease 1.7 alpha 0.0
 
-transform float_damage_crit(start_x, start_y):
-    xpos start_x
-    ypos start_y
+transform float_heal:
+    yoffset 0
     alpha 1.0
-    # Critical hits have more dramatic movement
     parallel:
-        ease 0.1 ypos start_y - 20
-        ease 1.9 ypos start_y - 120
-    parallel:
-        ease 0.1 zoom 1.2
-        ease 0.4 zoom 1.0
-    parallel:
-        ease 0.2 alpha 1.0
-        ease 1.8 alpha 0.0
-
-transform float_heal(start_x, start_y):
-    xpos start_x
-    ypos start_y
-    alpha 1.0
-    # Healing floats up gently
-    parallel:
-        ease 2.5 ypos start_y - 80
+        ease 2.5 yoffset -80
     parallel:
         ease 0.3 alpha 1.0
         ease 2.2 alpha 0.0
+
+transform float_crit:
+    yoffset 0
+    alpha 1.0
+    zoom 1.0
+    parallel:
+        ease 0.2 yoffset -30
+        ease 1.8 yoffset -120
+    parallel:
+        ease 0.2 zoom 1.3
+        ease 0.3 zoom 1.0
+    parallel:
+        ease 0.3 alpha 1.0
+        ease 1.7 alpha 0.0
 
 # ========================
 # Python Helpers
@@ -137,56 +133,37 @@ init python:
 
         return _hp_color_cache[cache_key]
 
-    # Floating damage number system
-    def add_damage_number(amount, x, y, damage_type="damage"):
-        """Add a floating damage number at the specified position"""
-        global damage_id_counter
-        damage_id_counter += 1
+    # Simple damage number system
+    def show_damage(amount, is_enemy=True, is_critical=False, is_heal=False):
+        """Show a floating damage number"""
+        global show_damage_text, show_damage_color, show_damage_pos
+        global show_heal_text, show_heal_pos
 
-        # Add some random offset to prevent overlapping
-        offset_x = random.randint(-20, 20)
-        offset_y = random.randint(-10, 10)
-
-        # Determine color and prefix based on damage type
-        if damage_type == "heal":
-            color = "#00ff66"  # Bright green
-            prefix = "+"
-            text_size = 32
-        elif damage_type == "critical":
-            color = "#ff3366"  # Bright red
-            prefix = "-"
-            text_size = 40
-        else:  # regular damage
-            color = "#ffaa33"  # Orange
-            prefix = "-"
-            text_size = 36
-
-        damage_obj = {
-            "id": damage_id_counter,
-            "amount": amount,
-            "x": x + offset_x,
-            "y": y + offset_y,
-            "color": color,
-            "prefix": prefix,
-            "size": text_size,
-            "type": damage_type
-        }
-
-        damage_numbers.append(damage_obj)
-
-        # Clean up old damage numbers (keep list from growing infinitely)
-        if len(damage_numbers) > 10:
-            damage_numbers.pop(0)
-
-    def get_enemy_damage_position():
-        """Get position near enemy HP bar for damage numbers"""
+        # Calculate position
         bar_width = (config.screen_width - 340) // 2
-        return (bar_width // 2, config.screen_height // 2 - 100)
+        if is_enemy:
+            x = bar_width // 2
+        else:
+            x = config.screen_width - bar_width // 2
+        y = config.screen_height // 2 - 100
 
-    def get_hero_damage_position():
-        """Get position near hero HP bar for damage numbers"""
-        bar_width = (config.screen_width - 340) // 2
-        return (config.screen_width - bar_width // 2, config.screen_height // 2 - 100)
+        # Add some randomness
+        x += renpy.random.randint(-30, 30)
+        y += renpy.random.randint(-20, 20)
+
+        if is_heal:
+            show_heal_text = "+{}".format(amount)
+            show_heal_pos = (x, y)
+            renpy.restart_interaction()
+        else:
+            if is_critical:
+                show_damage_text = "-{}".format(amount)
+                show_damage_color = "#ff3366"
+            else:
+                show_damage_text = "-{}".format(amount)
+                show_damage_color = "#ffaa33"
+            show_damage_pos = (x, y)
+            renpy.restart_interaction()
 
     # CRITICAL: SimpleCircle class is required for proper circular rendering
     class SimpleCircle(renpy.Displayable):
@@ -213,9 +190,7 @@ init python:
         actual_damage = old_hp - enemy_hp
 
         if actual_damage > 0:
-            x, y = get_enemy_damage_position()
-            damage_type = "critical" if is_critical else "damage"
-            add_damage_number(actual_damage, x, y, damage_type)
+            show_damage(actual_damage, is_enemy=True, is_critical=is_critical)
 
     def deal_damage_to_hero(amount):
         """Deal damage to hero and show floating number"""
@@ -225,8 +200,7 @@ init python:
         actual_damage = old_hp - current_hp
 
         if actual_damage > 0:
-            x, y = get_hero_damage_position()
-            add_damage_number(actual_damage, x, y, "damage")
+            show_damage(actual_damage, is_enemy=False)
 
     def heal_hero(amount):
         """Heal hero and show floating number"""
@@ -236,8 +210,7 @@ init python:
         actual_heal = current_hp - old_hp
 
         if actual_heal > 0:
-            x, y = get_hero_damage_position()
-            add_damage_number(actual_heal, x, y, "heal")
+            show_damage(actual_heal, is_enemy=False, is_heal=True)
 
     def heal_enemy(amount):
         """Heal enemy and show floating number"""
@@ -247,8 +220,7 @@ init python:
         actual_heal = enemy_hp - old_hp
 
         if actual_heal > 0:
-            x, y = get_enemy_damage_position()
-            add_damage_number(actual_heal, x, y, "heal")
+            show_damage(actual_heal, is_enemy=True, is_heal=True)
 
 # ========================
 # Main UI Screen with Floating Damage
@@ -302,15 +274,24 @@ screen round_ui():
         # Hero HP bar with cached color
         use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
 
-    # Floating damage numbers layer
-    for damage in damage_numbers:
-        $ transform_func = float_heal if damage["type"] == "heal" else (float_damage_crit if damage["type"] == "critical" else float_damage)
-        text "[damage[prefix]][damage[amount]]":
-            size damage["size"]
-            color damage["color"]
+    # Simple floating damage display
+    if show_damage_text:
+        text "[show_damage_text]":
+            xpos show_damage_pos[0]
+            ypos show_damage_pos[1]
+            size 36
+            color show_damage_color
             outlines [(2, "#000000", 0, 0)]
-            at transform_func(damage["x"], damage["y"])
-            id damage["id"]
+            at float_damage if show_damage_color == "#ffaa33" else float_crit
+
+    if show_heal_text:
+        text "[show_heal_text]":
+            xpos show_heal_pos[0]
+            ypos show_heal_pos[1]
+            size 32
+            color "#00ff66"
+            outlines [(2, "#000000", 0, 0)]
+            at float_heal
 
 # ========================
 # Reusable HP Bar Component
@@ -376,8 +357,9 @@ label start:
             $ current_round += 1
             $ available_ap = max_ap
             jump start
-        "Clear Damage Numbers":
-            $ damage_numbers = []
+        "Clear Damage Text":
+            $ show_damage_text = ""
+            $ show_heal_text = ""
             jump start
         "Exit":
             return
