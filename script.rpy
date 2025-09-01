@@ -1,5 +1,7 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
+# How to make boss images take the entire upper screen aka have no margin and stretch fully by width
+
 # ========================
 # Game Variables
 # ========================
@@ -156,8 +158,10 @@ screen battle_ui():
 
         # Boss image section
         add "boss" at idle_float:
-            xalign 0.5
-            zoom 0.5
+            xalign 0.0
+            yalign 0.0
+            xsize config.screen_width
+            yfit True
 
         # HP bars and round circle
         hbox:
