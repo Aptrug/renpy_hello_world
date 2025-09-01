@@ -25,7 +25,7 @@ default persistent.qmenu_bak = 0
 # Image Definitions
 # ========================
 image boss = "images/combat_system/boss.webp"
-image boss = "images/dark_mosaic.webp"
+image boss_bg = "images/dark_mosaic.webp"
 image kenshin = "images/combat_system/kenshin.webp"
 image magic = "images/combat_system/magic.webp"
 image rance = "images/combat_system/rance.webp"
