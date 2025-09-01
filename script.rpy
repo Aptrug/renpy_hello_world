@@ -160,14 +160,15 @@ screen battle_ui():
         fixed:
             xysize config.screen_width, config.screen_height * 0.4  # top 40% of screen
 
-            # Background mosaic (fills everything behind)
+            # Background mosaic fills container
             add "boss_bg" xysize config.screen_width, config.screen_height * 0.4
 
-            # Boss image, scaled to fit width while maintaining aspect ratio
+            # Boss image scaled to width, clipped to container
             add "boss":
                 xalign 0.5
-                yalign 0.0  # stick to top
-                zoom config.screen_width / 1920.0  # scale by width only
+                yalign 0.0
+                zoom config.screen_width / 1920.0
+                xysize config.screen_width, config.screen_height * 0.4  # clip height
 
         # HP bars and round circle
         hbox:
