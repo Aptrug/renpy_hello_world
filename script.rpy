@@ -5,11 +5,6 @@
 # Hero HP (Mana): Bright blue that dims to darker blue as it depletes
 # Don't add too much complexity though, less is more as they say
 
-# I want to make the following changes
-# Enemy HP (Blood): Starts bright red, gets darker and more "clotted" as HP decreases
-# Hero HP (Mana): Bright blue that dims to darker blue as it depletes
-# Don't add too much complexity though, less is more as they say
-
 # ========================
 # Game Variables
 # ========================
@@ -71,22 +66,24 @@ init python:
             _circle_cache[key] = SimpleCircle(radius, color)
         return _circle_cache[key]
 
-    def get_hp_color(hp_value, max_hp_value, is_enemy=False):
-        """Calculate dynamic HP bar color based on current HP percentage"""
-        hp_percent = float(hp_value) / max_hp_value
+    def get_hp_color(current, maximum, is_enemy=False):
+        """Calculate HP bar color based on current/max ratio"""
+        ratio = float(current) / maximum if maximum > 0 else 0.0
 
         if is_enemy:
-            # Enemy HP: Bright red to dark "clotted" red
-            # Start with bright red (#ff4444), fade to dark red (#660000)
-            r = int(0x66 + (0xff - 0x66) * hp_percent)
-            g = int(0x00 + (0x44 - 0x00) * hp_percent)
-            b = int(0x00 + (0x44 - 0x00) * hp_percent)
+            # Enemy HP: Bright red to dark clotted red
+            # High HP: #ff3333 (bright red)
+            # Low HP: #660000 (dark clotted red)
+            r = int(0x66 + (0xff - 0x66) * ratio)
+            g = int(0x00 + (0x33 - 0x00) * ratio)
+            b = int(0x00 + (0x33 - 0x00) * ratio)
         else:
-            # Hero HP: Bright blue to dim blue
-            # Start with bright blue (#4169e1), fade to dark blue (#1e3a8a)
-            r = int(0x1e + (0x41 - 0x1e) * hp_percent)
-            g = int(0x3a + (0x69 - 0x3a) * hp_percent)
-            b = int(0x8a + (0xe1 - 0x8a) * hp_percent)
+            # Hero HP: Bright blue to dark blue
+            # High HP: #4169e1 (bright blue)
+            # Low HP: #1a237e (dark blue)
+            r = int(0x1a + (0x41 - 0x1a) * ratio)
+            g = int(0x23 + (0x69 - 0x23) * ratio)
+            b = int(0x7e + (0xe1 - 0x7e) * ratio)
 
         return "#{:02x}{:02x}{:02x}".format(r, g, b)
 
@@ -119,7 +116,7 @@ screen round_ui():
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar with dynamic blood color
+        # Enemy HP bar with dynamic color
         use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, get_hp_color(enemy_hp, enemy_max_hp, True), bar_width)
 
         # Round circle
@@ -149,7 +146,7 @@ screen round_ui():
                     ypos y
                     at (glow if i < available_ap else inactive)
 
-        # Hero HP bar with dynamic mana color
+        # Hero HP bar with dynamic color
         use hp_bar_section("Hero", current_hp, max_hp, get_hp_color(current_hp, max_hp, False), bar_width)
 
 # ========================
