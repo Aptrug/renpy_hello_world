@@ -160,7 +160,7 @@ screen battle_ui():
         # Boss image section
         frame:
             xsize config.screen_width
-            ysize config.screen_height * 0.5
+            # ysize config.screen_height * 0.5
             # xalign 0.5
             add "boss_bg":
                 zoom 0.5
