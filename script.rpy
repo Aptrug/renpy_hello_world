@@ -153,8 +153,8 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     vbox:
-        xalign 0.5
-        yalign 0.5
+        # xalign 0.5
+        # yalign 0.5
         spacing 40
 
         # Boss image section
