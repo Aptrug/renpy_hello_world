@@ -1,6 +1,9 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# Fully Modernized Ren'Py UI Code
+# I want to make the following changes
+# Enemy HP (Blood): Starts bright red, gets darker and more "clotted" as HP decreases
+# Hero HP (Mana): Bright blue that dims to darker blue as it depletes
+# Don't add too much complexity though, less is more as they say
 
 # ========================
 # Game Variables
@@ -16,24 +19,6 @@ default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
-
-# ========================
-# Modern Styles
-# ========================
-style game_text:
-    size gui.notify_text_size
-    color "#ffffff"
-
-style round_text:
-    size 20
-    color "#FFFFFF"
-
-style round_number:
-    size 60
-    color "#FFFFFF"
-
-style hp_highlight:
-    alpha 0.3
 
 # ========================
 # ATL Transforms
@@ -142,7 +127,8 @@ screen round_ui():
     add "#808080"
 
     hbox:
-        align (0.5, 0.5)
+        xalign 0.5
+        yalign 0.5
         spacing 50
 
         # Enemy HP bar with cached color
@@ -150,7 +136,8 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xysize (circle_diameter, circle_diameter)
+            xsize circle_diameter
+            ysize circle_diameter
 
             # Subtle golden aura (stays within orb boundary)
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align (0.5, 0.5) at sun_aura
@@ -160,17 +147,19 @@ screen round_ui():
 
             # Round text
             vbox:
-                align (0.5, 0.5)
-                offset (0, 10)
+                xalign 0.5
+                yalign 0.5
+                yoffset 10
                 spacing -5
-                text "Round" style "round_text" align (0.5, 0.5)
-                text "[current_round]" style "round_number" align (0.5, 0.5)
+                text "Round" size 20 color "#FFFFFF" xalign 0.5
+                text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
             # Optimized AP Orbs - cache positions and minimize function calls
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
                 add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
-                    pos (x, y)
+                    xpos x
+                    ypos y
                     at (glow if is_active else inactive)
 
         # Hero HP bar with cached color
@@ -182,28 +171,31 @@ screen round_ui():
 screen hp_bar_section(label, hp_value, max_hp_value, color, width):
     vbox:
         spacing 5
-        text label style "game_text"
+        text label size gui.notify_text_size color "#ffffff"
 
         fixed:
-            xysize (width + 4, 16)
+            xsize width + 4
+            ysize 16
 
             # Frame and background
-            add "#333333" xysize (width + 4, 16)
-            add "#000000" xysize (width, 12) pos (2, 2)
+            add "#333333" xsize width + 4 ysize 16
+            add "#000000" xsize width ysize 12 xpos 2 ypos 2
 
             # Animated HP bar with dynamic color
             bar:
                 value AnimatedValue(hp_value, max_hp_value, 0.8)
                 range max_hp_value
-                xysize (width, 12)
-                pos (2, 2)
-                fore_bar color
-                back_bar "#000000"
+                xsize width
+                ysize 12
+                xpos 2
+                ypos 2
+                left_bar color
+                right_bar "#000000"
 
             # Highlight
-            add "#ffffff" xysize (width, 1) pos (2, 2) style "hp_highlight"
+            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
 
-        text "[hp_value]%" style "game_text"
+        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
 # ========================
 # Demo Label
