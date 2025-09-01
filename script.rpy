@@ -157,9 +157,14 @@ screen battle_ui():
         spacing 40
 
         # Boss image section
-        add "boss" at idle_float:
-            xalign 0.5
-            zoom 0.5
+        fixed:
+            xsize config.screen_width
+            ysize 540  # half of 1080 if you want top half; adjust if needed
+            add "boss":
+                xalign 0.5
+                yalign 0.0
+                xsize config.screen_width
+                ysize 540
 
         # HP bars and round circle
         hbox:
