@@ -62,15 +62,6 @@ transform ally_hover:
     zoom 1.0
     linear 0.25 zoom 1.08
 
-transform gentle_float:
-    yoffset 0
-    linear 4.0 yoffset -8
-    linear 4.0 yoffset 0
-    repeat
-
-transform ally_idle:
-    linear 0.25 zoom 1.0
-
 # ========================
 # Python Helpers
 # ========================
