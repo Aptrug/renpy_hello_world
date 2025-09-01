@@ -153,19 +153,14 @@ screen battle_ui():
     add Solid("#4D5D53")
 
     vbox:
-        # xalign 0.5
-        # yalign 0.5
+        xalign 0.5
+        yalign 0.5
         spacing 40
 
         # Boss image section
         add "boss" at idle_float:
-            # yoffset -20
+            xalign 0.5
             zoom 0.5
-            xpos 0
-            ypos 0
-            # xsize config.screen_width
-            # ysize 540
-            # fit "cover"
 
         # HP bars and round circle
         hbox:
