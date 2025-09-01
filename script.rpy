@@ -2,6 +2,8 @@
 
 # Anything I can add to make the combat experience feel more engaging & immersive but is also simple to implement?
 
+# Enhanced Combat Experience - Simple but Immersive Additions
+
 # ========================
 # Game Variables
 # ========================
@@ -15,10 +17,17 @@ default enemy_max_hp = 80
 default CIRCLE_RADIUS = 72
 default ORB_RADIUS = 12
 
+# NEW: Combat State Variables
+default last_damage_taken = 0
+default last_damage_dealt = 0
+default combat_momentum = 0  # -3 to +3, affects visuals
+default low_hp_warning = False
+default critical_hp_warning = False
+
 # NOTE: gui.notify_text_size is defined as 24 in gui.rpy
 
 # ========================
-# ATL Transforms
+# Enhanced ATL Transforms
 # ========================
 transform glow:
     ease 1.5 alpha 0.6
@@ -34,8 +43,31 @@ transform sun_aura:
     ease 4.0 alpha 0.15
     repeat
 
+# NEW: Combat feedback transforms
+transform damage_shake:
+    linear 0.05 xoffset 5
+    linear 0.05 xoffset -5
+    linear 0.05 xoffset 3
+    linear 0.05 xoffset -3
+    linear 0.05 xoffset 0
+
+transform critical_pulse:
+    ease 0.3 alpha 1.0
+    ease 0.3 alpha 0.3
+    repeat
+
+transform momentum_glow:
+    ease 1.0 alpha 0.8
+    ease 1.0 alpha 1.0
+    repeat
+
+transform floating_damage:
+    alpha 1.0
+    yoffset 0
+    ease 2.0 yoffset -50 alpha 0.0
+
 # ========================
-# Python Helpers
+# Enhanced Python Helpers
 # ========================
 init python:
     import math
@@ -75,19 +107,16 @@ init python:
 
     def get_hp_color(current, maximum, is_enemy=False):
         """Calculate HP bar color based on current/max ratio - cached for efficiency"""
-        # Create cache key from the parameters that affect color
         cache_key = (current, maximum, is_enemy)
 
         if cache_key not in _hp_color_cache:
             ratio = current / maximum if maximum > 0 else 0.0
 
             if is_enemy:
-                # Enemy HP: Use pre-computed constants
                 r = int(ENEMY_COLOR_BASE[0] + ENEMY_COLOR_RANGE[0] * ratio)
                 g = int(ENEMY_COLOR_BASE[1] + ENEMY_COLOR_RANGE[1] * ratio)
                 b = int(ENEMY_COLOR_BASE[2] + ENEMY_COLOR_RANGE[2] * ratio)
             else:
-                # Hero HP: Use pre-computed constants
                 r = int(HERO_COLOR_BASE[0] + HERO_COLOR_RANGE[0] * ratio)
                 g = int(HERO_COLOR_BASE[1] + HERO_COLOR_RANGE[1] * ratio)
                 b = int(HERO_COLOR_BASE[2] + HERO_COLOR_RANGE[2] * ratio)
@@ -96,8 +125,33 @@ init python:
 
         return _hp_color_cache[cache_key]
 
+    # NEW: Combat state functions
+    def update_combat_state():
+        """Update combat warnings and momentum"""
+        global low_hp_warning, critical_hp_warning, combat_momentum
+
+        hp_ratio = current_hp / max_hp
+        low_hp_warning = hp_ratio <= 0.3
+        critical_hp_warning = hp_ratio <= 0.15
+
+        # Simple momentum system based on recent actions
+        if last_damage_dealt > last_damage_taken:
+            combat_momentum = min(3, combat_momentum + 1)
+        elif last_damage_taken > last_damage_dealt:
+            combat_momentum = max(-3, combat_momentum - 1)
+        else:
+            combat_momentum = max(-3, min(3, combat_momentum * 0.8))
+
+    def get_momentum_color():
+        """Get color based on combat momentum"""
+        if combat_momentum > 1:
+            return "#00ff00"  # Green for advantage
+        elif combat_momentum < -1:
+            return "#ff0000"  # Red for disadvantage
+        else:
+            return "#ffd700"  # Gold for neutral
+
     # CRITICAL: SimpleCircle class is required for proper circular rendering
-    # DO NOT REMOVE - Ren'Py's Solid creates squares, this creates actual circles
     class SimpleCircle(renpy.Displayable):
         def __init__(self, radius, color):
             super().__init__()
@@ -111,38 +165,54 @@ init python:
             return r
 
 # ========================
-# Main UI Screen
+# Enhanced Main UI Screen
 # ========================
 screen round_ui():
+    # Update combat state
+    $ update_combat_state()
+
     # Cache all calculations at screen level
     $ bar_width = (config.screen_width - 340) // 2
     $ circle_diameter = CIRCLE_RADIUS * 2
     $ enemy_color = get_hp_color(enemy_hp, enemy_max_hp, True)
     $ hero_color = get_hp_color(current_hp, max_hp, False)
     $ orb_positions = get_orb_positions(max_ap)
+    $ momentum_color = get_momentum_color()
 
     add "#808080"
+
+    # NEW: Screen flash for critical HP
+    if critical_hp_warning:
+        add "#ff0000" alpha 0.1 at critical_pulse
 
     hbox:
         xalign 0.5
         yalign 0.5
         spacing 50
 
-        # Enemy HP bar with cached color
-        use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width)
+        # Enemy HP bar with shake on damage
+        fixed:
+            if last_damage_dealt > 0:
+                at damage_shake
+            use hp_bar_section("Enemy", enemy_hp, enemy_max_hp, enemy_color, bar_width, True)
 
-        # Round circle
+        # Enhanced Round circle with momentum
         fixed:
             xsize circle_diameter
             ysize circle_diameter
 
-            # Subtle golden aura (stays within orb boundary)
+            # Dynamic aura based on momentum
+            if abs(combat_momentum) > 1:
+                add get_circle(CIRCLE_RADIUS + 8, momentum_color) xalign 0.5 yalign 0.5 alpha 0.3 at momentum_glow
+
+            # Subtle golden aura (baseline)
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") xalign 0.5 yalign 0.5 at sun_aura
 
-            # Cached background circle
-            add get_circle(CIRCLE_RADIUS, "#505050") xalign 0.5 yalign 0.5
+            # Background circle with momentum tint
+            $ bg_color = "#505050" if abs(combat_momentum) <= 1 else momentum_color
+            add get_circle(CIRCLE_RADIUS, bg_color) xalign 0.5 yalign 0.5 alpha (0.8 if abs(combat_momentum) > 1 else 1.0)
 
-            # Round text
+            # Round text with momentum indicator
             vbox:
                 xalign 0.5
                 yalign 0.5
@@ -151,21 +221,61 @@ screen round_ui():
                 text "Round" size 20 color "#FFFFFF" xalign 0.5
                 text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
 
-            # Optimized AP Orbs - cache positions and minimize function calls
+                # NEW: Momentum indicator
+                if abs(combat_momentum) > 1:
+                    text ("↑" if combat_momentum > 1 else "↓") size 16 color momentum_color xalign 0.5
+
+            # Enhanced AP Orbs with low-AP warning
             for i, (x, y) in enumerate(orb_positions):
                 $ is_active = i < available_ap
-                add get_circle(ORB_RADIUS, "#ffd700" if is_active else "#666666"):
+                $ orb_color = "#ffd700" if is_active else "#666666"
+                # Pulse remaining orbs when AP is low
+                $ use_warning = available_ap <= 2 and is_active
+                add get_circle(ORB_RADIUS, orb_color):
                     xpos x
                     ypos y
-                    at (glow if is_active else inactive)
+                    at (critical_pulse if use_warning else (glow if is_active else inactive))
 
-        # Hero HP bar with cached color
-        use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
+        # Hero HP bar with shake on damage and warning effects
+        fixed:
+            if last_damage_taken > 0:
+                at damage_shake
+            use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width, False)
+
+    # NEW: Floating damage numbers
+    if last_damage_dealt > 0:
+        text "-[last_damage_dealt]" size 36 color "#ff4444" xalign 0.35 yalign 0.3 at floating_damage
+    if last_damage_taken > 0:
+        text "-[last_damage_taken]" size 36 color "#ff0000" xalign 0.65 yalign 0.3 at floating_damage
+
+    # NEW: Combat status indicators
+    vbox:
+        xalign 0.02
+        yalign 0.02
+        spacing 5
+
+        if low_hp_warning and not critical_hp_warning:
+            text "LOW HP" size 20 color "#ffaa00" at critical_pulse
+        elif critical_hp_warning:
+            text "CRITICAL!" size 24 color "#ff0000" at critical_pulse
+
+        if available_ap <= 1:
+            text "LOW AP" size 18 color "#ffaa00" at glow
+
+    # NEW: Quick status summary
+    vbox:
+        xalign 0.98
+        yalign 0.02
+        spacing 2
+
+        text "Momentum: [combat_momentum]" size 16 color momentum_color
+        if abs(combat_momentum) > 2:
+            text ("ADVANTAGE" if combat_momentum > 0 else "DANGER") size 18 color momentum_color at glow
 
 # ========================
-# Reusable HP Bar Component
+# Enhanced HP Bar Component
 # ========================
-screen hp_bar_section(label, hp_value, max_hp_value, color, width):
+screen hp_bar_section(label, hp_value, max_hp_value, color, width, is_enemy=False):
     vbox:
         spacing 5
         text label size gui.notify_text_size color "#ffffff"
@@ -189,17 +299,33 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
                 left_bar color
                 right_bar "#000000"
 
-            # Highlight
-            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+            # Enhanced highlight with warning flash
+            $ highlight_alpha = 0.5 if (not is_enemy and critical_hp_warning) else 0.3
+            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha highlight_alpha
 
-        text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+        # Enhanced HP text with percentage and warnings
+        hbox:
+            spacing 10
+            text "[hp_value]%" size gui.notify_text_size color "#ffffff"
+
+            # NEW: Status indicators for low HP
+            if not is_enemy and hp_value <= 30:
+                if hp_value <= 15:
+                    text "⚠" size gui.notify_text_size color "#ff0000" at critical_pulse
+                else:
+                    text "⚠" size gui.notify_text_size color "#ffaa00"
 
 # ========================
-# Demo Label
+# Enhanced Demo with Combat Feedback
 # ========================
 label start:
     show screen round_ui
     "Round [current_round], AP [available_ap]/[max_ap], Hero HP [current_hp]/[max_hp], Enemy HP [enemy_hp]/[enemy_max_hp]"
+
+    # Reset damage indicators at start of each turn
+    $ last_damage_taken = 0
+    $ last_damage_dealt = 0
+
     menu:
         "Spend AP" if available_ap > 0:
             $ available_ap -= 1
@@ -208,13 +334,21 @@ label start:
             $ available_ap += 1
             jump start
         "Take Damage" if current_hp > 0:
-            $ current_hp = max(0, current_hp - 15)
+            $ damage = 15
+            $ current_hp = max(0, current_hp - damage)
+            $ last_damage_taken = damage
+            "You take [damage] damage!"
             jump start
         "Heal" if current_hp < max_hp:
-            $ current_hp = min(max_hp, current_hp + 20)
+            $ heal = 20
+            $ current_hp = min(max_hp, current_hp + heal)
+            "You heal [heal] HP!"
             jump start
         "Damage Enemy" if enemy_hp > 0:
-            $ enemy_hp = max(0, enemy_hp - 20)
+            $ damage = 20
+            $ enemy_hp = max(0, enemy_hp - damage)
+            $ last_damage_dealt = damage
+            "You deal [damage] damage!"
             jump start
         "Enemy Heals" if enemy_hp < enemy_max_hp:
             $ enemy_hp = min(enemy_max_hp, enemy_hp + 15)
@@ -222,6 +356,8 @@ label start:
         "Next Round":
             $ current_round += 1
             $ available_ap = max_ap
+            $ last_damage_taken = 0
+            $ last_damage_dealt = 0
             jump start
         "Exit":
             return
