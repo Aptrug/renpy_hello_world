@@ -5,11 +5,7 @@
 # Hero HP (Mana): Bright blue that dims to darker blue as it depletes
 # Don't add too much complexity though, less is more as they say
 
-# Can you change
-# xalign 0.5
-# yalign 0.5
-# to align (0.5, 0.5) etc
-# Suggest other changes like this to reduce LOC
+# Can you change xalign/yalign to align, xsize/ysize to xysize, etc Do you get it?
 
 # ========================
 # Game Variables
@@ -133,8 +129,7 @@ screen round_ui():
     add "#808080"
 
     hbox:
-        xalign 0.5
-        yalign 0.5
+        align (0.5, 0.5)
         spacing 50
 
         # Enemy HP bar with cached color
@@ -142,8 +137,7 @@ screen round_ui():
 
         # Round circle
         fixed:
-            xsize circle_diameter
-            ysize circle_diameter
+            xysize (circle_diameter, circle_diameter)
 
             # Subtle golden aura (stays within orb boundary)
             add get_circle(CIRCLE_RADIUS + 4, "#ffd700") align (0.5, 0.5) at sun_aura
@@ -153,12 +147,11 @@ screen round_ui():
 
             # Round text
             vbox:
-                xalign 0.5
-                yalign 0.5
+                align (0.5, 0.5)
                 yoffset 10
                 spacing -5
-                text "Round" size 20 color "#FFFFFF" xalign 0.5
-                text "[current_round]" size 60 color "#FFFFFF" xalign 0.5
+                text "Round" size 20 color "#FFFFFF" align (0.5, 0.5)
+                text "[current_round]" size 60 color "#FFFFFF" align (0.5, 0.5)
 
             # Optimized AP Orbs - cache positions and minimize function calls
             for i, (x, y) in enumerate(orb_positions):
@@ -180,26 +173,23 @@ screen hp_bar_section(label, hp_value, max_hp_value, color, width):
         text label size gui.notify_text_size color "#ffffff"
 
         fixed:
-            xsize width + 4
-            ysize 16
+            xysize (width + 4, 16)
 
             # Frame and background
-            add "#333333" xsize width + 4 ysize 16
-            add "#000000" xsize width ysize 12 xpos 2 ypos 2
+            add "#333333" xysize (width + 4, 16)
+            add "#000000" xysize (width, 12) pos (2, 2)
 
             # Animated HP bar with dynamic color
             bar:
                 value AnimatedValue(hp_value, max_hp_value, 0.8)
                 range max_hp_value
-                xsize width
-                ysize 12
-                xpos 2
-                ypos 2
+                xysize (width, 12)
+                pos (2, 2)
                 left_bar color
                 right_bar "#000000"
 
             # Highlight
-            add "#ffffff" xsize width ysize 1 xpos 2 ypos 2 alpha 0.3
+            add "#ffffff" xysize (width, 1) pos (2, 2) alpha 0.3
 
         text "[hp_value]%" size gui.notify_text_size color "#ffffff"
 
