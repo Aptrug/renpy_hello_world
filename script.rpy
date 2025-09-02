@@ -210,7 +210,7 @@ screen battle_ui():
             add "hero_bg":
                 xalign 0.5
                 yalign 0.5
-                fit "cover"
+                # fit "cover"
             hbox:
                 xalign 0.5
                 spacing 50
