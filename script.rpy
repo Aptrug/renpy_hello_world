@@ -206,6 +206,7 @@ screen battle_ui():
         fixed:
             add "hero_bg":
                 crop (0, 0, 1920, 800)
+                yoffset -50
             hbox:
                 xalign 0.5
                 spacing 50
