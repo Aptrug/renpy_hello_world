@@ -1,6 +1,6 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-# I want to add a bg image for allies row, how to do that?
+# I want to add a bg image for allies row with least amount of code change, how to do that?
 
 # ========================
 # Game Variables
@@ -25,6 +25,7 @@ default persistent.qmenu_bak = 0
 # ========================
 image boss = "images/combat_system/boss.webp"
 image boss_bg = "images/blurred_bg.webp"
+image hero_bg = "images/dark_mosaic.webp"
 image kenshin = "images/combat_system/kenshin.webp"
 image magic = "images/combat_system/magic.webp"
 image rance = "images/combat_system/rance.webp"
@@ -201,15 +202,18 @@ screen battle_ui():
             use hp_bar_section("Hero", current_hp, max_hp, hero_color, bar_width)
 
         # Hero party row
-        hbox:
+        fixed:
             xalign 0.5
-            spacing 50
+            add "hero_bg" xalign 0.5 yalign 0.5  # <-- background for allies row
+            hbox:
+                xalign 0.5
+                spacing 50
 
-            add "kenshin"
-            add "magic"
-            add "rance" at ally_selected_effect
-            add "reset"
-            add "suzume"
+                add "kenshin"
+                add "magic"
+                add "rance" at ally_selected_effect
+                add "reset"
+                add "suzume"
 
 # ========================
 # Reusable HP Bar Component
