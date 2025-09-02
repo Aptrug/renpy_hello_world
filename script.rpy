@@ -205,9 +205,9 @@ screen battle_ui():
         # Hero party row
         fixed:
             xalign 0.5
-            add "hero_bg" xalign 0.5 yalign 0.5  # <-- background for allies row
             ysize 200  # limit vertical size so it doesn't cover full screen
             xsize 600  # optional: limit horizontal width too
+            add "hero_bg" xalign 0.5 yalign 0.5  # <-- background for allies row
             hbox:
                 xalign 0.5
                 spacing 50
