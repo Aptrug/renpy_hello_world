@@ -150,7 +150,8 @@ screen battle_ui():
     $ orb_positions = get_orb_positions(max_ap)
 
     # Feldgrau background
-    add Solid("#4D5D53")
+    # add Solid("#4D5D53")
+    add "boss_bg":
 
     vbox:
         spacing 40
