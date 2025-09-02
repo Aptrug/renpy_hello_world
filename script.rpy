@@ -24,7 +24,7 @@ default persistent.qmenu_bak = 0
 # Image Definitions
 # ========================
 image boss = "images/combat_system/boss.webp"
-image boss_bg = "images/blurred_bg.webp"
+image ui_bg = "images/blurred_bg.webp"
 image hero_bg = "images/dark_mosaic.webp"
 image kenshin = "images/combat_system/kenshin.webp"
 image magic = "images/combat_system/magic.webp"
@@ -152,7 +152,7 @@ screen battle_ui():
 
     # Feldgrau background
     # add Solid("#4D5D53")
-    add "boss_bg"
+    add "ui_bg"
 
     vbox:
         spacing 40
