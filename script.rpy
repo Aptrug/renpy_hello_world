@@ -151,7 +151,7 @@ screen battle_ui():
 
     # Feldgrau background
     # add Solid("#4D5D53")
-    add "boss_bg":
+    add "boss_bg"
 
     vbox:
         spacing 40
