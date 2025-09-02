@@ -203,9 +203,9 @@ screen battle_ui():
 
         # Hero party row
         fixed:
-            add "hero_bg":
-                crop (0, 0, 1920, 800)
-                yoffset -30
+            # add "hero_bg":
+            #     crop (0, 0, 1920, 800)
+            #     yoffset -30
             hbox:
                 xalign 0.5
                 spacing 50
