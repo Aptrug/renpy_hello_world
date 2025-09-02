@@ -205,8 +205,8 @@ screen battle_ui():
         # Hero party row
         fixed:
             xalign 0.5
-            ysize 200  # limit vertical size so it doesn't cover full screen
-            xsize 1080  # optional: limit horizontal width too
+            ysize 500  # limit vertical size so it doesn't cover full screen
+            xsize 1920  # optional: limit horizontal width too
             add "hero_bg":
                 xalign 0.5
                 yalign 0.5
