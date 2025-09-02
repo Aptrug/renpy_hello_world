@@ -208,9 +208,7 @@ screen battle_ui():
             ysize 400  # limit vertical size so it doesn't cover full screen
             xsize 1080  # optional: limit horizontal width too
             add "hero_bg":
-                xalign 0.5
-                yalign 0.5
-                fit "cover"
+                crop (0, 0, 400, 1080)
             hbox:
                 xalign 0.5
                 spacing 50
