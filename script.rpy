@@ -25,8 +25,8 @@ default persistent.qmenu_bak = 0
 # ========================
 image boss = "images/combat_system/boss.webp"
 image boss_bg = "images/blurred_bg.webp"
-# image hero_bg = "images/dark_mosaic.webp"
-image hero_bg = im.Scale("images/dark_mosaic.webp", 1920, 300)
+image hero_bg = "images/dark_mosaic.webp"
+# image hero_bg = im.Scale("images/dark_mosaic.webp", 1920, 300)
 image kenshin = "images/combat_system/kenshin.webp"
 image magic = "images/combat_system/magic.webp"
 image rance = "images/combat_system/rance.webp"
@@ -206,6 +206,8 @@ screen battle_ui():
         fixed:
             xalign 0.5
             add "hero_bg" xalign 0.5 yalign 0.5  # <-- background for allies row
+            ysize 200  # limit vertical size so it doesn't cover full screen
+            xsize 600  # optional: limit horizontal width too
             hbox:
                 xalign 0.5
                 spacing 50
