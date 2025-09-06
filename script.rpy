@@ -1,6 +1,6 @@
 ﻿# Can you a frame around the HP bar or something, because when it's full, it just looks like a long blue line instead of an HP bar. Look how other famous games do it. Don't add too much complexity though, less is more as they say.
 
-#  I want to add a bg image for allies row with least amount of code change, how to do that?
+# I want to add a bg image for allies row with least amount of code change, how to do that?
 
 # ========================
 # Game Variables
